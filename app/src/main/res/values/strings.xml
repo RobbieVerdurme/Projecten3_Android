@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Multinet</string>
+    <string name="logo" translatable="false">Logo</string>
 </resources>
