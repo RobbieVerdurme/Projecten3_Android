@@ -23,5 +23,6 @@ class SplashScreenFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_splash_screen, container, false)
     }
 
-
+    //TODO navigate to login or homepage, when the user was checked in local database
+    //Use a user viewmodel with an observer for this
 }

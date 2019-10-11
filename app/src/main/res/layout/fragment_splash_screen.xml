@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="318dp"
         android:contentDescription="@string/logo"
-        android:src="@drawable/ic_multimed"
+        android:src="@mipmap/ic_multimed_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
