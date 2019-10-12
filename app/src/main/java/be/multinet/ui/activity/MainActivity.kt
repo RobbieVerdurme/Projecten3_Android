@@ -9,11 +9,12 @@ import be.multinet.R
  */
 class MainActivity : AppCompatActivity() {
 
-    /**
-     * Set the layout file.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Setup the toolbar, we need it throughout the app.
+        setSupportActionBar(findViewById(R.id.mainActivityToolbar))
+        //We need to hide the action bar in the splash screen.
+        supportActionBar?.hide()
     }
 }
