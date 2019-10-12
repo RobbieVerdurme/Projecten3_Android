@@ -16,7 +16,7 @@ class UserViewModel : ViewModel() {
      * A [LiveData] that stores the actual user.
      * This will be consumed by objects that need access to the user.
      */
-    private val user: LiveData<User> = MutableLiveData<User>()
+    private val user = MutableLiveData<User>()
 
     /**
      * A [LiveData] that stores the user's login state.
@@ -24,7 +24,7 @@ class UserViewModel : ViewModel() {
      *
      * We initialize with a default value of [UserLoginState.UNKNOWN].
      */
-    private val userState: LiveData<UserLoginState> = MutableLiveData<UserLoginState>(UserLoginState.UNKNOWN)
+    private val userState = MutableLiveData<UserLoginState>(UserLoginState.UNKNOWN)
 
     //TODO: user repository variable
 
@@ -42,9 +42,20 @@ class UserViewModel : ViewModel() {
      * Then once loaded, update userLoginState and user.
      */
     fun loadUserFromLocalDatabase(){
+        //Temporary to test until we get a repository to do this
+        userState.value = UserLoginState.LOGGED_IN
+
         //TODO: ask repository to load the user
         //check the returned value
         //update live data objects so observers get notified
+    }
+
+    /**
+     * Save [user] to local persistence.
+     */
+    fun saveUserToLocalDatabase(user: User){
+        //TODO save the user to the local database
+        //and set the user state if successful
     }
 
     /**
@@ -56,5 +67,6 @@ class UserViewModel : ViewModel() {
     }
 
     //NOTE: login happens in the login viewmodel, the login fragment asks its vm to do a http call and observes a user LiveData
-    //Then the fragment uses an observer to update this vm's user state/user
+    //Then the login fragment(which has a reference to this vm and login vm) asks this vm to save the user in the local database.
+    //It passes the user object from the LoginVM (inside the observer)
 }

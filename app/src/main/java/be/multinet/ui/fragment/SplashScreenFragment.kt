@@ -52,7 +52,9 @@ class SplashScreenFragment : Fragment() {
                     navController.navigate(R.id.action_splashScreenFragment_to_loginFragment)
                 }
             }else if(it == UserLoginState.LOGGED_IN){
-                //TODO goto homepage
+                if(navController.currentDestination?.id == R.id.splashScreenFragment){
+                    navController.navigate(R.id.action_splashScreenFragment_to_landingPageFragment)
+                }
             }
             //Do nothing, since we didn't check yet.
         })
