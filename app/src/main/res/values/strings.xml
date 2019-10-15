@@ -14,4 +14,6 @@
     <string name="welcome_login">Welkom bij Multinet</string>
     <string name="username">Gebruikersnaam</string>
     <string name="password">Wachtwoord</string>
+    <string name="loginUsernameRequired">Username required</string>
+    <string name="loginPasswordRequired">Password required</string>
 </resources>
