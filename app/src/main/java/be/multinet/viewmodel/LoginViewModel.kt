@@ -5,13 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import be.multinet.R
+import javax.inject.Inject
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
     private val username = MutableLiveData<String>("")
     private val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
     private val passwordError = MutableLiveData<String>(null)
-    private val loginError = MutableLiveData<String>("")
+    private val loginError = MutableLiveData<String>(null)
     private val usernameRequired: String = application.getString(R.string.loginUsernameRequired)
     private val passwordRequired: String = application.getString(R.string.loginPasswordRequired)
 
@@ -41,5 +42,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(){
         //TODO backend call + error catching
+
     }
 }

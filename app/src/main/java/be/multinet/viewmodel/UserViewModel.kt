@@ -43,7 +43,7 @@ class UserViewModel : ViewModel() {
      */
     fun loadUserFromLocalDatabase(){
         //Temporary to test until we get a repository to do this
-        userState.value = UserLoginState.LOGGED_IN
+        userState.value = UserLoginState.LOGGED_OUT
 
         //TODO: ask repository to load the user
         //check the returned value
