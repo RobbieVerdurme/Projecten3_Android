@@ -4,26 +4,32 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import be.multinet.R
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
-    private val username = MutableLiveData<String>("")
-    private val password = MutableLiveData<String>("")
+    val username = MutableLiveData<String>("")
+    val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
     private val passwordError = MutableLiveData<String>(null)
-    private val loginError = MutableLiveData<String>(null)
     private val usernameRequired: String = application.getString(R.string.loginUsernameRequired)
     private val passwordRequired: String = application.getString(R.string.loginPasswordRequired)
 
-    fun getUsername():LiveData<String> = username
-    fun getPassword():LiveData<String> = password
-    fun getLoginError():LiveData<String> = loginError
+    private val usernameObserver = Observer<String>{onUsernameChanged(it)}
+    private val passwordObserver = Observer<String>{onPasswordChanged(it)}
+
+
     fun getUsernameError():LiveData<String> = usernameError
     fun getPasswordError():LiveData<String> = passwordError
 
-    fun onUsernameChanged(charSequence: CharSequence){
-        if(charSequence.isBlank()){
+    init{
+        username.observeForever(usernameObserver)
+        password.observeForever(passwordObserver)
+    }
+
+    private fun onUsernameChanged(charSequence: CharSequence){
+        if(charSequence.isEmpty()){
             usernameError.value = usernameRequired
         }
         else{
@@ -31,7 +37,7 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
         }
     }
 
-    fun onPasswordChanged(charSequence: CharSequence){
+    private fun onPasswordChanged(charSequence: CharSequence){
         if(charSequence.isBlank()){
             passwordError.value = passwordRequired
         }
