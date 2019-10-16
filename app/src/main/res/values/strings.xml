@@ -9,11 +9,10 @@
     <string name="challenges_title">Challenges</string>
     <string name="info_title">Info</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_login">Welkom bij Multinet</string>
     <string name="username">Gebruikersnaam</string>
     <string name="password">Wachtwoord</string>
-    <string name="loginUsernameRequired">Username required!!!</string>
-    <string name="loginPasswordRequired">Password required!!!</string>
+    <string name="loginUsernameRequired">Gebruikersnaam is verplicht</string>
+    <string name="loginPasswordRequired">Wachtwoord is verplicht</string>
+    <string name="homeNextRewardAt">Volgende Beloning op niveau %1$d</string>
 </resources>
