@@ -20,4 +20,9 @@
         android:name="be.multinet.ui.fragment.InfoFragment"
         android:label="fragment_info"
         tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="be.multinet.ui.fragment.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
 </navigation>

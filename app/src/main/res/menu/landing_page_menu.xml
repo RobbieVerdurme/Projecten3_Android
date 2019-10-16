@@ -9,6 +9,11 @@
         android:icon="@drawable/ic_view_carousel_24px"
         android:title="@string/landing_page_nav_menu_challenges" />
 
+    <item android:id="@id/profileFragment"
+        android:icon="@drawable/ic_person_24px"
+        android:title="@string/landing_page_nav_menu_profile"
+        />
+
     <item android:id="@id/infoFragment"
         android:icon="@drawable/ic_info_24px"
         android:title="@string/landing_page_nav_menu_info" />
