@@ -43,7 +43,7 @@ class UserViewModel : ViewModel() {
      */
     fun loadUserFromLocalDatabase(){
         //Temporary to test until we get a repository to do this
-        userState.value = UserLoginState.LOGGED_OUT
+        userState.value = UserLoginState.LOGGED_IN
 
         //TODO: ask repository to load the user
         //check the returned value
@@ -68,5 +68,5 @@ class UserViewModel : ViewModel() {
 
     //NOTE: login happens in the login viewmodel, the login fragment asks its vm to do a http call and observes a user LiveData
     //Then the login fragment(which has a reference to this vm and login vm) asks this vm to save the user in the local database.
-    //It passes the user object from the LoginVM (inside the observer)
+    //It passes the user object from the LoginVM (inside the observer for the user of LoginVM,which is populated after successful login) to the UserVM.
 }
