@@ -55,4 +55,13 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
         //TODO backend call + error catching
 
     }
+
+    /**
+     * Remove [usernameObserver] and [passwordObserver] to prevents memory leaks.
+     */
+    override fun onCleared() {
+        username.removeObserver(usernameObserver)
+        password.removeObserver(passwordObserver)
+        super.onCleared()
+    }
 }
