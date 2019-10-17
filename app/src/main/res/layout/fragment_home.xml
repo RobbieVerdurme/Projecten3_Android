@@ -26,7 +26,7 @@
             android:progressDrawable="@drawable/indeterminate_progressbar_circle"/>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/userLevelLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.userLevelAsString}"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/rewardAtLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -45,7 +45,28 @@
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/userLevelLabel" />
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rewardAtLabel">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
