@@ -26,10 +26,15 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
     init{
         username.observeForever(usernameObserver)
         password.observeForever(passwordObserver)
+        //Reset the error values.
+        //The above observers already trigger a validation with the default value.
+        //Since thats an empty string, it will show errors.
+        usernameError.value = null
+        passwordError.value = null
     }
 
     private fun onUsernameChanged(charSequence: CharSequence){
-        if(charSequence.isEmpty()){
+        if(charSequence.isBlank()){
             usernameError.value = usernameRequired
         }
         else{
