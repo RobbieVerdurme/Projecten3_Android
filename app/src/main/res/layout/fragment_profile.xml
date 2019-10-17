@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="userViewModel"
-            type="be.multinet.viewmodel.UserViewModel" />
+            name="viewModel"
+            type="be.multinet.viewmodel.ProfileViewModel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
