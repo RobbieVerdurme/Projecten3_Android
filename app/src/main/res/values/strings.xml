@@ -8,6 +8,7 @@
     <string name="home_title">Home</string>
     <string name="challenges_title">Challenges</string>
     <string name="info_title">Info</string>
+    <string name="profile_title">Profiel</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -16,4 +17,10 @@
     <string name="password">Wachtwoord</string>
     <string name="loginUsernameRequired">Username required!!!</string>
     <string name="loginPasswordRequired">Password required!!!</string>
+    <string name="profile_name">Naam</string>
+    <string name="profile_mail">Mail adres</string>
+    <string name="profile_number">Tel</string>
+    <string name="profile_company">Bedrijf</string>
+    <string name="user_info">Gegevens</string>
+    <string name="contact">Therapeuten</string>
 </resources>

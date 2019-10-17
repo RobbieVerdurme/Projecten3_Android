@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //Setup the toolbar, we need it throughout the app.
-        setSupportActionBar(findViewById(R.id.mainActivityToolbar))
+        setSupportActionBar(this.findViewById(R.id.mainActivityToolbar))
         //We need to hide the action bar in the splash screen.
         supportActionBar?.hide()
     }
