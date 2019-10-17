@@ -22,7 +22,7 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
     /**
      * This [MutableLiveData] defines a label for the next reward.
      */
-    private val nextRewardAt = MutableLiveData<String>(application.getString(R.string.homeNextRewardAt,nextRewardLevel))
+    private val nextRewardAt = MutableLiveData<String>(application.getString(R.string.home_next_reward_at,nextRewardLevel))
 
     /**
      * The maximum experience needed until a user gets a new level.

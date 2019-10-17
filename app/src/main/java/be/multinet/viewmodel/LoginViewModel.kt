@@ -13,8 +13,8 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
     val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
     private val passwordError = MutableLiveData<String>(null)
-    private val usernameRequired: String = application.getString(R.string.loginUsernameRequired)
-    private val passwordRequired: String = application.getString(R.string.loginPasswordRequired)
+    private val usernameRequired: String = application.getString(R.string.login_username_required)
+    private val passwordRequired: String = application.getString(R.string.login_password_required)
 
     private val usernameObserver = Observer<String>{onUsernameChanged(it)}
     private val passwordObserver = Observer<String>{onPasswordChanged(it)}
@@ -26,10 +26,15 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
     init{
         username.observeForever(usernameObserver)
         password.observeForever(passwordObserver)
+        //Reset the error values.
+        //The above observers already trigger a validation with the default value.
+        //Since thats an empty string, it will show errors.
+        usernameError.value = null
+        passwordError.value = null
     }
 
     private fun onUsernameChanged(charSequence: CharSequence){
-        if(charSequence.isEmpty()){
+        if(charSequence.isBlank()){
             usernameError.value = usernameRequired
         }
         else{

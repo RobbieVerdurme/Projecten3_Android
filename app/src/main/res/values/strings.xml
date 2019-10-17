@@ -1,19 +1,33 @@
 <resources>
     <string name="app_name" translatable="false">Multinet</string>
     <string name="logo" translatable="false">Logo</string>
-    <string name="login_title">Aanmelden</string>
+
+    <string name="username">Gebruikersnaam</string>
+    <string name="password">Wachtwoord</string>
+    <!--Landing Page Bottom Navigation Items-->
     <string name="landing_page_nav_menu_home">Home</string>
     <string name="landing_page_nav_menu_challenges">Challenges</string>
     <string name="landing_page_nav_menu_info">Info</string>
     <string name="landing_page_nav_menu_profile">Profiel</string>
+    <!--Login-->
+    <string name="login_title">Aanmelden</string>
+    <string name="login_welcome">Welkom bij Multinet</string>
+    <string name="login_username_required">Gebruikersnaam is verplicht</string>
+    <string name="login_password_required">Wachtwoord is verplicht</string>
+    <!--Home-->
     <string name="home_title">Home</string>
+    <string name="home_next_reward_at">Volgende Beloning op niveau %1$d</string>
+    <!--Profile-->
+    <string name="profile_title">Profiel</string>
+    <string name="profile_image_description">Profielfoto</string>
+    <string name="profile_name">Naam</string>
+    <string name="profile_mail">Mail adres</string>
+    <string name="profile_number">Tel</string>
+    <string name="profile_company">Bedrijf</string>
+    <string name="profile_user_info">Gegevens</string>
+    <string name="profile_contact">Therapeuten</string>
+    <!--Challenges-->
     <string name="challenges_title">Challenges</string>
+    <!--Info-->
     <string name="info_title">Info</string>
-
-    <string name="welcome_login">Welkom bij Multinet</string>
-    <string name="username">Gebruikersnaam</string>
-    <string name="password">Wachtwoord</string>
-    <string name="loginUsernameRequired">Gebruikersnaam is verplicht</string>
-    <string name="loginPasswordRequired">Wachtwoord is verplicht</string>
-    <string name="homeNextRewardAt">Volgende Beloning op niveau %1$d</string>
 </resources>
