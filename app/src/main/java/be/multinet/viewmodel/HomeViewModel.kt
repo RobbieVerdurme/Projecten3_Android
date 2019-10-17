@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import be.multinet.R
+import com.github.mikephil.charting.data.Entry
 
 /**
  * This class represents the [ViewModel] for the user's dashboard in HomeFragment.
@@ -39,6 +40,11 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
      */
     private val userLevel = MutableLiveData(1)
 
+    /**
+     * The label for the chart
+     */
+    val chartLabel = application.getString(R.string.home_chart_label)
+
     //endregion
 
     //region getters
@@ -67,6 +73,19 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
      * Get [userLevel] as [LiveData]
      */
     fun getUserLevel(): LiveData<Int> = userLevel
+
+    /**
+     * Get the chart data.
+     */
+    fun getChartData(): List<Entry> {
+        //Test data
+        val list = ArrayList<Entry>()
+        list.add(Entry(1.0f,3.0f))
+        list.add(Entry(2.0f,5.0f))
+        list.add(Entry(3.0f,7.0f))
+        list.add(Entry(4.0f,0.0f))
+        return list
+    }
 
     //endregion
 
