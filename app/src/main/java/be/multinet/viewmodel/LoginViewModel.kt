@@ -13,8 +13,8 @@ class LoginViewModel @Inject constructor(application: Application) : AndroidView
     val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
     private val passwordError = MutableLiveData<String>(null)
-    private val usernameRequired: String = application.getString(R.string.loginUsernameRequired)
-    private val passwordRequired: String = application.getString(R.string.loginPasswordRequired)
+    private val usernameRequired: String = application.getString(R.string.login_username_required)
+    private val passwordRequired: String = application.getString(R.string.login_password_required)
 
     private val usernameObserver = Observer<String>{onUsernameChanged(it)}
     private val passwordObserver = Observer<String>{onPasswordChanged(it)}

@@ -10,13 +10,13 @@
         <item name="android:actionMenuTextColor">@color/colorWhite</item>
     </style>
 
-    <style name="subTitle">
+    <style name="subTitle" parent="AppTheme">
         <item name="android:textColor">@color/multimed_green</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="attributeTitle">
+    <style name="attributeTitle" parent="AppTheme">
         <item name="android:textColor">@color/multimed_green</item>
         <item name="android:textSize">13sp</item>
     </style>

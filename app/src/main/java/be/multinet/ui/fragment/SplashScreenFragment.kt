@@ -29,7 +29,7 @@ class SplashScreenFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Note: if we enable dagger, we will use the injected viewmodel factory here too.
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
+        userViewModel = ViewModelProviders.of(activity!!).get(UserViewModel::class.java)
         return inflater.inflate(R.layout.fragment_splash_screen, container, false)
     }
 
