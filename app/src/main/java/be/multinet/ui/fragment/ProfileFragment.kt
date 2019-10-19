@@ -6,17 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
 import be.multinet.model.User
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * The profile [Fragment] that lets the user see his info
  */
 class ProfileFragment : Fragment() {
+
+    val viewModel: ProfileViewModel by viewModel()
 
     /**
      * Set up the layout.
@@ -27,8 +31,7 @@ class ProfileFragment : Fragment() {
          * Note the activity lifecycle scope.
          * Pass it on to the [ProfileViewModel] of this fragment.
          */
-        val userViewModel = ViewModelProviders.of(activity!!).get(UserViewModel::class.java)
-        val viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        val userViewModel: UserViewModel = getSharedViewModel()
         val currentUser: User? = userViewModel.getUser().value
         //Only pass a user if not null
         if(currentUser != null){
