@@ -1,19 +1,17 @@
 package be.multinet.ui.fragment
 
-
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 
 import be.multinet.R
 import be.multinet.model.UserLoginState
 import be.multinet.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * This [Fragment] represents a Splash Screen.
@@ -25,11 +23,9 @@ import be.multinet.viewmodel.UserViewModel
  */
 class SplashScreenFragment : Fragment() {
 
-    lateinit var userViewModel: UserViewModel
+    val userViewModel: UserViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //Note: if we enable dagger, we will use the injected viewmodel factory here too.
-        userViewModel = ViewModelProviders.of(activity!!).get(UserViewModel::class.java)
         return inflater.inflate(R.layout.fragment_splash_screen, container, false)
     }
 

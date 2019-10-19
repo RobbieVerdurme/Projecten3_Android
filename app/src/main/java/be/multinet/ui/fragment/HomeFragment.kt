@@ -8,14 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
-
 import be.multinet.R
 import be.multinet.viewmodel.HomeViewModel
+import be.multinet.viewmodel.UserViewModel
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.fragment_home.*
+
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
 /**
  * This [Fragment] represents the home page.
@@ -25,10 +27,12 @@ class HomeFragment : Fragment() {
     /**
      * The [HomeViewModel] for this fragment.
      */
-    lateinit var viewModel: HomeViewModel
+    val viewModel: HomeViewModel by viewModel()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        //TODO get the user from uservm, pass it to viewModel for display
+        val userViewModel: UserViewModel = getSharedViewModel()
         val binding = FragmentHomeBinding.inflate(inflater,container,false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -2,32 +2,39 @@ package be.multinet.ui.fragment
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import be.multinet.R
 import be.multinet.databinding.FragmentLoginBinding
-import be.multinet.databinding.FragmentLoginBindingImpl
+import be.multinet.model.User
 import be.multinet.viewmodel.LoginViewModel
-import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.fragment_login.*
+import be.multinet.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * The login [Fragment] that lets users enter the rest of the app.
  */
 class LoginFragment : Fragment() {
+
+    val loginViewModel: LoginViewModel by viewModel()
+
+    val userViewModel: UserViewModel by sharedViewModel()
+
+    //TODO network viewmodel
+
     /**
      * Set up the layout.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentLoginBinding.inflate(inflater, container, false)
-        val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         binding.lifecycleOwner = this
-        binding.loginViewModel = viewModel
+        binding.loginViewModel = loginViewModel
         return binding.root
     }
 
@@ -44,6 +51,9 @@ class LoginFragment : Fragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.login_title)
         toolbar.show()
+        userViewModel.getUser().observe(viewLifecycleOwner, Observer<User?>{
+            //TODO: when not null go to landing page
+        })
     }
 
 

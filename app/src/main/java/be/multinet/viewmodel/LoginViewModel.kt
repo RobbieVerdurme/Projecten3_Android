@@ -6,9 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import be.multinet.R
-import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val username = MutableLiveData<String>("")
     val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
