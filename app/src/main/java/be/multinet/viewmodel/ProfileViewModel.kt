@@ -3,9 +3,7 @@ package be.multinet.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import be.multinet.model.Company
 import be.multinet.model.User
-import javax.inject.Inject
 
 /**
  * This class is the [AndroidViewModel] for the profile screen.

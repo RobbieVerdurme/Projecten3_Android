@@ -7,16 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 
 import be.multinet.R
+import be.multinet.model.User
+import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_landing_page.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
  * This [Fragment] represents a landing page for a logged in user.
  */
 class LandingPageFragment : Fragment() {
+
+    private val userViewModel: UserViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //TODO use a DataBinding class (LandingPageFragmentBinding) to inflate and setup lifecycleowner + viewmodel etc
@@ -49,6 +54,10 @@ class LandingPageFragment : Fragment() {
                 }
             }
         }
+        userViewModel.getUser().observe(viewLifecycleOwner, Observer<User?>{
+            //TODO: if null use action that navigates to login, popping until landing page(inclusive)
+            //effectively going back to login
+        })
 
     }
 
