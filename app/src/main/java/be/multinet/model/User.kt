@@ -16,7 +16,6 @@ class User (
     private val familyName: String,
     private val mail: String,
     private val phone: String,
-    private val company: Company,
     private val category: List<String>
 ){
     /**
@@ -43,11 +42,6 @@ class User (
      * @return the phone number of the user
      */
     fun getPhone(): String = phone
-
-    /**
-     * @return the company of the user
-     */
-    fun getCompany(): Company = company
 
     /**
      * @return the different categories of the user
