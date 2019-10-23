@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
+import be.multinet.model.Company
 import be.multinet.model.User
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UserViewModel
@@ -39,7 +40,7 @@ class ProfileFragment : Fragment() {
         }
         //Set up the binding
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
-        binding.viewModel = viewModel
+        binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
+        loadProfileViewModelData()
     }
 
     /**
@@ -55,5 +57,13 @@ class ProfileFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.profile_title)
+    }
+
+    /**
+     * Load data into [ProfileViewModel]
+     */
+    private fun loadProfileViewModelData(){
+        val company = Company("1", "Patisserie Stefan")
+        viewModel.setCompany(company)
     }
 }

@@ -35,7 +35,7 @@ class UserViewModel : ViewModel() {
     /**
      * Getter that exposes [user] as [LiveData] to prevent writable leaks.
      */
-    fun getUser(): LiveData<User> = user
+    fun getUser(): MutableLiveData<User> = user
 
     /**
      * Load the user from local persistence.
