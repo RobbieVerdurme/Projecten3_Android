@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import be.multinet.database.ApplicationDatabase
+import be.multinet.database.UserDao
+import be.multinet.repository.UserRepository
 import be.multinet.ui.activity.MainActivity
 import be.multinet.viewmodel.HomeViewModel
 import be.multinet.viewmodel.LoginViewModel
@@ -13,6 +16,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -36,27 +40,75 @@ class MultinetApp : MultiDexApplication() {
             modules(
                 module {
 
-                    //single database
+                    databaseModule()
 
                     //single api provider
 
-                    //user repository + challenges repository
+                    repositoryModule()
 
-                    viewModel {
-                        UserViewModel()
-                    }
-                    viewModel {
-                        HomeViewModel(get())
-                    }
-                    viewModel {
-                        LoginViewModel(get())
-                    }
-                    viewModel {
-                        ProfileViewModel(get())
-                    }
+                    viewModelModule()
 
                 }
             )
+        }
+    }
+
+    /**
+     * Setup the module for the viewmodels
+     */
+    private fun viewModelModule(): Module {
+        return module {
+            //Scoped ViewModels
+            scope(named<MainActivity>()){
+                viewModel {
+                    UserViewModel()
+                }
+                //TODO network viewmodel
+            }
+            //Unscoped ones
+            viewModel {
+                HomeViewModel(get())
+            }
+            viewModel {
+                LoginViewModel(get())
+            }
+            viewModel {
+                ProfileViewModel(get())
+            }
+        }
+    }
+
+    /**
+     * Setup the module for the database
+     */
+    private fun databaseModule(): Module {
+        return module {
+            single {
+                ApplicationDatabase.getInstance(applicationContext)
+            }
+            single {
+                get<ApplicationDatabase>().userDao()
+            }
+        }
+    }
+
+    /**
+     * Setup the module for the repositories
+     */
+    private fun repositoryModule(): Module {
+        return module {
+            factory {
+                UserRepository(get())
+            }
+        }
+    }
+
+    /**
+     * Setup the module for the api
+     */
+    private fun apiModule(): Module {
+        return module {
+            //TODO
         }
     }
 
