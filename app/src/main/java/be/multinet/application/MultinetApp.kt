@@ -37,19 +37,10 @@ class MultinetApp : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@MultinetApp)
-            modules(
-                module {
-
-                    databaseModule()
-
-                    //single api provider
-
-                    repositoryModule()
-
-                    viewModelModule()
-
-                }
-            )
+            modules(listOf(databaseModule(),
+                    //api module
+                    repositoryModule(),
+                    viewModelModule()))
         }
     }
 
@@ -58,14 +49,9 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun viewModelModule(): Module {
         return module {
-            //Scoped ViewModels
-            scope(named<MainActivity>()){
-                viewModel {
-                    UserViewModel()
-                }
-                //TODO network viewmodel
+            viewModel {
+                UserViewModel()
             }
-            //Unscoped ones
             viewModel {
                 HomeViewModel(get())
             }
@@ -75,6 +61,7 @@ class MultinetApp : MultiDexApplication() {
             viewModel {
                 ProfileViewModel(get())
             }
+            //TODO network VM
         }
     }
 
@@ -108,7 +95,7 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun apiModule(): Module {
         return module {
-            //TODO
+            //TODO single api provider
         }
     }
 
