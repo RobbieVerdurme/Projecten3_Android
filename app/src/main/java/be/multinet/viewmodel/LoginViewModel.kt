@@ -8,6 +8,10 @@ import androidx.lifecycle.Observer
 import be.multinet.R
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
+
+    /**
+     * [MutableLiveData] holds the users username input
+     */
     val username = MutableLiveData<String>("")
     val password = MutableLiveData<String>("")
     private val usernameError = MutableLiveData<String>(null)
@@ -18,8 +22,14 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val usernameObserver = Observer<String>{onUsernameChanged(it)}
     private val passwordObserver = Observer<String>{onPasswordChanged(it)}
 
-
+    /**
+     * Getter that returns [usernameError] as [LiveData]
+     */
     fun getUsernameError():LiveData<String> = usernameError
+
+    /**
+     * Getter that returns [passwordError] as [LiveData]
+     */
     fun getPasswordError():LiveData<String> = passwordError
 
     init{
