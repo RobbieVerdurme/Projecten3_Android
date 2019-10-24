@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
 import be.multinet.model.Company
+import be.multinet.model.Therapist
 import be.multinet.model.User
+import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UserViewModel
+import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,6 +27,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ProfileFragment : Fragment() {
 
     val viewModel: ProfileViewModel by viewModel()
+
+    /**
+     * the TherapistAdapter for this fragment
+     */
+    private lateinit var therapistAdapter: UserTherapistsAdapter
 
     /**
      * Set up the layout.
@@ -43,12 +53,16 @@ class ProfileFragment : Fragment() {
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
         return binding.root
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
         loadProfileViewModelData()
+        initRecyclerView()
+        addTherapists()
     }
 
     /**
@@ -65,5 +79,27 @@ class ProfileFragment : Fragment() {
     private fun loadProfileViewModelData(){
         val company = Company("1", "Patisserie Stefan")
         viewModel.setCompany(company)
+    }
+
+    private fun addTherapists(){
+        val therapists = mutableListOf<Therapist>(
+            Therapist(1, "eerste", "091234569", "mail@mail.mail"),
+            Therapist(1, "tweede", "091234569", "mail@mail.mail"),
+            Therapist(1, "derde", "091234569", "mail@mail.mail"),
+            Therapist(1, "vierde", "091234569", "mail@mail.mail"),
+            Therapist(1, "vijfde", "091234569", "mail@mail.mail")
+        )
+        therapistAdapter.submitList(therapists)
+    }
+
+    /**
+     * Setup recyclerView(s) for this fragment
+     */
+    private fun initRecyclerView(){
+        profileTherapistsList.apply {
+            layoutManager  = LinearLayoutManager(activity)
+            therapistAdapter = UserTherapistsAdapter()
+            adapter = therapistAdapter
+        }
     }
 }

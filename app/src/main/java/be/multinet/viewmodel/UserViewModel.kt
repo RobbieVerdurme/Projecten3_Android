@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import be.multinet.model.User
 import be.multinet.model.UserLoginState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * This [ViewModel] manages the application user throughout the app lifecycle.

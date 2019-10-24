@@ -17,9 +17,12 @@ import be.multinet.databinding.FragmentLoginBinding
 import be.multinet.databinding.FragmentLoginBindingImpl
 import be.multinet.model.User
 import be.multinet.viewmodel.LoginViewModel
+import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.fragment_login.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * The login [Fragment] that lets users enter the rest of the app.
@@ -27,22 +30,21 @@ import kotlinx.android.synthetic.main.fragment_login.*
 class LoginFragment : Fragment() {
 
     /**
-     * The [LoginViewModel] for this [Fragment]
+     * The [LoginViewModel] for this fragment.
      */
-    lateinit var viewModel: LoginViewModel
+    val viewModel: LoginViewModel by viewModel()
 
     /**
-     * The [UserViewModel] that monitors the current application user
+     * The [UserViewModel] for this fragment.
      */
-    private lateinit var userViewModel: UserViewModel
+    val userViewModel: UserViewModel by sharedViewModel()
+
 
     /**
      * Set up the layout.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentLoginBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
         binding.lifecycleOwner = this
         binding.loginViewModel = viewModel
         return binding.root

@@ -6,11 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import be.multinet.model.Company
 import be.multinet.model.User
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
  * This class is the [AndroidViewModel] for the profile screen.
  */
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
+
     /**
      * This [MutableLiveData] holds the user for this profile.
      */

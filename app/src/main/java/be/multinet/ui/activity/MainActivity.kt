@@ -2,6 +2,7 @@ package be.multinet.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
 
 /**
