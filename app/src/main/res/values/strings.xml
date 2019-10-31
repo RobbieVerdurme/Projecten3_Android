@@ -31,4 +31,16 @@
     <string name="challenges_title">Challenges</string>
     <!--Info-->
     <string name="info_title">Info</string>
+
+    <!--Network-->
+    <string name="dialog_enable_wireless_title">Enable the wifi</string>
+    <string name="dialog_enable_wireless_continue">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_enable_wireless_description">Enable the wifi in settings</string>
+    <string name="offline">Offline</string>
+    <string name="network_unavailable">Network unavailable</string>
+
+    <!--Retrofit Error-->
+    <string name="generic_error">There was een error</string>
+    <string name="login_invalid">Invalid login</string>
 </resources>

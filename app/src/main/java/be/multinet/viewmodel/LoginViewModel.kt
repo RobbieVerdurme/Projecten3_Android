@@ -1,10 +1,7 @@
 package be.multinet.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import be.multinet.R
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
@@ -58,11 +55,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         else{
             passwordError.value = null
         }
-    }
-
-    fun login(){
-        //TODO backend call + error catching
-
     }
 
     /**

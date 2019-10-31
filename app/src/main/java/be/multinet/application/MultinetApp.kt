@@ -1,23 +1,17 @@
 package be.multinet.application
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
-import be.multinet.database.UserDao
+import be.multinet.network.IApiProvider
+import be.multinet.network.MultimedService
 import be.multinet.repository.UserRepository
-import be.multinet.ui.activity.MainActivity
-import be.multinet.viewmodel.HomeViewModel
-import be.multinet.viewmodel.LoginViewModel
-import be.multinet.viewmodel.ProfileViewModel
-import be.multinet.viewmodel.UserViewModel
+import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -37,8 +31,10 @@ class MultinetApp : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@MultinetApp)
-            modules(listOf(databaseModule(),
+            modules(listOf(
+                    databaseModule(),
                     //api module
+                    apiModule(),
                     repositoryModule(),
                     viewModelModule()))
         }
@@ -50,7 +46,7 @@ class MultinetApp : MultiDexApplication() {
     private fun viewModelModule(): Module {
         return module {
             viewModel {
-                UserViewModel()
+                UserViewModel(get(), get(), get())
             }
             viewModel {
                 HomeViewModel(get())
@@ -61,7 +57,9 @@ class MultinetApp : MultiDexApplication() {
             viewModel {
                 ProfileViewModel(get())
             }
-            //TODO network VM
+            viewModel {
+                NetworkViewModel(get())
+            }
         }
     }
 
@@ -76,6 +74,15 @@ class MultinetApp : MultiDexApplication() {
             single {
                 get<ApplicationDatabase>().userDao()
             }
+            single {
+                get<ApplicationDatabase>().categoryDao()
+            }
+            single {
+                get<ApplicationDatabase>().therapistDao()
+            }
+            single {
+                get<ApplicationDatabase>().challengeDao()
+            }
         }
     }
 
@@ -85,7 +92,7 @@ class MultinetApp : MultiDexApplication() {
     private fun repositoryModule(): Module {
         return module {
             factory {
-                UserRepository(get())
+                UserRepository(get(), get(), get(),get())
             }
         }
     }
@@ -96,6 +103,9 @@ class MultinetApp : MultiDexApplication() {
     private fun apiModule(): Module {
         return module {
             //TODO single api provider
+            single<IApiProvider> {
+                MultimedService()
+            }
         }
     }
 

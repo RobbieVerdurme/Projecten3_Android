@@ -1,4 +1,4 @@
-package be.multinet.database
+package be.multinet.database.Persist
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,9 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class PersistentUser(
-    @PrimaryKey val userId: Int
+    @PrimaryKey val userId: Int,
+    val surname: String,
+    val familyName: String,
+    val mail: String,
+    val phone: String
 )

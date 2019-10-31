@@ -82,14 +82,11 @@ class ProfileFragment : Fragment() {
     }
 
     private fun addTherapists(){
-        val therapists = mutableListOf<Therapist>(
-            Therapist(1, "eerste", "091234569", "mail@mail.mail"),
-            Therapist(1, "tweede", "091234569", "mail@mail.mail"),
-            Therapist(1, "derde", "091234569", "mail@mail.mail"),
-            Therapist(1, "vierde", "091234569", "mail@mail.mail"),
-            Therapist(1, "vijfde", "091234569", "mail@mail.mail")
-        )
-        therapistAdapter.submitList(therapists)
+        val user = viewModel.getUserProfile().value
+        if(user!= null){
+            therapistAdapter.submitList(user.getTherapist())
+        }
+
     }
 
     /**

@@ -7,7 +7,8 @@ package be.multinet.model
  * @property familyName the user's family name
  * @property mail the user's e-mail address
  * @property phone the user's phone number
- * @property company the user's company where he/she works
+ * @property challenges the challenges of the user
+ * @property therapist the user's different therapists
  * @property category the user's different category types
  */
 class User (
@@ -16,7 +17,9 @@ class User (
     private val familyName: String,
     private val mail: String,
     private val phone: String,
-    private val category: List<String>
+    private val category: List<Category> = listOf<Category>(),
+    private val therapist: List<Therapist> = listOf<Therapist>(),
+    private val challenges: List<Challenge> = listOf<Challenge>()
 ){
     /**
      * @return the id of the user
@@ -44,7 +47,17 @@ class User (
     fun getPhone(): String = phone
 
     /**
+     * @return the different challenges of the user
+     */
+    fun getChallenges(): List<Challenge> = challenges
+
+    /**
+     * @return the different therapists of the user
+     */
+    fun getTherapist(): List<Therapist> = therapist
+
+    /**
      * @return the different categories of the user
      */
-    fun getCategory(): List<String> = category
+    fun getCategory(): List<Category> = category
 }

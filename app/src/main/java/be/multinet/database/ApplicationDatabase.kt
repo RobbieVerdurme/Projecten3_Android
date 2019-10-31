@@ -4,6 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import be.multinet.database.Dao.CategoryDao
+import be.multinet.database.Dao.ChallengeDao
+import be.multinet.database.Dao.TherapistDao
+import be.multinet.database.Dao.UserDao
+import be.multinet.database.Persist.PersistentCategory
+import be.multinet.database.Persist.PersistentChallenge
+import be.multinet.database.Persist.PersistentTherapist
+import be.multinet.database.Persist.PersistentUser
 
 /**
  * This class represents the local [application Database][RoomDatabase]
@@ -11,7 +19,7 @@ import androidx.room.RoomDatabase
  * It has a version number, which MUST be incremented after every schema change.
  * It does not export its schema, as this is not required anyway.
  */
-@Database(entities = [PersistentUser::class],version = 1,exportSchema = false)
+@Database(entities = [PersistentUser::class, PersistentCategory::class, PersistentChallenge::class, PersistentTherapist::class],version = 3,exportSchema = false)
 abstract class ApplicationDatabase : RoomDatabase() {
 
     /**
@@ -58,4 +66,22 @@ abstract class ApplicationDatabase : RoomDatabase() {
      * @return the [UserDao] of the database [instance]
      */
     abstract fun userDao(): UserDao
+
+    /**
+     * Get the [CategoryDao]
+     * @return the [CategoryDao] of the database [instance]
+     */
+    abstract fun categoryDao(): CategoryDao
+
+    /**
+     * Get the [TherapistDao]
+     * @return the [TherapistDao] of the database [instance]
+     */
+    abstract fun therapistDao(): TherapistDao
+
+    /**
+     * Get the [ChallengeDao]
+     * @return the [ChallengeDao] of the database [instance]
+     */
+    abstract fun challengeDao(): ChallengeDao
 }

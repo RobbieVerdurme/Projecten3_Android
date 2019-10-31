@@ -1,6 +1,7 @@
-package be.multinet.database
+package be.multinet.database.Dao
 
 import androidx.room.*
+import be.multinet.database.Persist.PersistentUser
 
 /**
  * This interface defines a contract to manipulate [PersistentUser]s in the [ApplicationDatabase].

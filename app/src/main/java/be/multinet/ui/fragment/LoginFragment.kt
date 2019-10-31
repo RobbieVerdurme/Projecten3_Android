@@ -1,12 +1,17 @@
 package be.multinet.ui.fragment
 
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.os.Debug
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -15,8 +20,13 @@ import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.databinding.FragmentLoginBinding
 import be.multinet.databinding.FragmentLoginBindingImpl
+import be.multinet.model.Category
+import be.multinet.model.Challenge
+import be.multinet.model.Therapist
 import be.multinet.model.User
+import be.multinet.network.ConnectionState
 import be.multinet.viewmodel.LoginViewModel
+import be.multinet.viewmodel.NetworkViewModel
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.textfield.TextInputLayout
@@ -38,6 +48,11 @@ class LoginFragment : Fragment() {
      * The [UserViewModel] for this fragment.
      */
     val userViewModel: UserViewModel by sharedViewModel()
+
+    /**
+     * The [NetworkViewModel] for this fragment.
+     */
+    val networkViewModel: NetworkViewModel by sharedViewModel()
 
 
     /**
@@ -92,11 +107,28 @@ class LoginFragment : Fragment() {
      */
     private fun onLoginClick(){
         // Make the login validation check
+        //First check if we have a connection
+        when(networkViewModel.getCurrentNetworkState())
+        {
+            ConnectionState.CONNECTED -> {
+                userViewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
+            }
+            ConnectionState.DISCONNECTED -> {
+                //request wifi enable
+                TaskerDialogBuilder.buildDialog(context!!,networkViewModel.enableWifiDialogTitle,
+                    networkViewModel.enableWifiDialogDescription, DialogInterface.OnClickListener { _, _ ->
+                        startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
+                    },networkViewModel.enableWifiDialogContinue,DialogInterface.OnClickListener { _, _ ->
+                        //do nothing, the user doesn't want to enable wifi
+                        //we will prompt again next time, until the user finally enables it
+                    },networkViewModel.enableWifiDialogCancel).show()
+            }
+            ConnectionState.UNAVAILABLE -> {
+                //do nothing, we can't fix the network :/
+            }
+        }
 
-        //Without backend, going to the home page after login
-        val category = listOf("one", "two", "three", "four")
-        val mockUser = User("1", "Ruben", "Grillaert","ruben.grillaert.y1033@student.hogent.be","+32474139526", category)
-        userViewModel.saveUserToLocalDatabase(mockUser)
+
     }
 
 }
