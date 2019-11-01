@@ -3,4 +3,5 @@
     <dimen name="screen_margin">16dp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="login_form">250dp</dimen>
+    <dimen name="challenge_card_padding">60dp</dimen>
 </resources>
