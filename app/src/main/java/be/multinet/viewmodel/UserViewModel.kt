@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.multinet.R
+import be.multinet.model.Category
 import be.multinet.model.User
 import be.multinet.model.UserLoginState
 import be.multinet.network.IApiProvider
@@ -144,6 +145,9 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      *
      */
     fun login(username: String, password: String) {
+
+        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889", listOf<Category>()))
+        /*
         viewModelScope.launch {
             requestError.value = ""
             if(!isBusy.value!!){
@@ -161,7 +165,6 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                     {
                         400 -> {
                             requestError.value = invalidLoginMessage
-                            println("......................;${response.errorBody()!!.string()}")
                         }
                         200 -> {
                             val jwt:JWT = response.body()!!
@@ -179,7 +182,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 }
                 isBusy.value = false
             }
-        }
+        }    */
     }
 
     /**

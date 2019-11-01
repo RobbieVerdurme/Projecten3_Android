@@ -39,7 +39,10 @@ class MultimedService : IApiProvider {
     init {
         server = createServer()
     }
-    //ignore the certificate from the server
+
+    /**
+     * get okHttpClient that ignores the certificate
+     */
     fun getUnsafeOkHttpClient(): OkHttpClient{
         try{
             //create trust manager that does nog validate certificate chains
