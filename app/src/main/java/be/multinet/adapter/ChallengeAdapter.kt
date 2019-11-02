@@ -18,7 +18,6 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
 
     fun addCardItems(item: List<Challenge>){
         items.addAll(item)
-        //mView.add(CardView())
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
