@@ -8,13 +8,10 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
 import be.multinet.R
 import be.multinet.databinding.FragmentCompleteChallengeBinding
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import kotlinx.android.synthetic.main.fragment_complete_challenge.*
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CompleteChallengeFragment : Fragment() {
