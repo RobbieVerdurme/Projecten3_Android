@@ -1,5 +1,6 @@
 package be.multinet.recyclerview
 
+import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import be.multinet.viewmodel.InfoViewModel
 
 
 
-class InfoAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class InfoAdapter(private val context: Context, private val viewmodel: InfoViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<InfoCategory> = ArrayList()
 
@@ -30,7 +31,7 @@ class InfoAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is InfoViewHolder -> {
-                holder.binding.infoViewModel = InfoViewModel()
+                holder.binding.infoViewModel = viewmodel
                 holder.binding.subCategoryItemTitle.setOnClickListener {
                     holder.binding.infoViewModel?.onClickTitle()
                 }

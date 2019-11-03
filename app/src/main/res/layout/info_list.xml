@@ -23,7 +23,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:visibility="@{infoViewModel.vis? View.VISIBLE: View.VISIBLE}"
+        android:visibility="@{infoViewModel.visability? View.VISIBLE: View.VISIBLE}"
         android:id="@+id/subCategoryItemList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
