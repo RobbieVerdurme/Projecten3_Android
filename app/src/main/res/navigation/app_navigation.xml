@@ -14,7 +14,11 @@
         android:id="@+id/challengesFragment"
         android:name="be.multinet.ui.fragment.ChallengesFragment"
         android:label="fragment_challenges"
-        tools:layout="@layout/fragment_challenges" />
+        tools:layout="@layout/fragment_challenges" >
+        <action
+            android:id="@+id/action_challengesFragment_to_CompleteChallengeFragment"
+            app:destination="@id/CompleteChallengeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/infoFragment"
         android:name="be.multinet.ui.fragment.InfoFragment"
@@ -25,4 +29,14 @@
         android:name="be.multinet.ui.fragment.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/CompleteChallengeFragment"
+        android:name="be.multinet.ui.fragment.CompleteChallengeFragment"
+        android:label="CompleteChallengeFragment"
+        tools:layout="@layout/fragment_complete_challenge">
+        <action
+            android:id="@+id/action_CompleteChallengeFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

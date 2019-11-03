@@ -40,11 +40,11 @@ android:layout_height="wrap_content">
         android:layout_marginTop="24dp"/>
 
     <Button
-        android:id="@+id/challengeCompleet"
+        android:id="@+id/challengeComplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Complete challenge"
+        android:text="@string/complete_challenge"
         app:backgroundTint="@color/colorPrimary" />
 </LinearLayout>
 </FrameLayout>

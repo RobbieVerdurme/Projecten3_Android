@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.Utility.ShadowTransformer
 import be.multinet.adapter.ChallengeAdapter
 import be.multinet.databinding.FragmentChallengesBinding
 import be.multinet.model.Challenge
+import be.multinet.recyclerview.CompleteChallengeClickListener
 import be.multinet.viewmodel.ChallengeViewModel
+import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_challenges.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
@@ -21,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /**
  * This [Fragment] represents the challenges page.
  */
-class ChallengesFragment : Fragment() {
+class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
     /**
      * Viewmodel of this fragment
      */
@@ -54,7 +57,7 @@ class ChallengesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
         loadChallengeViewModelData()
-        challengeAdapter = ChallengeAdapter()
+        challengeAdapter = ChallengeAdapter(this)
         addChallenges()
         initViewPager()
     }
@@ -103,5 +106,16 @@ class ChallengesFragment : Fragment() {
             setPageTransformer(false, mCardShadowTransformer )
             mCardShadowTransformer.enableScaling(true)
         }
+    }
+
+    /**
+     * redirect to complete challenge fragment
+     */
+    override fun onItemClicked(item: Challenge) {
+        val completeChallengeViewModel: CompleteChallengeViewModel = getSharedViewModel()
+        val navController = findNavController()
+
+        completeChallengeViewModel.setChallenge(item)
+        navController.navigate(R.id.action_challengesFragment_to_CompleteChallengeFragment)
     }
 }

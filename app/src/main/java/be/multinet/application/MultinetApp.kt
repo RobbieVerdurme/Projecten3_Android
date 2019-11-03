@@ -62,6 +62,9 @@ class MultinetApp : MultiDexApplication() {
             viewModel {
                 ChallengeViewModel(get())
             }
+            viewModel {
+                CompleteChallengeViewModel(get())
+            }
         }
     }
 

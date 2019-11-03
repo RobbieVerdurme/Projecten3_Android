@@ -3,14 +3,16 @@ package be.multinet.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.PagerAdapter
 import be.multinet.R
 import be.multinet.model.Challenge
+import be.multinet.recyclerview.CompleteChallengeClickListener
 
-class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
+class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener) : PagerAdapter(), IChallengeAdapter {
     val MAX_ELEVATION_FACTOR = 8
     private var items: ArrayList<Challenge> = ArrayList()
     private var mView: ArrayList<CardView> = ArrayList()
@@ -52,7 +54,6 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
         }else{
             view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_current, container, false)
         }
-
         container.addView(view)
         bind(item, view)
         val cardView: CardView = view.findViewById(R.id.cardView)
@@ -70,10 +71,15 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
         val img: ImageView = view.findViewById(R.id.challengeImage)
         val title: TextView = view.findViewById(R.id.challengeTitle)
         val description: TextView = view.findViewById(R.id.challengeDescription)
+        val complete: Button?= view.findViewById(R.id.challengeComplete)
 
         //set text on textview
         img.setImageResource(R.drawable.ic_multimed_background)
         title.setText(challenge.getTitle())
         description.setText(challenge.getDescription())
+        //complete onclick?
+        complete?.setOnClickListener {
+            clickListener.onItemClicked(challenge)
+        }
     }
 }
