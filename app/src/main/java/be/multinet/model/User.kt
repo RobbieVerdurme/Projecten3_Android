@@ -13,13 +13,13 @@ package be.multinet.model
  */
 class User (
     private val userId: String,
-    private val surname: String,
-    private val familyName: String,
-    private val mail: String,
-    private val phone: String,
-    private val category: List<Category> = listOf<Category>(),
-    private val therapist: List<Therapist> = listOf<Therapist>(),
-    private val challenges: List<Challenge> = listOf<Challenge>()
+    private var surname: String,
+    private var familyName: String,
+    private var mail: String,
+    private var phone: String,
+    private var category: List<Category> = listOf<Category>(),
+    private var therapist: List<Therapist> = listOf<Therapist>(),
+    private var challenges: List<Challenge> = listOf<Challenge>()
 ){
     /**
      * @return the id of the user
@@ -60,4 +60,54 @@ class User (
      * @return the different categories of the user
      */
     fun getCategory(): List<Category> = category
+
+    //setters
+    /**
+     * @return the surname of the user
+     */
+    fun setSurname(firstname: String){
+        surname = firstname
+    }
+
+    /**
+     * @return the family name of the user
+     */
+    fun setFamilyName(familyname: String){
+        familyName = familyname
+    }
+
+    /**
+     * @return the e-mail address of the user
+     */
+    fun setMail(email: String){
+        mail = email
+    }
+
+    /**
+     * @return the phone number of the user
+     */
+    fun setPhone(phoneNumber:String){
+        phone = phoneNumber
+    }
+
+    /**
+     * @return the different challenges of the user
+     */
+    fun setChallenges(challengeList : List<Challenge>){
+        challenges = challengeList
+    }
+
+    /**
+     * @return the different therapists of the user
+     */
+    fun setTherapist(therapistList: List<Therapist>){
+        therapist = therapistList
+    }
+
+    /**
+     * @return the different categories of the user
+     */
+    fun setCategory(categoryList: List<Category>){
+        category = categoryList
+    }
 }

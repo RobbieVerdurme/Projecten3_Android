@@ -2,6 +2,7 @@ package be.multinet.network
 
 import be.multinet.model.Challenge
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
 import retrofit2.Response
@@ -27,5 +28,5 @@ interface IApiProvider {
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON and then used for creating an [ErrorResponse]
      * @return a [Response] with [Challenge] as data
      */
-    suspend fun getChallengesUser(userid: Int) : Response<List<Challenge>>
+    suspend fun getChallengesUser(userid: Int) : Response<List<UserChallengeResponse>>
 }

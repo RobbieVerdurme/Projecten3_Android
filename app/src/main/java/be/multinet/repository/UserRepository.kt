@@ -85,7 +85,7 @@ class UserRepository(
 
             if(!challenges.isEmpty()){
                 for(challenge in challenges){
-                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description))
+                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description, challenge!!.completed))
                 }
             }
 
@@ -134,7 +134,8 @@ class UserRepository(
                     challenge.getChallengeId().toInt(),
                     challenge.getImage(),
                     challenge.getTitle(),
-                    challenge.getDescription()
+                    challenge.getDescription(),
+                    challenge.isCompleted()
                 )
             )
         }

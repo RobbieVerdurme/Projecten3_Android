@@ -11,15 +11,12 @@ import be.multinet.model.Challenge
 import be.multinet.model.User
 import be.multinet.model.UserLoginState
 import be.multinet.network.IApiProvider
-import be.multinet.network.IMultimedApi
-import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.UserRepository
-import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Response
 
 /**
@@ -246,18 +243,22 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 val apiResult = async(Dispatchers.IO){
                     multimedService.getChallengesUser(userid)
                 }
-                val response : Response<List<Challenge>>? = apiResult.await()
+                val response : Response<List<UserChallengeResponse>>? = apiResult.await()
                 if(response == null){
                     requestError.value = genericErrorMessage
                 }else{
                     when(response.code()){
                         400 -> {
-                            requestError.value = ""
+                            requestError.value = genericErrorMessage
                         }
                         200 -> {
                             val body = response.body()!!
+                            val challenges: ArrayList<Challenge> = ArrayList()
+                            for(i in body){
+                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate != null))
+                            }
                             //set the challenges to the user
-                            //user.value.setChallenges(body)
+                            user.value!!.setChallenges(challenges)
                         }
                         else -> {
                             requestError.value = genericErrorMessage

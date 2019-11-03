@@ -9,7 +9,8 @@ class Challenge(
     private val challengeId: String,
     private val image : String,
     private val title: String,
-    private val description:String
+    private val description:String,
+    private var completed:Boolean
 ) {
     /**
      * @return the id of the challenge
@@ -30,4 +31,16 @@ class Challenge(
      * @return the description of the challenge
      */
     fun getDescription(): String = description
+
+    /**
+     * @return true if the challenge is completed
+     */
+    fun isCompleted(): Boolean = completed
+
+    /**
+     * set the challenge on completed
+     */
+    fun setCompleted(iscompleted:Boolean){
+        completed = iscompleted
+    }
 }

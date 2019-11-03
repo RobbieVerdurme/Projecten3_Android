@@ -22,5 +22,4 @@ class ChallengeViewModel(application: Application): AndroidViewModel(application
     fun setChallenges(challengeslist: List<Challenge>){
         challenges.value = challengeslist
     }
-
 }

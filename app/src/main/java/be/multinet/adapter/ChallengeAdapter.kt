@@ -45,15 +45,16 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view: View
+        val item = items[position]
 
-        if(position == 0){
-            view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_current, container, false)
-        }else{
+        if(item.isCompleted()){
             view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_completed, container, false)
+        }else{
+            view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_current, container, false)
         }
 
         container.addView(view)
-        bind(items[position], view)
+        bind(item, view)
         val cardView: CardView = view.findViewById(R.id.cardView)
         if(mBaseElevation == 0f){
             mBaseElevation = cardView.cardElevation
