@@ -44,7 +44,14 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = LayoutInflater.from(container.context).inflate(R.layout.challenge_adapter, container, false)
+        val view: View
+
+        if(position == 0){
+            view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_current, container, false)
+        }else{
+            view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_completed, container, false)
+        }
+
         container.addView(view)
         bind(items[position], view)
         val cardView: CardView = view.findViewById(R.id.cardView)
@@ -59,11 +66,12 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
 
     private fun bind(challenge: Challenge, view: View){
         //ophalen van texviews
-        //val img: ImageView = view.findViewById(R.id.challengeImage)
+        val img: ImageView = view.findViewById(R.id.challengeImage)
         val title: TextView = view.findViewById(R.id.challengeTitle)
         val description: TextView = view.findViewById(R.id.challengeDescription)
 
         //set text on textview
+        img.setImageResource(R.drawable.ic_multimed_background)
         title.setText(challenge.getTitle())
         description.setText(challenge.getDescription())
     }
