@@ -3,6 +3,7 @@ package be.multinet.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.PagerAdapter
@@ -18,7 +19,6 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
 
     fun addCardItems(item: List<Challenge>){
         items.addAll(item)
-        //mView.add(CardView())
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -34,7 +34,7 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
     }
 
     override fun getCardViewAt(position: Int): CardView {
-        return mView.get(position)
+        return mView[position]
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
@@ -46,7 +46,7 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(container.context).inflate(R.layout.challenge_adapter, container, false)
         container.addView(view)
-        bind(items.get(position), view)
+        bind(items[position], view)
         val cardView: CardView = view.findViewById(R.id.cardView)
         if(mBaseElevation == 0f){
             mBaseElevation = cardView.cardElevation
