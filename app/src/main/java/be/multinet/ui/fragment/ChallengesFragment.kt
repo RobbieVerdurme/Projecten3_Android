@@ -12,7 +12,10 @@ import be.multinet.adapter.ChallengeAdapter
 import be.multinet.databinding.FragmentChallengesBinding
 import be.multinet.model.Challenge
 import be.multinet.viewmodel.ChallengeViewModel
+import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_challenges.*
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -33,6 +36,11 @@ class ChallengesFragment : Fragment() {
      * The shadow transformer for the cards
      */
     private lateinit var mCardShadowTransformer: ShadowTransformer
+
+    /**
+     * userviewmodel to ask for the user his challenges
+     */
+    val userViewModel: UserViewModel by sharedViewModel()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,11 +63,12 @@ class ChallengesFragment : Fragment() {
      * Load data into [ChallengeViewModel]
      */
     private fun loadChallengeViewModelData() {
-        val challenges = listOf<Challenge>(
-            Challenge("1","testItem1"),
-            Challenge("2","testItem2"),
-            Challenge("3","testItem3"),
-            Challenge("4","testItem4")
+        val challenges = //userViewModel.getChallenges()
+            listOf<Challenge>(
+            Challenge("1","", "Lopen","Loop vandaag 5 km"),
+            Challenge("2","","Rustdag","Rust vandaag lekker even uit"),
+            Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje"),
+            Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga")
         )
         viewmodel.setChallenges(challenges)
     }

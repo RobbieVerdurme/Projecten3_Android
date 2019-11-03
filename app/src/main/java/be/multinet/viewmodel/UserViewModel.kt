@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.multinet.R
 import be.multinet.model.Category
+import be.multinet.model.Challenge
 import be.multinet.model.User
 import be.multinet.model.UserLoginState
 import be.multinet.network.IApiProvider
@@ -226,8 +227,46 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     /**
      * get challenges from the user
      */
-    fun getChallenges(){
+    fun getChallenges(): List<Challenge>{
         //TODO backend call for the challenges of the user
+        if (user.value != null){
+            if(user.value!!.getChallenges().isEmpty()){
+                getChallengesUser(user.value!!.getUserId().toInt())
+            }
+            return user.value!!.getChallenges()
+        }
+        return listOf<Challenge>()
+    }
+
+    private fun getChallengesUser(userid: Int){
+        viewModelScope.launch {
+            requestError.value = ""
+            if(!isBusy.value!!){
+                isBusy.value = true
+                val apiResult = async(Dispatchers.IO){
+                    multimedService.getChallengesUser(userid)
+                }
+                val response : Response<List<Challenge>>? = apiResult.await()
+                if(response == null){
+                    requestError.value = genericErrorMessage
+                }else{
+                    when(response.code()){
+                        400 -> {
+                            requestError.value = ""
+                        }
+                        200 -> {
+                            val body = response.body()!!
+                            //set the challenges to the user
+                            //user.value.setChallenges(body)
+                        }
+                        else -> {
+                            requestError.value = genericErrorMessage
+                        }
+                    }
+                }
+                isBusy.value = false
+            }
+        }
     }
 
     /**

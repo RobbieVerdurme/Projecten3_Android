@@ -10,6 +10,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class PersistentChallenge(
     @PrimaryKey val challengeId: Int,
-    val name: String
+    val image : String,
+    val title: String,
+    val description:String
 ) {
 }

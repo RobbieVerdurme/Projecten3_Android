@@ -2,6 +2,7 @@ package be.multinet.network
 
 import android.content.Context
 import be.multinet.R
+import be.multinet.model.Challenge
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -110,4 +111,10 @@ class MultimedService : IApiProvider {
         return server.getUser(userid)
     }
 
+    /**
+     * asks for the challenges of a user with id
+     */
+    override suspend fun getChallengesUser(userid: Int): Response<List<Challenge>> {
+        return server.getChallengesUser(userid)
+    }
 }

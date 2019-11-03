@@ -1,5 +1,6 @@
 package be.multinet.network
 
+import be.multinet.model.Challenge
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -26,4 +27,10 @@ interface IMultimedApi {
      */
     @GET("User/{id}")
     suspend fun getUser(@Path("id") userid: Int) : Response<UserDataResponse>
+
+    /**
+     * get the list of challenges from the user
+     */
+    @GET("Challenge/user/{id}")
+    suspend fun getChallengesUser(@Path("id") userid: Int) : Response<List<Challenge>>
 }

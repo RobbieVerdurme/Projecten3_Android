@@ -85,7 +85,7 @@ class UserRepository(
 
             if(!challenges.isEmpty()){
                 for(challenge in challenges){
-                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.name))
+                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description))
                 }
             }
 
@@ -132,7 +132,9 @@ class UserRepository(
             challengeDao.insertChallenge(
                 PersistentChallenge(
                     challenge.getChallengeId().toInt(),
-                    challenge.getName()
+                    challenge.getImage(),
+                    challenge.getTitle(),
+                    challenge.getDescription()
                 )
             )
         }

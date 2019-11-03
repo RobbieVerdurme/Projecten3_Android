@@ -3,7 +3,7 @@ package be.multinet.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.PagerAdapter
@@ -59,9 +59,12 @@ class ChallengeAdapter : PagerAdapter(), IChallengeAdapter {
 
     private fun bind(challenge: Challenge, view: View){
         //ophalen van texviews
-        val name: TextView = view.findViewById(R.id.titleTextView)
+        //val img: ImageView = view.findViewById(R.id.challengeImage)
+        val title: TextView = view.findViewById(R.id.challengeTitle)
+        val description: TextView = view.findViewById(R.id.challengeDescription)
 
         //set text on textview
-        name.setText(challenge.getName())
+        title.setText(challenge.getTitle())
+        description.setText(challenge.getDescription())
     }
 }

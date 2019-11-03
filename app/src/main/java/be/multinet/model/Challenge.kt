@@ -7,7 +7,9 @@ package be.multinet.model
  */
 class Challenge(
     private val challengeId: String,
-    private val name: String
+    private val image : String,
+    private val title: String,
+    private val description:String
 ) {
     /**
      * @return the id of the challenge
@@ -15,7 +17,17 @@ class Challenge(
     fun getChallengeId(): String = challengeId
 
     /**
-     * @return the name of the challenge
+     * @return the image of the challenge
      */
-    fun getName(): String = name
+    fun getImage(): String = image
+
+    /**
+     * @return the title of the challenge
+     */
+    fun getTitle(): String = title
+
+    /**
+     * @return the description of the challenge
+     */
+    fun getDescription(): String = description
 }
