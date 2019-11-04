@@ -1,5 +1,6 @@
 package be.multinet.network
 
+import be.multinet.model.Therapist
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
@@ -108,5 +109,20 @@ class MultimedService : IApiProvider {
      */
     override suspend fun getChallengesUser(userid: Int): Response<List<UserChallengeResponse>> {
         return server.getChallengesUser(userid)
+    }
+
+    /**
+     * set the challenge to completed
+     *
+    override suspend fun completeChallenge(userid: Int, challengeId: Int): Response<>{
+        return server
+    }
+    */
+
+    /**
+     * ask for the therapists of the user with id
+     */
+    override suspend fun getTherapists(userid: Int): Response<List<Therapist>> {
+        return server.getTherapists(userid)
     }
 }

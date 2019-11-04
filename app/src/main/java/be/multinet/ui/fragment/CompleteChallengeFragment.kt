@@ -11,7 +11,9 @@ import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.databinding.FragmentCompleteChallengeBinding
 import be.multinet.viewmodel.CompleteChallengeViewModel
+import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_complete_challenge.*
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CompleteChallengeFragment : Fragment() {
@@ -72,8 +74,9 @@ class CompleteChallengeFragment : Fragment() {
         btnSubmit.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 val navController = findNavController()
-                viewmodel.completeChallenge()
-                navController.navigate(R.id.action_CompleteChallengeFragment_to_homeFragment)
+                val userViewModel: UserViewModel = getSharedViewModel()
+                userViewModel.completeChalenge(viewmodel.getChallenge())
+                navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesFragment)
             }
         })
     }

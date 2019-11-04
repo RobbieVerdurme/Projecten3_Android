@@ -93,6 +93,7 @@ class UserRepository(
         }
     }
 
+    //region insertfunctions
     suspend fun insertCategories(categories : List<Category>){
         /**
          * insert categories
@@ -140,6 +141,20 @@ class UserRepository(
             )
         }
     }
+    //endregion
+    //region update value in database
+    suspend fun completeChallenge(challenge: Challenge){
+        challengeDao.completeChallenge(
+            PersistentChallenge(
+                challenge.getChallengeId().toInt(),
+                challenge.getTitle(),
+                challenge.getImage(),
+                challenge.getDescription(),
+                challenge.isCompleted()
+            )
+        )
+    }
+    //endregion
 
     override suspend fun logoutUser() {
         userDao.deleteUser()

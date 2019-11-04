@@ -19,7 +19,12 @@ class User (
     private var phone: String,
     private var category: List<Category> = listOf<Category>(),
     private var therapist: List<Therapist> = listOf<Therapist>(),
-    private var challenges: List<Challenge> = listOf<Challenge>()
+    private var challenges: List<Challenge> = listOf<Challenge>(
+        Challenge("1","", "Lopen","Loop vandaag 5 km", false),
+        Challenge("2","","Rustdag","Rust vandaag lekker even uit", false),
+        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje", true),
+        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", true)
+    )
 ){
     /**
      * @return the id of the user

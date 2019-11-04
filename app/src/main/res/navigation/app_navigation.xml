@@ -36,7 +36,7 @@
         android:label="CompleteChallengeFragment"
         tools:layout="@layout/fragment_complete_challenge">
         <action
-            android:id="@+id/action_CompleteChallengeFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            android:id="@+id/action_CompleteChallengeFragment_to_challengesFragment"
+            app:destination="@id/challengesFragment" />
     </fragment>
 </navigation>

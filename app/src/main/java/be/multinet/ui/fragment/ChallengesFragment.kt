@@ -66,13 +66,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * Load data into [ChallengeViewModel]
      */
     private fun loadChallengeViewModelData() {
-        val challenges = //userViewModel.getChallenges()
-            listOf<Challenge>(
-            Challenge("1","", "Lopen","Loop vandaag 5 km", false),
-            Challenge("2","","Rustdag","Rust vandaag lekker even uit", false),
-            Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje", true),
-            Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", true)
-        )
+        val challenges = userViewModel.getChallenges()
         viewmodel.setChallenges(challenges)
     }
 

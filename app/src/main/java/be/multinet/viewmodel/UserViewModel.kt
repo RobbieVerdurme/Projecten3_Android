@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.multinet.R
-import be.multinet.model.Category
-import be.multinet.model.Challenge
-import be.multinet.model.User
-import be.multinet.model.UserLoginState
+import be.multinet.model.*
 import be.multinet.network.IApiProvider
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
@@ -140,7 +137,6 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     //region retrofit functions
     /**
      * Login a user
-     *
      */
     fun login(username: String, password: String) {
 
@@ -184,7 +180,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     }
 
     /**
-     * get the information of the user
+     * backend call to get the information of the user
      */
     private fun getUser(userid: Int){
         viewModelScope.launch {
@@ -225,7 +221,6 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * get challenges from the user
      */
     fun getChallenges(): List<Challenge>{
-        //TODO backend call for the challenges of the user
         if (user.value != null){
             if(user.value!!.getChallenges().isEmpty()){
                 getChallengesUser(user.value!!.getUserId().toInt())
@@ -235,6 +230,9 @@ class UserViewModel constructor(private val repository: UserRepository, private 
         return listOf<Challenge>()
     }
 
+    /**
+     * backend call to get the challenges from the users
+     */
     private fun getChallengesUser(userid: Int){
         viewModelScope.launch {
             requestError.value = ""
@@ -257,6 +255,9 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             for(i in body){
                                 challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate != null))
                             }
+                            //save to localdb
+                            repository.insertChallenges(challenges)
+
                             //set the challenges to the user
                             user.value!!.setChallenges(challenges)
                         }
@@ -273,8 +274,100 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     /**
      * get therapists from the user
      */
-    fun getTherapists(){
+    fun getTherapists(): List<Therapist> {
         //TODO backend call for the therapists of the user
+        if(user.value != null){
+            if(user.value!!.getTherapist().isEmpty()){
+                getTherapistUser(user.value!!.getUserId().toInt())
+            }
+            return user.value!!.getTherapist()
+        }
+        return listOf<Therapist>()
     }
+
+    /**
+     * backend call to get the therapists from the user
+     */
+    private fun getTherapistUser(userid: Int){
+        viewModelScope.launch {
+            requestError.value = ""
+            if(!isBusy.value!!){
+                isBusy.value = true
+                val apiResult = async(Dispatchers.IO){
+                    multimedService.getTherapists(userid)
+                }
+                val response: Response<List<Therapist>>? = apiResult.await()
+                if(response == null){
+                    requestError.value = genericErrorMessage
+                }else{
+                    when(response.code()){
+                        400 -> {
+                            requestError.value = genericErrorMessage
+                        }
+                        200 -> {
+                            val body = response.body()!!
+
+                            //save the therapists to local room db
+                            repository.inserttherapists(body)
+
+                            //assign the therapists to the user
+                            user.value!!.setTherapist(body)
+                        }
+                        else -> {
+                            requestError.value = genericErrorMessage
+                        }
+                    }
+                }
+                isBusy.value = false
+            }
+        }
+    }
+
+    /**
+     * check if the challenge is a challenge from the user
+     * do the backend call for complete challenge
+     */
+    fun completeChalenge(completedChallenge: Challenge){
+        if(user.value != null){
+            val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
+            if(challengeIndex != 0){
+                //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)
+                user.value!!.getChallenges()[challengeIndex].setCompleted(true)
+            }
+        }
+    }
+
+    /**
+     * backend call to complete a challenge + change to room db
+     *
+    private fun completeChallengeUser(userid: Int, challenge: Challenge){
+        viewModelScope.launch {
+            requestError.value = ""
+            if(!isBusy.value!!){
+                isBusy.value = true
+                val apiResult = async(Dispatchers.IO){
+                    multimedService.completeChallenge(userid, challenge.getChallengeId().toInt())
+                }
+                val response: Response<>? = apiResult.await()
+                if(response == null){
+                    requestError.value = genericErrorMessage
+                }else{
+                        when(response.code()){
+                            400 -> {
+                                requestError.value = genericErrorMessage
+                            }
+                            200 -> {
+                                repository.completeChallenge(challenge)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                            }
+                        }
+                    }
+                isBusy.value = false
+            }
+        }
+    }
+    */
     //endregion
 }

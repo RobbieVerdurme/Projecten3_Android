@@ -1,9 +1,6 @@
 package be.multinet.database.Dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import be.multinet.database.Persist.PersistentCategory
 import be.multinet.database.Persist.PersistentChallenge
 
@@ -32,4 +29,10 @@ interface ChallengeDao {
      */
     @Query("DELETE FROM PersistentChallenge")
     suspend fun deleteChallenges()
+
+    /**
+     * update the challenge
+     */
+    @Update
+    suspend fun completeChallenge(challenge:PersistentChallenge)
 }
