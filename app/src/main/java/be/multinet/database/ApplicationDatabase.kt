@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import be.multinet.database.Dao.CategoryDao
 import be.multinet.database.Dao.ChallengeDao
 import be.multinet.database.Dao.TherapistDao
@@ -19,7 +20,8 @@ import be.multinet.database.Persist.PersistentUser
  * It has a version number, which MUST be incremented after every schema change.
  * It does not export its schema, as this is not required anyway.
  */
-@Database(entities = [PersistentUser::class, PersistentCategory::class, PersistentChallenge::class, PersistentTherapist::class],version = 5,exportSchema = false)
+@Database(entities = [PersistentUser::class, PersistentCategory::class, PersistentChallenge::class, PersistentTherapist::class],version = 6,exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class ApplicationDatabase : RoomDatabase() {
 
     /**

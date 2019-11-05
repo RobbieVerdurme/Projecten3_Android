@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * This [ViewModel] manages the application user throughout the app lifecycle.
@@ -253,7 +255,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             val body = response.body()!!
                             val challenges: ArrayList<Challenge> = ArrayList()
                             for(i in body){
-                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate != null))
+                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate))
                             }
                             //save to localdb
                             repository.insertChallenges(challenges)
@@ -330,9 +332,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     fun completeChalenge(completedChallenge: Challenge){
         if(user.value != null){
             val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
-            if(challengeIndex != 0){
+            if(challengeIndex != -1){
                 //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)
-                user.value!!.getChallenges()[challengeIndex].setCompleted(true)
+                val date = Date()
+                user.value!!.getChallenges()[challengeIndex].setDateCompleted(date)
             }
         }
     }

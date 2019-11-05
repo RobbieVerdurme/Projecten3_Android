@@ -3,6 +3,7 @@ package be.multinet.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import be.multinet.model.Challenge
+import java.util.*
 
 class CompleteChallengeViewModel(application: Application): AndroidViewModel(application) {
     /**
@@ -21,8 +22,4 @@ class CompleteChallengeViewModel(application: Application): AndroidViewModel(app
      * get the challenge that you want to complete
      */
     fun getChallenge(): Challenge = challenge
-
-    fun completeChallenge() {
-        challenge.setCompleted(true)
-    }
 }

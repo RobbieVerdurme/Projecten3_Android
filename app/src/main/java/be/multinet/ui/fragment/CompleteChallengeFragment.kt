@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.databinding.FragmentCompleteChallengeBinding
+import be.multinet.model.Challenge
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_complete_challenge.*
@@ -75,7 +76,8 @@ class CompleteChallengeFragment : Fragment() {
             override fun onClick(p0: View?) {
                 val navController = findNavController()
                 val userViewModel: UserViewModel = getSharedViewModel()
-                userViewModel.completeChalenge(viewmodel.getChallenge())
+                val challenge:Challenge = viewmodel.getChallenge()
+                userViewModel.completeChalenge(challenge)
                 navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesFragment)
             }
         })

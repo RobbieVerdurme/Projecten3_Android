@@ -11,6 +11,8 @@ import androidx.viewpager.widget.PagerAdapter
 import be.multinet.R
 import be.multinet.model.Challenge
 import be.multinet.recyclerview.CompleteChallengeClickListener
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener) : PagerAdapter(), IChallengeAdapter {
     val MAX_ELEVATION_FACTOR = 8
@@ -48,14 +50,17 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view: View
         val item = items[position]
+        val solvedToday = items.any {
+            it.getDateCompleted()?.date == Date().date
+        }
 
-        if(item.isCompleted()){
+        if(item.getDateCompleted() != null){
             view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_completed, container, false)
         }else{
             view = LayoutInflater.from(container.context).inflate(R.layout.challenge_item_current, container, false)
         }
         container.addView(view)
-        bind(item, view)
+        bind(item, view, !solvedToday)
         val cardView: CardView = view.findViewById(R.id.cardView)
         if(mBaseElevation == 0f){
             mBaseElevation = cardView.cardElevation
@@ -66,7 +71,7 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
 
     }
 
-    private fun bind(challenge: Challenge, view: View){
+    private fun bind(challenge: Challenge, view: View, completeButtonEnabled :Boolean){
         //ophalen van texviews
         val img: ImageView = view.findViewById(R.id.challengeImage)
         val title: TextView = view.findViewById(R.id.challengeTitle)
@@ -78,6 +83,7 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
         title.setText(challenge.getTitle())
         description.setText(challenge.getDescription())
         //complete onclick?
+        complete?.isEnabled = completeButtonEnabled
         complete?.setOnClickListener {
             clickListener.onItemClicked(challenge)
         }

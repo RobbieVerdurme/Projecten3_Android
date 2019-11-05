@@ -1,5 +1,7 @@
 package be.multinet.model
 
+import java.util.*
+
 /**
  * This class represents a Challenge within the app.
  * @property challengeId the challenge ID
@@ -10,7 +12,7 @@ class Challenge(
     private val image : String,
     private val title: String,
     private val description:String,
-    private var completed:Boolean
+    private var completedDate: Date?
 ) {
     /**
      * @return the id of the challenge
@@ -35,12 +37,12 @@ class Challenge(
     /**
      * @return true if the challenge is completed
      */
-    fun isCompleted(): Boolean = completed
+    fun getDateCompleted(): Date? = completedDate
 
     /**
      * set the challenge on completed
      */
-    fun setCompleted(iscompleted:Boolean){
-        completed = iscompleted
+    fun setDateCompleted(dateCompleted:Date){
+        completedDate = dateCompleted
     }
 }

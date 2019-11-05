@@ -1,5 +1,7 @@
 package be.multinet.model
 
+import java.util.*
+
 /**
  * This class represents a user within the app.
  * @property userId the user's ID
@@ -20,10 +22,10 @@ class User (
     private var category: List<Category> = listOf<Category>(),
     private var therapist: List<Therapist> = listOf<Therapist>(),
     private var challenges: List<Challenge> = listOf<Challenge>(
-        Challenge("1","", "Lopen","Loop vandaag 5 km", false),
-        Challenge("2","","Rustdag","Rust vandaag lekker even uit", false),
-        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje", true),
-        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", true)
+        Challenge("1","", "Lopen","Loop vandaag 5 km",  null),
+        Challenge("2","","Rustdag","Rust vandaag lekker even uit",null),
+        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje",  Date(2019,11,1 )),
+        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", Date(2019,10,31))
     )
 ){
     /**

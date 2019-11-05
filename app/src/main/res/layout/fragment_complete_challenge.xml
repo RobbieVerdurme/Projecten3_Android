@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="top"
-            android:hint="Wat was er goed of mindergoed aan de uitdaging"
+            android:hint="Opmerkingen"
             android:inputType="textMultiLine"
             android:lines="5"
             app:layout_constraintEnd_toEndOf="parent"
