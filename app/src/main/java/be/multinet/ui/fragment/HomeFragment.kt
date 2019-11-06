@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
+import be.multinet.adapter.LeaderboardAdapter
 import be.multinet.viewmodel.HomeViewModel
 import be.multinet.viewmodel.UserViewModel
 import com.github.mikephil.charting.data.LineData
@@ -50,40 +53,47 @@ class HomeFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.home_title)
-        setupChart()
+        //setupChart()
+        setupLeaderboard()
+    }
+
+    private fun setupLeaderboard() {
+        val data = viewModel.getLeaderboardData();
+        leaderboard.layoutManager = LinearLayoutManager(this.context)
+        leaderboard.adapter = LeaderboardAdapter(data);
     }
 
     /**
      * Setup the progression chart
      */
-    private fun setupChart(){
-        chart.description.isEnabled = false
-        chart.xAxis.setDrawLabels(false)
-        //Set the data
-        val points: LineDataSet
-        //If there is a dataset, update it
-        if(chart.data != null && chart.data.dataSetCount > 0){
-            points = chart.data.getDataSetByIndex(0) as LineDataSet
-            points.values = viewModel.getChartData()
-            chart.data.notifyDataChanged()
-            chart.notifyDataSetChanged()
-        }
-        else{
-            //Otherwise create a new one
-            points = LineDataSet(viewModel.getChartData(),viewModel.chartLabel)
-            points.setDrawValues(false)
-            points.color = Color.BLUE
-            points.lineWidth = 2f
-            points.formLineWidth = 1f
-            points.formSize = 8f
-            points.fillColor = Color.LTGRAY
-
-            val dataset = ArrayList<ILineDataSet>()
-            dataset.add(points)
-            val lineData = LineData(dataset)
-            chart.data = lineData
-        }
-    }
+//    private fun setupChart(){
+//        chart.description.isEnabled = false
+//        chart.xAxis.setDrawLabels(false)
+//        //Set the data
+//        val points: LineDataSet
+//        //If there is a dataset, update it
+//        if(chart.data != null && chart.data.dataSetCount > 0){
+//            points = chart.data.getDataSetByIndex(0) as LineDataSet
+//            points.values = viewModel.getChartData()
+//            chart.data.notifyDataChanged()
+//            chart.notifyDataSetChanged()
+//        }
+//        else{
+//            //Otherwise create a new one
+//            points = LineDataSet(viewModel.getChartData(),viewModel.chartLabel)
+//            points.setDrawValues(false)
+//            points.color = Color.BLUE
+//            points.lineWidth = 2f
+//            points.formLineWidth = 1f
+//            points.formSize = 8f
+//            points.fillColor = Color.LTGRAY
+//
+//            val dataset = ArrayList<ILineDataSet>()
+//            dataset.add(points)
+//            val lineData = LineData(dataset)
+//            chart.data = lineData
+//        }
+//    }
 
 
 }
