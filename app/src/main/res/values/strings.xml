@@ -47,4 +47,8 @@
 
     <!-- Complete Challenge -->
     <string name="Complete_Challenge">Complete Challenge</string>
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_place_text">Plaats</string>
+    <string name="leaderboard_name_text">Naam</string>
+    <string name="leaderboard_score_text">Score</string>
 </resources>

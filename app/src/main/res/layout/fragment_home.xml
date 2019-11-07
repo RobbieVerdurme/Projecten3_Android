@@ -4,26 +4,27 @@
     <data>
         <variable name="viewModel" type="be.multinet.viewmodel.HomeViewModel"/>
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.fragment.HomeFragment">
 
         <ProgressBar
-            android:padding="10dp"
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_marginTop="4dp"
-            android:rotation="90"
-            android:progress="@{viewModel.userProgress}"
             android:max="@{viewModel.maxExperienceForLevel}"
+            android:padding="10dp"
+            android:progress="@{viewModel.userProgress}"
+            android:progressDrawable="@drawable/indeterminate_progressbar_circle"
+            android:rotation="90"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:progressDrawable="@drawable/indeterminate_progressbar_circle"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userLevelLabel"
@@ -47,27 +48,64 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userLevelLabel" />
 
-        <LinearLayout
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
+        <TextView
+            android:id="@+id/leaderboardLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/leaderboard_title"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rewardAtLabel" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/leaderboardHeaderLayout"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/leaderboardLabel">
+
+            <TextView
+                android:id="@+id/leaderboard_place"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_place_text"
+                android:textSize="24sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+                app:layout_constraintEnd_toStartOf="@+id/leaderboard_name"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/leaderboard_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_name_text"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@+id/leaderboard_score"
+                app:layout_constraintStart_toEndOf="@+id/leaderboard_place"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/leaderboard_score"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_score_text"
+                android:textSize="24sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/leaderboard_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/leaderboard"
+            android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="#00FF0000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rewardAtLabel">
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chart"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/leaderboardHeaderLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
