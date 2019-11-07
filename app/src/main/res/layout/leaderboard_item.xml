@@ -9,12 +9,13 @@
     <TextView
         android:id="@+id/leaderboard_place"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="TextView"
         android:textSize="24sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/leaderboard_name"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/leaderboard_name"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/leaderboard_score"
         app:layout_constraintStart_toEndOf="@+id/leaderboard_place"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,11 +31,12 @@
     <TextView
         android:id="@+id/leaderboard_score"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="TextView"
         android:textSize="24sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/leaderboard_name" />
+        app:layout_constraintStart_toEndOf="@+id/leaderboard_name"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
