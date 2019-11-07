@@ -22,9 +22,9 @@ class User (
     private var category: List<Category> = listOf<Category>(),
     private var therapist: List<Therapist> = listOf<Therapist>(
         Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
-        Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruit", mail = "piet.Huysentruit@hotmail.com", number = ""),
-        Therapist(therapistId = 3, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
-        Therapist(therapistId = 4, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = "")
+        Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruyt", mail = "piet.Huysentruyt@hotmail.com", number = ""),
+        Therapist(therapistId = 3, name = "Klaas", familyName = "De Muynck", mail = "klaas.de.muynck@hotmail.com", number = ""),
+        Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
     ),
     private var challenges: List<Challenge> = listOf<Challenge>(
         Challenge("1","", "Lopen","Loop vandaag 5 km",  null),
