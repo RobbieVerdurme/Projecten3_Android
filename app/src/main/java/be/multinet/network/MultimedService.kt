@@ -1,24 +1,18 @@
 package be.multinet.network
 
-import android.content.Context
-import be.multinet.R
+import be.multinet.model.Therapist
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
-import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.InputStream
 import java.lang.Exception
 import java.lang.RuntimeException
-import java.security.KeyStore
 import java.security.SecureRandom
-import java.security.cert.Certificate
-import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
@@ -110,4 +104,25 @@ class MultimedService : IApiProvider {
         return server.getUser(userid)
     }
 
+    /**
+     * asks for the challenges of a user with id
+     */
+    override suspend fun getChallengesUser(userid: Int): Response<List<UserChallengeResponse>> {
+        return server.getChallengesUser(userid)
+    }
+
+    /**
+     * set the challenge to completed
+     *
+    override suspend fun completeChallenge(userid: Int, challengeId: Int): Response<>{
+        return server
+    }
+    */
+
+    /**
+     * ask for the therapists of the user with id
+     */
+    override suspend fun getTherapists(userid: Int): Response<List<Therapist>> {
+        return server.getTherapists(userid)
+    }
 }

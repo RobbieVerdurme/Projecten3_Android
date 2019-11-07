@@ -1,7 +1,9 @@
 package be.multinet.database.Persist
 
+import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * This class represents the category table within the local database.
@@ -10,6 +12,10 @@ import androidx.room.PrimaryKey
 @Entity
 data class PersistentChallenge(
     @PrimaryKey val challengeId: Int,
-    val name: String
+    val image : String,
+    val title: String,
+    val description:String,
+    @Nullable
+    val completedDate: Date?
 ) {
 }

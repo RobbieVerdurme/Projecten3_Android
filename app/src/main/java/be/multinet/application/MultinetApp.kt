@@ -33,7 +33,6 @@ class MultinetApp : MultiDexApplication() {
             androidContext(this@MultinetApp)
             modules(listOf(
                     databaseModule(),
-                    //api module
                     apiModule(),
                     repositoryModule(),
                     viewModelModule()))
@@ -61,8 +60,14 @@ class MultinetApp : MultiDexApplication() {
                 NetworkViewModel(get())
             }
             viewModel {
-                InfoViewModel(get())
+                ChallengeViewModel(get())
             }
+            viewModel {
+                CompleteChallengeViewModel(get())
+            }
+          viewModel{
+                            InfoViewModel(get())
+          }
         }
     }
 
@@ -105,7 +110,6 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun apiModule(): Module {
         return module {
-            //TODO single api provider
             single<IApiProvider> {
                 MultimedService()
             }

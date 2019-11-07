@@ -85,7 +85,7 @@ class UserRepository(
 
             if(!challenges.isEmpty()){
                 for(challenge in challenges){
-                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.name))
+                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description, challenge!!.completedDate))
                 }
             }
 
@@ -93,6 +93,7 @@ class UserRepository(
         }
     }
 
+    //region insertfunctions
     suspend fun insertCategories(categories : List<Category>){
         /**
          * insert categories
@@ -132,11 +133,28 @@ class UserRepository(
             challengeDao.insertChallenge(
                 PersistentChallenge(
                     challenge.getChallengeId().toInt(),
-                    challenge.getName()
+                    challenge.getImage(),
+                    challenge.getTitle(),
+                    challenge.getDescription(),
+                    challenge.getDateCompleted()
                 )
             )
         }
     }
+    //endregion
+    //region update value in database
+    suspend fun completeChallenge(challenge: Challenge){
+        challengeDao.completeChallenge(
+            PersistentChallenge(
+                challenge.getChallengeId().toInt(),
+                challenge.getTitle(),
+                challenge.getImage(),
+                challenge.getDescription(),
+                challenge.getDateCompleted()
+            )
+        )
+    }
+    //endregion
 
     override suspend fun logoutUser() {
         userDao.deleteUser()

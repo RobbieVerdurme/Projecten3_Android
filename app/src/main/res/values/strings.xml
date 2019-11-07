@@ -43,4 +43,8 @@
     <!--Retrofit Error-->
     <string name="generic_error">There was een error</string>
     <string name="login_invalid">Invalid login</string>
+    <string name="complete_challenge">Complete challenge</string>
+
+    <!-- Complete Challenge -->
+    <string name="Complete_Challenge">Complete Challenge</string>
 </resources>

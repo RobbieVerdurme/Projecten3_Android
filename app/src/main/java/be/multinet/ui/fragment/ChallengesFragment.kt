@@ -6,26 +6,79 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.Utility.ShadowTransformer
 import be.multinet.adapter.ChallengeAdapter
+import be.multinet.databinding.FragmentChallengesBinding
 import be.multinet.model.Challenge
+import be.multinet.recyclerview.CompleteChallengeClickListener
+import be.multinet.viewmodel.ChallengeViewModel
+import be.multinet.viewmodel.CompleteChallengeViewModel
+import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_challenges.*
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * This [Fragment] represents the challenges page.
  */
-class ChallengesFragment : Fragment() {
+class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
+    /**
+     * Viewmodel of this fragment
+     */
+    val viewmodel: ChallengeViewModel by viewModel()
+
+    /**
+     * The ChallengesAdapter for this fragment
+     */
+    private lateinit var challengeAdapter: ChallengeAdapter
+
+    /**
+     * The shadow transformer for the cards
+     */
+    private lateinit var mCardShadowTransformer: ShadowTransformer
+
+    /**
+     * userviewmodel to ask for the user his challenges
+     */
+    val userViewModel: UserViewModel by sharedViewModel()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //TODO use a DataBinding class (ChallengesFragmentBinding) to inflate and setup lifecycleowner + viewmodel etc
-        return inflater.inflate(R.layout.fragment_challenges, container, false)
+        val binding = FragmentChallengesBinding.inflate(inflater, container,false)
+        binding.challengeViewModel = viewmodel
+        binding.lifecycleOwner = this
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
+        loadChallengeViewModelData()
+        challengeAdapter = ChallengeAdapter(this)
+        addChallenges()
+        initViewPager()
+    }
+
+    /**
+     * Load data into [ChallengeViewModel]
+     */
+    private fun loadChallengeViewModelData() {
+        val challenges = userViewModel.getChallenges()
+        viewmodel.setChallenges(challenges)
+    }
+
+    /**
+     * give data to the adapter
+     */
+    private fun addChallenges() {
+        val challenges = viewmodel.getChallenges().value
+        if(challenges!= null){
+            challengeAdapter.addCardItems(challenges)
+            challengeAdapter.notifyDataSetChanged()
+        }
     }
 
     /**
@@ -34,30 +87,29 @@ class ChallengesFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.challenges_title)
-        setCardsOnViewPager()
     }
 
-    private fun setCardsOnViewPager(){
-        //mockdata
-        val adapter: ChallengeAdapter = ChallengeAdapter()
-
-        val challenges = listOf<Challenge>(
-            Challenge("1","testItem1"),
-            Challenge("2","testItem2"),
-            Challenge("3","testItem3"),
-            Challenge("4","testItem4")
-        )
-        adapter.addCardItems(challenges)
-
-        //shadowtransformer
-        val mCardShadowTransformer: ShadowTransformer = ShadowTransformer(challengesViewPager, adapter)
-
-        //viewpager settings
-        challengesViewPager.adapter = adapter
-        challengesViewPager.setPageTransformer(false, mCardShadowTransformer)
-        challengesViewPager.offscreenPageLimit = 3
-        mCardShadowTransformer.enableScaling(true)
+    /**
+     * Setup ViewPager for this fragment
+     */
+    private fun initViewPager(){
+        challengesViewPager.apply {
+            adapter = challengeAdapter
+            offscreenPageLimit = 3
+            mCardShadowTransformer = ShadowTransformer(challengesViewPager, challengeAdapter)
+            setPageTransformer(false, mCardShadowTransformer )
+            mCardShadowTransformer.enableScaling(true)
+        }
     }
 
+    /**
+     * redirect to complete challenge fragment
+     */
+    override fun onItemClicked(item: Challenge) {
+        val completeChallengeViewModel: CompleteChallengeViewModel = getSharedViewModel()
+        val navController = findNavController()
 
+        completeChallengeViewModel.setChallenge(item)
+        navController.navigate(R.id.action_challengesFragment_to_CompleteChallengeFragment)
+    }
 }
