@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="multimed_green">#47987A</color>
+    <color name="leaderboard_accent">#c2c2c2</color>
 </resources>

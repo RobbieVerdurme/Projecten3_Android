@@ -59,6 +59,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rewardAtLabel" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/leaderboardHeaderLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/leaderboardLabel">
+
+            <TextView
+                android:id="@+id/leaderboard_place"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_place_text"
+                android:textSize="24sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+                app:layout_constraintEnd_toStartOf="@+id/leaderboard_name"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/leaderboard_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_name_text"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@+id/leaderboard_score"
+                app:layout_constraintStart_toEndOf="@+id/leaderboard_place"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/leaderboard_score"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/leaderboard_score_text"
+                android:textSize="24sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/leaderboard_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/leaderboard_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/leaderboard"
             android:layout_width="0dp"
@@ -67,8 +105,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/leaderboardLabel"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/leaderboardHeaderLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

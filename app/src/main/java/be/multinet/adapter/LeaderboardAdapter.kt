@@ -1,9 +1,12 @@
 package be.multinet.adapter
 
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.toColor
 import androidx.recyclerview.widget.RecyclerView
 import be.multinet.R
 import be.multinet.model.LeaderboardUser
@@ -19,7 +22,7 @@ class LeaderboardAdapter(private val myDataset: List<LeaderboardUser>): Recycler
         )
     }
 
-    override fun getItemCount() = myDataset.size;
+    override fun getItemCount() = myDataset.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val user = myDataset[position]
@@ -27,6 +30,7 @@ class LeaderboardAdapter(private val myDataset: List<LeaderboardUser>): Recycler
         holder.view.leaderboard_place.text = (position+1).toString()
         holder.view.leaderboard_name.text = user.getName()
         holder.view.leaderboard_score.text = user.getScore().toString()
+
     }
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
