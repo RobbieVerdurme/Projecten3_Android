@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
 import be.multinet.model.Company
-import be.multinet.model.Therapist
 import be.multinet.model.User
 import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.ProfileViewModel
@@ -86,7 +84,6 @@ class ProfileFragment : Fragment() {
         if(user!= null){
             therapistAdapter.submitList(user.getTherapist())
         }
-
     }
 
     /**
