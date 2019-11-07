@@ -20,7 +20,12 @@ class User (
     private var mail: String,
     private var phone: String,
     private var category: List<Category> = listOf<Category>(),
-    private var therapist: List<Therapist> = listOf<Therapist>(),
+    private var therapist: List<Therapist> = listOf<Therapist>(
+        Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
+        Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruit", mail = "piet.Huysentruit@hotmail.com", number = ""),
+        Therapist(therapistId = 3, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
+        Therapist(therapistId = 4, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = "")
+    ),
     private var challenges: List<Challenge> = listOf<Challenge>(
         Challenge("1","", "Lopen","Loop vandaag 5 km",  null),
         Challenge("2","","Rustdag","Rust vandaag lekker even uit",null),
