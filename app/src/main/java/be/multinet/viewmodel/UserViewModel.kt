@@ -1,6 +1,8 @@
 package be.multinet.viewmodel
 
+import android.app.AlertDialog
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +26,7 @@ import kotlin.collections.ArrayList
  * This [ViewModel] manages the application user throughout the app lifecycle.
  * It provides logout and loading the user from local persistence.
  */
-class UserViewModel constructor(private val repository: UserRepository, private val multimedService: IApiProvider, application: Application) : ViewModel() {
+class UserViewModel constructor(private val repository: UserRepository, private val multimedService: IApiProvider,private val application: Application) : ViewModel() {
 
     /**
      * A [LiveData] that stores the actual user.
@@ -154,12 +156,14 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 if(response == null)
                 {
                     requestError.value = genericErrorMessage
+                    makeToast()
                 }else
                 {
                     when(response.code())
                     {
                         400 -> {
                             requestError.value = invalidLoginMessage
+                            makeToast()
                         }
                         200 -> {
                             val jwt:JWT = JWT(response.body()!!)
@@ -176,6 +180,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         else -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                     }
                 }
@@ -199,12 +204,14 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 if(response == null)
                 {
                     requestError.value = genericErrorMessage
+                    makeToast()
                 }else
                 {
                     when(response.code())
                     {
                         404 -> {
-                            requestError.value = invalidLoginMessage
+                            requestError.value = genericErrorMessage
+                            makeToast()
                         }
                         200 -> {
                             val body = response.body()!!
@@ -214,6 +221,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         else -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                     }
                 }
@@ -249,10 +257,12 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 val response : Response<List<UserChallengeResponse>>? = apiResult.await()
                 if(response == null){
                     requestError.value = genericErrorMessage
+                    makeToast()
                 }else{
                     when(response.code()){
                         400 -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                         200 -> {
                             val body = response.body()!!
@@ -268,6 +278,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         else -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                     }
                 }
@@ -304,10 +315,12 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 val response: Response<List<Therapist>>? = apiResult.await()
                 if(response == null){
                     requestError.value = genericErrorMessage
+                    makeToast()
                 }else{
                     when(response.code()){
                         400 -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                         200 -> {
                             val body = response.body()!!
@@ -320,6 +333,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         else -> {
                             requestError.value = genericErrorMessage
+                            makeToast()
                         }
                     }
                 }
@@ -375,5 +389,11 @@ class UserViewModel constructor(private val repository: UserRepository, private 
         }
     }
     */
+    //endregion
+
+    //region hulpmethods
+    private fun makeToast(){
+        Toast.makeText(application, requestError.value, Toast.LENGTH_LONG).show()
+    }
     //endregion
 }

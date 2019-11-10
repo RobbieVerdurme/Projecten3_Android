@@ -111,7 +111,6 @@ class LoginFragment : Fragment() {
         when(networkViewModel.getCurrentNetworkState())
         {
             ConnectionState.CONNECTED -> {
-                login.isEnabled = false
                 userViewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
             }
             ConnectionState.DISCONNECTED -> {
