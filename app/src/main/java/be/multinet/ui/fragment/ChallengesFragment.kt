@@ -79,7 +79,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * give data to the adapter
      */
     private fun addChallenges() {
-        val challenges = viewmodel.getChallenges(category)
+        val challenges = viewmodel.getChallenges(category).value
         if(challenges!= null){
             challengeAdapter.addCardItems(challenges)
             challengeAdapter.notifyDataSetChanged()

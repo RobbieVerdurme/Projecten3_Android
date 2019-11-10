@@ -15,11 +15,11 @@ class ChallengeViewModel(application: Application): AndroidViewModel(application
     /**
      * get the list of [Challenge]s
      */
-    fun getChallenges(category: Category): List<Challenge>{
-      return challenges.value!!.filterIndexed { index, challenge ->
-          challenge.getCategory()?.getName() == category.getName()
-      }
-    }
+    fun getChallenges(category: Category): MutableLiveData<List<Challenge>>{
+      return MutableLiveData<List<Challenge>>(challenges.value!!.filterIndexed { index, challenge ->
+        challenge.getCategory()?.getName() == category.getName()
+    })
+}
 
     /**
      * set the list of [Challenge]s
