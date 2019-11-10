@@ -3,6 +3,7 @@ package be.multinet.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import be.multinet.model.Category
 import be.multinet.model.Challenge
 
 class ChallengeViewModel(application: Application): AndroidViewModel(application) {
@@ -14,7 +15,11 @@ class ChallengeViewModel(application: Application): AndroidViewModel(application
     /**
      * get the list of [Challenge]s
      */
-    fun getChallenges(): MutableLiveData<List<Challenge>> = challenges
+    fun getChallenges(category: Category): List<Challenge>{
+      return challenges.value!!.filterIndexed { index, challenge ->
+          challenge.getCategory()?.getName() == category.getName()
+      }
+    }
 
     /**
      * set the list of [Challenge]s

@@ -45,7 +45,7 @@ class LandingPageFragment : Fragment() {
         //Setup a listener for the bottom navigation
         bottomNavigation?.setOnNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.homeFragment,R.id.challengesFragment,R.id.infoFragment,R.id.profileFragment -> {
+                R.id.homeFragment,R.id.challengesCategoryFragment,R.id.infoFragment,R.id.profileFragment -> {
                     navController.navigate(it.itemId)
                     true
                 }

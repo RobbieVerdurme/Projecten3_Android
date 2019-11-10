@@ -11,6 +11,7 @@ import be.multinet.R
 import be.multinet.Utility.ShadowTransformer
 import be.multinet.adapter.ChallengeAdapter
 import be.multinet.databinding.FragmentChallengesBinding
+import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.recyclerview.CompleteChallengeClickListener
 import be.multinet.viewmodel.ChallengeViewModel
@@ -29,6 +30,10 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * Viewmodel of this fragment
      */
     val viewmodel: ChallengeViewModel by viewModel()
+    /**
+     * category of challenge
+     */
+    lateinit var category : Category
 
     /**
      * The ChallengesAdapter for this fragment
@@ -74,7 +79,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * give data to the adapter
      */
     private fun addChallenges() {
-        val challenges = viewmodel.getChallenges().value
+        val challenges = viewmodel.getChallenges(category)
         if(challenges!= null){
             challengeAdapter.addCardItems(challenges)
             challengeAdapter.notifyDataSetChanged()
@@ -110,6 +115,6 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
         val navController = findNavController()
 
         completeChallengeViewModel.setChallenge(item)
-        navController.navigate(R.id.action_challengesFragment_to_CompleteChallengeFragment)
+        navController.navigate(R.id.action_challengesCategoryFragment_to_CompleteChallengeFragment)
     }
 }

@@ -255,7 +255,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             val body = response.body()!!
                             val challenges: ArrayList<Challenge> = ArrayList()
                             for(i in body){
-                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate))
+                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
                             }
                             //save to localdb
                             repository.insertChallenges(challenges)
