@@ -8,9 +8,11 @@ import androidx.lifecycle.viewModelScope
 import be.multinet.R
 import be.multinet.model.*
 import be.multinet.network.IApiProvider
+import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.UserRepository
+import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -141,9 +143,6 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * Login a user
      */
     fun login(username: String, password: String) {
-
-        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889", listOf<Category>()))
-        /*
         viewModelScope.launch {
             requestError.value = ""
             if(!isBusy.value!!){
@@ -151,7 +150,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 val apiResult = async(Dispatchers.IO) {
                     multimedService.loginUser(LoginRequestBody(username, password))
                 }
-                val response: Response<JWT>? = apiResult.await()
+                val response: Response<String>? = apiResult.await()
                 if(response == null)
                 {
                     requestError.value = genericErrorMessage
@@ -163,13 +162,17 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             requestError.value = invalidLoginMessage
                         }
                         200 -> {
-                            val jwt:JWT = response.body()!!
+                            val jwt:JWT = JWT(response.body()!!)
 
                             //get the id from the logged in user
-                            val userid = jwt.getClaim("Id").toString().toInt()
+                            val claim = jwt.getClaim("Id")
 
                             //get the user info with id userid
-                            getUser(userid)
+                            val userid = claim.asInt()
+                            if(userid != null){
+                                isBusy.value = false
+                                getUser(userid)
+                            }
                         }
                         else -> {
                             requestError.value = genericErrorMessage
@@ -178,7 +181,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 }
                 isBusy.value = false
             }
-        }    */
+        }
     }
 
     /**
@@ -205,7 +208,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         200 -> {
                             val body = response.body()!!
-                            val user = User(body.userId,body.surname,body.familyName,body.mail,body.mail,body.category)
+                            val user = User(body.userId,body.firstName,body.familyName,body.email,body.phone,body.categories)
                             //save the loggedin user  to the database
                             saveUserToLocalDatabase(user)
                         }

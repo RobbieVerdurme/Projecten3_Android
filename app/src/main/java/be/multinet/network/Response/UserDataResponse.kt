@@ -7,14 +7,14 @@ class UserDataResponse(
     @Field("userId")
     val userId: String,
     @Field("firstName")
-    val surname: String,
+    val firstName: String,
     @Field("familyName")
     val familyName: String,
     @Field("email")
-    val mail: String,
+    val email: String,
     @Field("phone")
     val phone: String,
     @Field("categories")
-    val category: List<Category>
+    val categories: List<Category>
 ) {
 }
