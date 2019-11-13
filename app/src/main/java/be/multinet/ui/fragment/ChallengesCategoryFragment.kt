@@ -14,6 +14,7 @@ import be.multinet.databinding.FragmentChallengesCategoryBinding
 import be.multinet.model.Category
 import be.multinet.viewmodel.ChallengeCategoryViewModel
 import be.multinet.viewmodel.UserViewModel
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_challenges_category.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,15 +32,18 @@ class ChallengesCategoryFragment : Fragment() {
      */
     val userViewModel: UserViewModel by sharedViewModel()
 
+    lateinit var binding: FragmentChallengesCategoryBinding
+
     /**
      * adapter for the viewpager
      */
     private lateinit var challengeCategoryAdapter: ChallengeCategoryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentChallengesCategoryBinding.inflate(inflater, container, false)
+        binding = FragmentChallengesCategoryBinding.inflate(inflater, container, false)
         binding.challengeCategoryViewModel = viewModel
         binding.lifecycleOwner = this
+        //The current challenge must be shown when clicking the tab
         return binding.root
     }
 
@@ -50,6 +54,24 @@ class ChallengesCategoryFragment : Fragment() {
         challengeCategoryAdapter = ChallengeCategoryAdapter(fragmentManager!!)
         addChallengeCategory()
         initViewPagerAndTabs()
+        binding.challengesCategoryTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener
+        {
+            override fun onTabSelected(tab: TabLayout.Tab?)
+            {
+               // binding.challengesCategoryViewPager.setCurrentItem(1, false)
+                println(binding.challengesCategoryViewPager.currentItem)
+            }
+
+            override fun onTabReselected(p0: TabLayout.Tab?)
+            {
+                println(binding.challengesCategoryViewPager.currentItem)
+
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                println("tab unselected")
+            }
+        })
     }
 
     private fun addChallengeCategory() {

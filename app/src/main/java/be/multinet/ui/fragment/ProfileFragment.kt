@@ -46,7 +46,7 @@ class ProfileFragment : Fragment() {
         if(currentUser != null){
             viewModel.setUser(currentUser)
         }
-        //Set up the binding
+        //Set up the fragmentChallengesCategoryBinding
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this

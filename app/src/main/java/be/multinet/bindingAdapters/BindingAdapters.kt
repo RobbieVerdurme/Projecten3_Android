@@ -4,7 +4,7 @@ import com.google.android.material.textfield.TextInputLayout
 import androidx.databinding.BindingAdapter
 
 /**
- * A [BindingAdapter] to provide xml binding for a [TextInputLayout]'s error property
+ * A [BindingAdapter] to provide xml fragmentChallengesCategoryBinding for a [TextInputLayout]'s error property
  * @param view the view to bind for
  * @param errorMessage the message to bind
  */

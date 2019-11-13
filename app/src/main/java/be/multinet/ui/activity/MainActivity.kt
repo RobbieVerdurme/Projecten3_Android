@@ -5,10 +5,12 @@ import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.findNavController
+import androidx.databinding.DataBindingUtil
 import be.multinet.R
+import be.multinet.databinding.FragmentChallengesCategoryBinding
 import be.multinet.intent.NetworkBroadcastReceiver
 import be.multinet.viewmodel.NetworkViewModel
+import com.google.android.material.tabs.TabLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -20,7 +22,6 @@ class MainActivity : AppCompatActivity() {
      * The [NetworkViewModel] that will monitor the network
      */
     val network: NetworkViewModel by viewModel()
-
 
     /**
      * A list of [BroadcastReceiver]s that might be (un)registered
