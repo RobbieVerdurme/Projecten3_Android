@@ -79,6 +79,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     private val getUserErrorMassage: String = application.getString(R.string.userError)
     private val getTherapistErrorMassage: String = application.getString(R.string.therapistError)
     private val getChallengesErrorMassage: String = application.getString(R.string.challengeError)
+    private val contractErroMessage:String = "Contract ended"
 
     init {
         requestError.value = ""
@@ -168,6 +169,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                 requestError.value = invalidLoginMessage
                                 makeToast()
                             }
+                            401 ->{
+                                requestError.value = contractErroMessage
+                                makeToast()
+                            }
                             200 -> {
                                 val jwt: JWT = JWT(response.body()!!)
 
@@ -226,6 +231,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                     body.familyName,
                                     body.email,
                                     body.phone,
+                                    body.contract,
                                     body.categories
                                 )
                                 //save the loggedin user  to the database

@@ -85,12 +85,12 @@
             style="@style/attributeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/profile_company" />
+            android:text="@string/profile_contract" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{profileViewModel.userCompanyProfile.name}"
+            android:text="@{profileViewModel.userProfile.contractDate.toString()}"
             android:textSize="18sp" />
     </LinearLayout>
 

@@ -19,6 +19,7 @@ class User (
     private var familyName: String,
     private var mail: String,
     private var phone: String,
+    private var contract: Date,
     private var category: List<Category> = listOf<Category>(),
     private var therapist: List<Therapist> = listOf<Therapist>(
         Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
@@ -73,53 +74,65 @@ class User (
      */
     fun getCategory(): List<Category> = category
 
+    /**
+     * @return the contract date of the user
+     */
+    fun getContractDate(): Date = contract
+
     //setters
     /**
-     * @return the surname of the user
+     * sets the surname of the user
      */
     fun setSurname(firstname: String){
         surname = firstname
     }
 
     /**
-     * @return the family name of the user
+     * sets the family name of the user
      */
     fun setFamilyName(familyname: String){
         familyName = familyname
     }
 
     /**
-     * @return the e-mail address of the user
+     * sets the email of the user
      */
     fun setMail(email: String){
         mail = email
     }
 
     /**
-     * @return the phone number of the user
+     * sets the phone of the user
      */
     fun setPhone(phoneNumber:String){
         phone = phoneNumber
     }
 
     /**
-     * @return the different challenges of the user
+     * sets the challenges of the user
      */
     fun setChallenges(challengeList : List<Challenge>){
         challenges = challengeList
     }
 
     /**
-     * @return the different therapists of the user
+     * sets the therapists of the user
      */
     fun setTherapist(therapistList: List<Therapist>){
         therapist = therapistList
     }
 
     /**
-     * @return the different categories of the user
+     * sets the list of categories of the user
      */
     fun setCategory(categoryList: List<Category>){
         category = categoryList
+    }
+
+    /**
+     * sets the contract date to the new date
+     */
+    fun setContract(contractDate: Date){
+        contract = contractDate
     }
 }
