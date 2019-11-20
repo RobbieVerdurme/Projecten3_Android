@@ -23,7 +23,7 @@ class MultimedService : IApiProvider {
     /**
      * the server baseurl
      */
-    private val baseUrl: String = "https://10.0.2.2:44384/api/"
+    private val baseUrl: String = "https://projecten3backend20191106111602.azurewebsites.net/api/"
 
     /**
      * The [IMultimedApi] instance
@@ -93,7 +93,7 @@ class MultimedService : IApiProvider {
      * Login the user
      * returns a jwt token
      */
-    override suspend fun loginUser(userbody: LoginRequestBody): Response<JWT> {
+    override suspend fun loginUser(userbody: LoginRequestBody): Response<String> {
         return server.loginUser(userbody)
     }
 

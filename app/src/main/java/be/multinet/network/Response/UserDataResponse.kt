@@ -2,19 +2,15 @@ package be.multinet.network.Response
 
 import be.multinet.model.Category
 import retrofit2.http.Field
+import java.util.*
 
 class UserDataResponse(
-    @Field("userId")
     val userId: String,
-    @Field("firstName")
-    val surname: String,
-    @Field("familyName")
+    val firstName: String,
     val familyName: String,
-    @Field("email")
-    val mail: String,
-    @Field("phone")
+    val email: String,
     val phone: String,
-    @Field("categories")
-    val category: List<Category>
+    val contract: Date,
+    val categories: List<Category>
 ) {
 }

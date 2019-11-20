@@ -1,6 +1,8 @@
 package be.multinet.viewmodel
 
+import android.app.AlertDialog
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,21 +10,25 @@ import androidx.lifecycle.viewModelScope
 import be.multinet.R
 import be.multinet.model.*
 import be.multinet.network.IApiProvider
+import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.UserRepository
+import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okio.Timeout
 import retrofit2.Response
 import java.util.*
+import java.util.concurrent.TimeoutException
 import kotlin.collections.ArrayList
 
 /**
  * This [ViewModel] manages the application user throughout the app lifecycle.
  * It provides logout and loading the user from local persistence.
  */
-class UserViewModel constructor(private val repository: UserRepository, private val multimedService: IApiProvider, application: Application) : ViewModel() {
+class UserViewModel constructor(private val repository: UserRepository, private val multimedService: IApiProvider,private val application: Application) : ViewModel() {
 
     /**
      * A [LiveData] that stores the actual user.
@@ -70,6 +76,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val invalidLoginMessage: String = application.getString(R.string.login_invalid)
+    private val getUserErrorMassage: String = application.getString(R.string.userError)
+    private val getTherapistErrorMassage: String = application.getString(R.string.therapistError)
+    private val getChallengesErrorMassage: String = application.getString(R.string.challengeError)
+    private val contractErroMessage:String = "Contract ended"
 
     init {
         requestError.value = ""
@@ -141,81 +151,104 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * Login a user
      */
     fun login(username: String, password: String) {
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.loginUser(LoginRequestBody(username, password))
+                    }
+                    val response: Response<String>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = invalidLoginMessage
+                                makeToast()
+                            }
+                            401 ->{
+                                requestError.value = contractErroMessage
+                                makeToast()
+                            }
+                            200 -> {
+                                val jwt: JWT = JWT(response.body()!!)
 
-        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889", listOf<Category>()))
-        /*
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO) {
-                    multimedService.loginUser(LoginRequestBody(username, password))
-                }
-                val response: Response<JWT>? = apiResult.await()
-                if(response == null)
-                {
-                    requestError.value = genericErrorMessage
-                }else
-                {
-                    when(response.code())
-                    {
-                        400 -> {
-                            requestError.value = invalidLoginMessage
-                        }
-                        200 -> {
-                            val jwt:JWT = response.body()!!
+                                //get the id from the logged in user
+                                val claim = jwt.getClaim("Id")
 
-                            //get the id from the logged in user
-                            val userid = jwt.getClaim("Id").toString().toInt()
-
-                            //get the user info with id userid
-                            getUser(userid)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+                                //get the user info with id userid
+                                val userid = claim.asInt()
+                                if (userid != null) {
+                                    isBusy.value = false
+                                    getUser(userid)
+                                }
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
-        }    */
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
+        }
     }
 
     /**
      * backend call to get the information of the user
      */
     private fun getUser(userid: Int){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO) {
-                    multimedService.getUser(userid)
-                }
-                val response: Response<UserDataResponse>? = apiResult.await()
-                if(response == null)
-                {
-                    requestError.value = genericErrorMessage
-                }else
-                {
-                    when(response.code())
-                    {
-                        404 -> {
-                            requestError.value = invalidLoginMessage
-                        }
-                        200 -> {
-                            val body = response.body()!!
-                            val user = User(body.userId,body.surname,body.familyName,body.mail,body.mail,body.category)
-                            //save the loggedin user  to the database
-                            saveUserToLocalDatabase(user)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getUser(userid)
+                    }
+                    val response: Response<UserDataResponse>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            404 -> {
+                                requestError.value = getUserErrorMassage
+                                makeToast()
+                            }
+                            200 -> {
+                                val body = response.body()!!
+                                val user = User(
+                                    body.userId,
+                                    body.firstName,
+                                    body.familyName,
+                                    body.email,
+                                    body.phone,
+                                    body.contract,
+                                    body.categories
+                                )
+                                //save the loggedin user  to the database
+                                saveUserToLocalDatabase(user)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
         }
     }
 
@@ -236,20 +269,23 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * backend call to get the challenges from the users
      */
     private fun getChallengesUser(userid: Int){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.getChallengesUser(userid)
-                }
-                val response : Response<List<UserChallengeResponse>>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getChallengesUser(userid)
+                    }
+                    val response: Response<List<UserChallengeResponse>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
                         400 -> {
-                            requestError.value = genericErrorMessage
+                                requestError.value = getChallengesErrorMassage
+                                makeToast()
                         }
                         200 -> {
                             val body = response.body()!!
@@ -257,19 +293,38 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             for(i in body){
                                 challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
                             }
-                            //save to localdb
-                            repository.insertChallenges(challenges)
+                            200 -> {
+                                val body = response.body()!!
+                                val challenges: ArrayList<Challenge> = ArrayList()
+                                for (i in body) {
+                                    challenges.add(
+                                        Challenge(
+                                            i.challenge.challengeId.toString(),
+                                            "",
+                                            i.challenge.title,
+                                            i.challenge.description,
+                                            i.competedDate
+                                        )
+                                    )
+                                }
+                                //save to localdb
+                                repository.insertChallenges(challenges)
 
-                            //set the challenges to the user
-                            user.value!!.setChallenges(challenges)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+                                //set the challenges to the user
+                                user.value!!.setChallenges(challenges)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
         }
     }
 
@@ -291,37 +346,45 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * backend call to get the therapists from the user
      */
     private fun getTherapistUser(userid: Int){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.getTherapists(userid)
-                }
-                val response: Response<List<Therapist>>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
-                        400 -> {
-                            requestError.value = genericErrorMessage
-                        }
-                        200 -> {
-                            val body = response.body()!!
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getTherapists(userid)
+                    }
+                    val response: Response<List<Therapist>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = getTherapistErrorMassage
+                                makeToast()
+                            }
+                            200 -> {
+                                val body = response.body()!!
 
-                            //save the therapists to local room db
-                            repository.inserttherapists(body)
+                                //save the therapists to local room db
+                                repository.inserttherapists(body)
 
-                            //assign the therapists to the user
-                            user.value!!.setTherapist(body)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+                                //assign the therapists to the user
+                                user.value!!.setTherapist(body)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
         }
     }
 
@@ -372,5 +435,11 @@ class UserViewModel constructor(private val repository: UserRepository, private 
         }
     }
     */
+    //endregion
+
+    //region hulpmethods
+    private fun makeToast(){
+        Toast.makeText(application, requestError.value, Toast.LENGTH_LONG).show()
+    }
     //endregion
 }
