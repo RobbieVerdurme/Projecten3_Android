@@ -3,6 +3,7 @@ package be.multinet.database.Dao
 import androidx.room.*
 import be.multinet.database.Persist.PersistentCategory
 import be.multinet.database.Persist.PersistentChallenge
+import be.multinet.model.Category
 
 /**
  * This interface defines a contract to manipulate [PersistentCategory]s in the [ApplicationDatabase].
@@ -29,4 +30,10 @@ interface CategoryDao {
      */
     @Query("DELETE FROM PersistentCategory")
     suspend fun deleteCategories()
+
+    /**
+     * gets a [category] from the user
+     */
+    @Query("SELECT * FROM persistentcategory WHERE categoryId = :categoryId")
+    suspend fun getCategory(categoryId: Int): Category
 }

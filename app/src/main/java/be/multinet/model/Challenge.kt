@@ -12,7 +12,8 @@ class Challenge(
     private val image : String,
     private val title: String,
     private val description:String,
-    private var completedDate: Date?
+    private var completedDate: Date?,
+    private var category: Category?
 ) {
     /**
      * @return the id of the challenge
@@ -40,9 +41,21 @@ class Challenge(
     fun getDateCompleted(): Date? = completedDate
 
     /**
+     * @return the category
+     */
+    fun getCategory(): Category? = category
+
+    /**
      * set the challenge on completed
      */
     fun setDateCompleted(dateCompleted:Date){
         completedDate = dateCompleted
+    }
+
+    /**
+     * set the challenge category
+     */
+    fun setCategory(newCategory: Category){
+        category = newCategory
     }
 }
