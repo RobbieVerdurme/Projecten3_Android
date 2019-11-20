@@ -78,7 +78,7 @@ class CompleteChallengeFragment : Fragment() {
                 val userViewModel: UserViewModel = getSharedViewModel()
                 val challenge:Challenge = viewmodel.getChallenge()
                 userViewModel.completeChalenge(challenge)
-                navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesFragment)
+                navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesCategoryFragment)
             }
         })
     }

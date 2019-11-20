@@ -28,10 +28,10 @@ class User (
         Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
     ),
     private var challenges: List<Challenge> = listOf<Challenge>(
-        Challenge("1","", "Lopen","Loop vandaag 5 km",  null),
-        Challenge("2","","Rustdag","Rust vandaag lekker even uit",null),
-        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje",  Date(2019,11,1 )),
-        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", Date(2019,10,31))
+        Challenge("1","", "Lopen","Loop vandaag 5 km",  null, Category("1", "Lopen")),
+        Challenge("2","","Rustdag","Rust vandaag lekker even uit",null, Category("2", "Koken")),
+        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje",  null, Category("3", "Lopen")),
+        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", null, Category("4", "Koken"))
     )
 ){
     /**

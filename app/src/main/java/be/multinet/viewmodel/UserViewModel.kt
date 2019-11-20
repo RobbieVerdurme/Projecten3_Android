@@ -283,9 +283,15 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         makeToast()
                     } else {
                         when (response.code()) {
-                            400 -> {
+                        400 -> {
                                 requestError.value = getChallengesErrorMassage
                                 makeToast()
+                        }
+                        200 -> {
+                            val body = response.body()!!
+                            val challenges: ArrayList<Challenge> = ArrayList()
+                            for(i in body){
+                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
                             }
                             200 -> {
                                 val body = response.body()!!

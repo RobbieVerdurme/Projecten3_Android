@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_home_24px"
         android:title="@string/landing_page_nav_menu_home" />
 
-    <item android:id="@id/challengesFragment"
+    <item android:id="@id/challengesCategoryFragment"
         android:icon="@drawable/ic_view_carousel_24px"
         android:title="@string/landing_page_nav_menu_challenges" />
 

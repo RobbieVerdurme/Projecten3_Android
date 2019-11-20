@@ -86,7 +86,8 @@ class UserRepository(
 
             if(!challenges.isEmpty()){
                 for(challenge in challenges){
-                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description, challenge!!.completedDate))
+                    val category = categoryDao.getCategory(challenge!!.categoryId)
+                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description, challenge!!.completedDate, category ))
                 }
             }
 
@@ -137,7 +138,8 @@ class UserRepository(
                     challenge.getImage(),
                     challenge.getTitle(),
                     challenge.getDescription(),
-                    challenge.getDateCompleted()
+                    challenge.getDateCompleted(),
+                    challenge.getCategory()?.getCategoryId()!!.toInt()
                 )
             )
         }
@@ -151,7 +153,8 @@ class UserRepository(
                 challenge.getTitle(),
                 challenge.getImage(),
                 challenge.getDescription(),
-                challenge.getDateCompleted()
+                challenge.getDateCompleted(),
+                challenge.getCategory()?.getCategoryId()!!.toInt()
             )
         )
     }
