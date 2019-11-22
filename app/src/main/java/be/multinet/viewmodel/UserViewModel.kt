@@ -290,29 +290,19 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         200 -> {
                             val body = response.body()!!
                             val challenges: ArrayList<Challenge> = ArrayList()
-                            for(i in body){
-                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
-                            }
-                            200 -> {
-                                val body = response.body()!!
-                                val challenges: ArrayList<Challenge> = ArrayList()
-                                for (i in body) {
-                                    challenges.add(
-                                        Challenge(
-                                            i.challenge.challengeId.toString(),
-                                            "",
-                                            i.challenge.title,
-                                            i.challenge.description,
-                                            i.competedDate
-                                        )
+                            for (i in body) {
+                                challenges.add(
+                                    Challenge(
+                                        i.challenge.challengeId.toString(),
+                                        "",
+                                        i.challenge.title,
+                                        i.challenge.description,
+                                        i.competedDate,
+                                        i.challenge.category
                                     )
-                                }
-                                //save to localdb
-                                repository.insertChallenges(challenges)
-
-                                //set the challenges to the user
-                                user.value!!.setChallenges(challenges)
+                                )
                             }
+                        }
                             else -> {
                                 requestError.value = genericErrorMessage
                                 makeToast()
