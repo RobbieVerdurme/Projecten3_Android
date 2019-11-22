@@ -1,6 +1,7 @@
 package be.multinet.repository
 
 import androidx.lifecycle.MutableLiveData
+import be.multinet.model.Category
 import be.multinet.model.Challenge
 
 interface IChallengeRepository {
@@ -17,5 +18,5 @@ interface IChallengeRepository {
      */
     suspend fun loadChallenges(): List<Challenge>?
 
-    fun getChallenges(): MutableLiveData<List<Challenge>>
+    fun getChallenges(userId: Int): MutableLiveData<List<Challenge>>
 }

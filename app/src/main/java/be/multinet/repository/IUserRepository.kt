@@ -8,6 +8,11 @@ import be.multinet.model.User
 interface IUserRepository {
 
     /**
+     * return the [userId] of the application User
+     */
+    suspend fun getUserId(): Int
+
+    /**
      * Save [user] to local persistence.
      */
     suspend fun saveApplicationUser(user: User)

@@ -16,11 +16,16 @@ import be.multinet.model.User
 /**
  * This class is the production implementation of [IUserRepository].
  */
-class UserRepository(
-    private val userDao: UserDao,
-    private  val categoryDao: CategoryDao,
-    private val therapistDao: TherapistDao,
-    private val challengeDao: ChallengeDao) : IUserRepository {
+class UserRepository(private val userDao: UserDao,
+        private var categoryDao: CategoryDao,
+        private val therapistDao: TherapistDao,
+        private val challengeDao: ChallengeDao): IUserRepository{
+
+    override suspend fun getUserId(): Int
+    {
+        return userDao.getUser()!!.userId
+    }
+
 
     override suspend fun saveApplicationUser(user: User) {
         /**

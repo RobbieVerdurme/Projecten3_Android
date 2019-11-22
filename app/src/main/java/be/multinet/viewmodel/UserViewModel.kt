@@ -10,6 +10,7 @@ import be.multinet.model.*
 import be.multinet.network.IApiProvider
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
+import be.multinet.repository.ChallengeRepository
 import be.multinet.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,7 +23,7 @@ import kotlin.collections.ArrayList
  * This [ViewModel] manages the application user throughout the app lifecycle.
  * It provides logout and loading the user from local persistence.
  */
-class UserViewModel constructor(private val repository: UserRepository, private val multimedService: IApiProvider, application: Application) : ViewModel() {
+class UserViewModel constructor(private val repository: UserRepository, private val challengeRepository: ChallengeRepository, private val multimedService: IApiProvider, application: Application) : ViewModel() {
 
     /**
      * A [LiveData] that stores the actual user.
@@ -236,41 +237,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * backend call to get the challenges from the users
      */
     private fun getChallengesUser(userid: Int){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.getChallengesUser(userid)
-                }
-                val response : Response<List<UserChallengeResponse>>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
-                        400 -> {
-                            requestError.value = genericErrorMessage
-                        }
-                        200 -> {
-                            val body = response.body()!!
-                            val challenges: ArrayList<Challenge> = ArrayList()
-                            for(i in body){
-                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
-                            }
-                            //save to localdb
-                            repository.insertChallenges(challenges)
-
-                            //set the challenges to the user
-                            user.value!!.setChallenges(challenges)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
-                        }
-                    }
-                }
-                isBusy.value = false
-            }
-        }
+        challengeRepository.getChallenges(userid)
     }
 
     /**

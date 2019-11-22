@@ -45,7 +45,7 @@ class MultinetApp : MultiDexApplication() {
     private fun viewModelModule(): Module {
         return module {
             viewModel {
-                UserViewModel(get(), get(), get())
+                UserViewModel(get(), get(), get(), get())
             }
             viewModel {
                 HomeViewModel(get())
@@ -60,7 +60,7 @@ class MultinetApp : MultiDexApplication() {
                 NetworkViewModel(get())
             }
             viewModel {
-                ChallengeViewModel(get(), get())
+                ChallengeViewModel(get())
             }
             viewModel {
                 CompleteChallengeViewModel(get())
