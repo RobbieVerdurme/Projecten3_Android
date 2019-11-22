@@ -1,5 +1,6 @@
 package be.multinet.repository
 
+import androidx.lifecycle.MutableLiveData
 import be.multinet.database.Dao.CategoryDao
 import be.multinet.database.Dao.ChallengeDao
 import be.multinet.database.Persist.PersistentChallenge
@@ -13,7 +14,7 @@ class ChallengeRepository(
     private val challengeDao: ChallengeDao,
     private val categoryDao: CategoryDao) : IChallengeRepository
 {
-
+    private val challenges = MutableLiveData<List<Challenge>>()
 
     override suspend fun saveChallenges(challenges: List<Challenge>) {
         /**
@@ -38,7 +39,7 @@ class ChallengeRepository(
         val persistentChallenges = challengeDao.getChallenges()
         if(persistentChallenges.isEmpty())
         {
-            return null
+            throw NullPointerException()
         }
         else{
             val localChallenges = ArrayList<Challenge>()
@@ -57,6 +58,23 @@ class ChallengeRepository(
             return localChallenges
         }
 
+    }
+
+    override fun getChallenges(): MutableLiveData<List<Challenge>>
+    {
+        if(challenges.value!!.isEmpty())
+        {
+            try{
+                suspend{
+                    challenges.value = loadChallenges()
+                }
+            }
+            catch(ex: NullPointerException)
+            {
+                //Hier moet de call naar de db geregeld worden
+            }
+        }
+        return challenges
     }
 
     private suspend fun getCategoryById(id: Int): Category?

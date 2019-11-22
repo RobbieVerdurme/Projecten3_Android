@@ -1,5 +1,6 @@
 package be.multinet.repository
 
+import androidx.lifecycle.MutableLiveData
 import be.multinet.model.Challenge
 
 interface IChallengeRepository {
@@ -15,4 +16,6 @@ interface IChallengeRepository {
      * Note that this only populates the data that resides in the PersistentChallenge table.
      */
     suspend fun loadChallenges(): List<Challenge>?
+
+    fun getChallenges(): MutableLiveData<List<Challenge>>
 }
