@@ -15,6 +15,7 @@ import be.multinet.model.User
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UpdateProfileViewModel
 import be.multinet.viewmodel.UserViewModel
+import kotlinx.android.synthetic.main.fragment_profile.view.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

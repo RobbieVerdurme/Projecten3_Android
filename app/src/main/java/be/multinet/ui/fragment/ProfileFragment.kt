@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
@@ -13,9 +15,11 @@ import be.multinet.model.Company
 import be.multinet.model.User
 import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.ProfileViewModel
+import be.multinet.viewmodel.UpdateProfileViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,6 +34,8 @@ class ProfileFragment : Fragment() {
      * the TherapistAdapter for this fragment
      */
     private lateinit var therapistAdapter: UserTherapistsAdapter
+
+    private lateinit var  updateProfileButton: Button
 
     /**
      * Set up the layout.
@@ -50,9 +56,8 @@ class ProfileFragment : Fragment() {
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
+        updateProfileButton = binding.updateProfileButton!!
         return binding.root
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,6 +66,7 @@ class ProfileFragment : Fragment() {
         loadProfileViewModelData()
         initRecyclerView()
         addTherapists()
+        setupClickListenerForUpdateButton()
     }
 
     /**
@@ -94,6 +100,20 @@ class ProfileFragment : Fragment() {
             layoutManager  = LinearLayoutManager(activity)
             therapistAdapter = UserTherapistsAdapter()
             adapter = therapistAdapter
+        }
+    }
+
+    /**
+     * Setup the [onClick] event for updateProfileButton
+     */
+    private fun setupClickListenerForUpdateButton() {
+        updateProfileButton.setOnClickListener()
+        {
+            val updateProfileViewModel: UpdateProfileViewModel = getSharedViewModel()
+            val navController = findNavController()
+
+            updateProfileViewModel.setUser(viewModel.getUserProfile().value!!)
+            navController.navigate(R.id.action_profileFragment_To_UpdateProfileFragment)
         }
     }
 }

@@ -29,6 +29,7 @@
     <string name="profile_contact">Therapeuten</string>
     <!--Update Profile-->
     <string name="update_profile_title">Profiel aanpassen</string>
+    <string name="Update_profile_button">Aanpassen</string>
     <!--Challenges-->
     <string name="challenges_title">Challenges</string>
     <!--Info-->
