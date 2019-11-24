@@ -51,12 +51,11 @@
             android:layout_height="wrap_content"
             android:text="@string/profile_name" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="@={profileViewModel.userProfile.surname}"
-            android:textSize="18sp"/>
+            android:text="@{profileViewModel.userProfile.surname}"
+            android:textSize="18sp" />
 
         <TextView
             style="@style/attributeTitle"
@@ -64,13 +63,11 @@
             android:layout_height="wrap_content"
             android:text="@string/profile_mail" />
 
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="@={profileViewModel.userProfile.mail}"
-            android:textSize="18sp"/>
+            android:text="@{profileViewModel.userProfile.mail}"
+            android:textSize="18sp" />
 
         <TextView
             style="@style/attributeTitle"
@@ -78,13 +75,11 @@
             android:layout_height="wrap_content"
             android:text="@string/profile_number" />
 
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="@={profileViewModel.userProfile.phone}"
-            android:textSize="18sp"/>
+            android:text="@{profileViewModel.userProfile.phone}"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
