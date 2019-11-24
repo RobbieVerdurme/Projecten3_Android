@@ -1,6 +1,7 @@
 package be.multinet.viewmodel
 
 import android.app.Application
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -23,7 +24,9 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
      * change the visability if you click on the title
      */
     fun onClickTitle(){
+        Log.i("InfoViewModel", "Vis: " + visability.value)
         visability.value = visability.value != true
+        Log.i("InfoViewModel", "Vis: " + visability.value)
     }
 
     /**
