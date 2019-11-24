@@ -27,9 +27,11 @@
     <string name="profile_company">Bedrijf</string>
     <string name="profile_user_info">Gegevens</string>
     <string name="profile_contact">Therapeuten</string>
+    <string name="Update_profile_button">Aanpassen</string>
+
     <!--Update Profile-->
     <string name="update_profile_title">Profiel aanpassen</string>
-    <string name="Update_profile_button">Aanpassen</string>
+    <string name="confirm_updated_profile_button">Bevestig</string>
     <!--Challenges-->
     <string name="challenges_title">Challenges</string>
     <!--Info-->

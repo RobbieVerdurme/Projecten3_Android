@@ -86,5 +86,16 @@
                 android:text="@{updateProfileViewModel.userProfile.phone}"
                 android:textSize="18sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/confirmUpdateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/confirm_updated_profile_button"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -47,6 +47,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun getUser(): MutableLiveData<User> = user
 
+
+
     //region retrofit
     /**
      * A property that holds the last request error, if we encountered any
@@ -179,6 +181,15 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                 isBusy.value = false
             }
         }    */
+    }
+
+    /**
+     * Update a [User]
+     */
+    fun updateUser(updatedUser: User)
+    {
+        saveUserToLocalDatabase(updatedUser)
+        //Moet nog naar de backend ook
     }
 
     /**

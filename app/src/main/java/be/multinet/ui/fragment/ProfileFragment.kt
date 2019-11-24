@@ -109,10 +109,10 @@ class ProfileFragment : Fragment() {
     private fun setupClickListenerForUpdateButton() {
         updateProfileButton.setOnClickListener()
         {
-            val updateProfileViewModel: UpdateProfileViewModel = getSharedViewModel()
+//            val updateProfileViewModel: UpdateProfileViewModel = getSharedViewModel()
             val navController = findNavController()
 
-            updateProfileViewModel.setUser(viewModel.getUserProfile().value!!)
+//            updateProfileViewModel.setUser(viewModel.getUserProfile().value!!)
             navController.navigate(R.id.action_profileFragment_To_UpdateProfileFragment)
         }
     }
