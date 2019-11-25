@@ -92,6 +92,20 @@
             android:layout_height="wrap_content"
             android:text="@{profileViewModel.userProfile.phone}"
             android:textSize="18sp" />
+
+        <TextView
+            style="@style/attributeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_contract" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{profileViewModel.userProfile.contractDate.toString()}"
+            android:textSize="18sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
