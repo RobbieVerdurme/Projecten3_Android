@@ -13,9 +13,11 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
      */
     private val userProfile = MutableLiveData<User>()
 
+    private val updatedUserProfile = MutableLiveData<User>()
+
 
     /**
-     * Set the [User] to update
+     * Set the [User] to show
      */
     fun setUser(user:User)
     {
@@ -26,5 +28,18 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
      * Getter that exposes [user] as [LiveData] to prevent writable leaks.
      */
     fun getUserProfile(): MutableLiveData<User> = userProfile
+
+    /**
+     * Set the updatedUser
+     */
+    fun setUpdatedUser(user: User)
+    {
+        updatedUserProfile.value = user
+    }
+
+    /**
+     * Getter that exposes [updatedUser] as [LiveData] to prevent writable leaks
+     */
+    fun getUpdatedUser(): MutableLiveData<User> = updatedUserProfile
 
 }

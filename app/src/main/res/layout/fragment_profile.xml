@@ -49,12 +49,24 @@
             style="@style/attributeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/profile_name" />
+            android:text="@string/profile_surname" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{profileViewModel.userProfile.surname}"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/attributeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_familyname" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{profileViewModel.userProfile.familyName}"
             android:textSize="18sp" />
 
         <TextView

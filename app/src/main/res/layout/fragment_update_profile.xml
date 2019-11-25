@@ -49,9 +49,10 @@
                 style="@style/attributeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_name" />
+                android:text="@string/profile_surname" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/surnameTextField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -62,10 +63,25 @@
                 style="@style/attributeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/profile_familyname" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/familynameTextField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:text="@{updateProfileViewModel.userProfile.familyName}"
+                android:textSize="18sp" />
+
+            <TextView
+                style="@style/attributeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/profile_mail" />
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mailTextField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
@@ -80,6 +96,7 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneTextField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
