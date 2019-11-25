@@ -1,22 +1,17 @@
 package be.multinet.ui.fragment
 
-import android.graphics.Color
 import be.multinet.databinding.FragmentHomeBinding
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
-import be.multinet.adapter.LeaderboardAdapter
+import be.multinet.recyclerview.LeaderboardAdapter
 import be.multinet.viewmodel.HomeViewModel
 import be.multinet.viewmodel.UserViewModel
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.fragment_home.*
 
 import org.koin.androidx.viewmodel.ext.android.viewModel

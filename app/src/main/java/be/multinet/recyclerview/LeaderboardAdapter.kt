@@ -1,18 +1,12 @@
-package be.multinet.adapter
+package be.multinet.recyclerview
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.graphics.toColor
 import androidx.recyclerview.widget.RecyclerView
 import be.multinet.R
 import be.multinet.model.LeaderboardUser
-import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.leaderboard_item.view.*
-import org.w3c.dom.Text
 
 class LeaderboardAdapter(private val myDataset: List<LeaderboardUser>): RecyclerView.Adapter<LeaderboardAdapter.MyViewHolder>(){
 
