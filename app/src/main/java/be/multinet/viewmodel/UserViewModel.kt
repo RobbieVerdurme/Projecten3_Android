@@ -233,7 +233,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                     body.phone,
                                     body.contract,
                                     body.categories,
-                                    19
+                                    body.experiencePoints
                                 )
                                 //save the loggedin user  to the database
                                 saveUserToLocalDatabase(user)
