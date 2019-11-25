@@ -232,7 +232,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                     body.email,
                                     body.phone,
                                     body.contract,
-                                    body.categories
+                                    body.categories,
+                                    19
                                 )
                                 //save the loggedin user  to the database
                                 saveUserToLocalDatabase(user)
@@ -283,15 +284,9 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         makeToast()
                     } else {
                         when (response.code()) {
-                        400 -> {
+                            400 -> {
                                 requestError.value = getChallengesErrorMassage
                                 makeToast()
-                        }
-                        200 -> {
-                            val body = response.body()!!
-                            val challenges: ArrayList<Challenge> = ArrayList()
-                            for(i in body){
-                                challenges.add(Challenge(i.challenge.challengeId.toString(),"", i.challenge.title, i.challenge.description, i.competedDate, i.challenge.category ))
                             }
                             200 -> {
                                 val body = response.body()!!
@@ -303,25 +298,22 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                             "",
                                             i.challenge.title,
                                             i.challenge.description,
-                                            i.competedDate
+                                            i.competedDate,
+                                            i.challenge.category
                                         )
                                     )
                                 }
-                                //save to localdb
-                                repository.insertChallenges(challenges)
-
-                                //set the challenges to the user
-                                user.value!!.setChallenges(challenges)
                             }
-                            else -> {
-                                requestError.value = genericErrorMessage
-                                makeToast()
+                                else -> {
+                                    requestError.value = genericErrorMessage
+                                    makeToast()
+                                }
                             }
                         }
+                        isBusy.value = false
                     }
-                    isBusy.value = false
                 }
-            }
+
         }catch (e: Error){
             requestError.value = genericErrorMessage + e.message
             makeToast()
@@ -394,6 +386,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun completeChalenge(completedChallenge: Challenge){
         if(user.value != null){
+            user.value!!.setEXP(user.value!!.getEXP() + 1)
             val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
             if(challengeIndex != -1){
                 //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)

@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
+import be.multinet.adapter.ChallengeAdapter
 import be.multinet.adapter.LeaderboardAdapter
 import be.multinet.viewmodel.HomeViewModel
 import be.multinet.viewmodel.UserViewModel
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
  * This [Fragment] represents the home page.
@@ -45,6 +47,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
+        loadLevelViewModelData()
+    }
+
+    private fun loadLevelViewModelData() {
+        val userViewModel: UserViewModel by sharedViewModel()
+        val user = userViewModel.getUser()
+
+        viewModel.setEXP(user.value!!.getEXP())
     }
 
     /**
