@@ -386,7 +386,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun completeChalenge(completedChallenge: Challenge){
         if(user.value != null){
+            //add user exp
             user.value!!.setEXP(user.value!!.getEXP() + 1)
+
+            //complete the challenge
             val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
             if(challengeIndex != -1){
                 //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)
