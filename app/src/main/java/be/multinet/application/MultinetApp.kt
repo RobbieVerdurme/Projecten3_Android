@@ -5,6 +5,7 @@ import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
+import be.multinet.repository.ChallengeRepository
 import be.multinet.repository.UserRepository
 import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
@@ -35,7 +36,9 @@ class MultinetApp : MultiDexApplication() {
                     databaseModule(),
                     apiModule(),
                     repositoryModule(),
-                    viewModelModule()))
+                    viewModelModule()
+                    )
+            )
         }
     }
 
@@ -104,6 +107,9 @@ class MultinetApp : MultiDexApplication() {
         return module {
             factory {
                 UserRepository(get(), get(), get(),get())
+            }
+            factory {
+                ChallengeRepository(get(),get(),get(),get(),get())
             }
         }
     }

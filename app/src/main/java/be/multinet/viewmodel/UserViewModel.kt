@@ -143,7 +143,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun login(username: String, password: String) {
 
-        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889", listOf<Category>()))
+        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889"))
         /*
         viewModelScope.launch {
             requestError.value = ""

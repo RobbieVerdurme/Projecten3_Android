@@ -26,12 +26,7 @@ class User (
         Therapist(therapistId = 3, name = "Klaas", familyName = "De Muynck", mail = "klaas.de.muynck@hotmail.com", number = ""),
         Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
     ),
-    private var challenges: List<Challenge> = listOf<Challenge>(
-        Challenge("1","", "Lopen","Loop vandaag 5 km",  null, Category("1", "Lopen")),
-        Challenge("2","","Rustdag","Rust vandaag lekker even uit",null, Category("2", "Koken")),
-        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje",  null, Category("3", "Lopen")),
-        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", null, Category("4", "Koken"))
-    )
+    private var challenges: List<Challenge> = listOf<Challenge>()
 ){
     /**
      * @return the id of the user

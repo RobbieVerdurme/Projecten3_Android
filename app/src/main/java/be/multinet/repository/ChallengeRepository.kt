@@ -11,6 +11,7 @@ import be.multinet.database.Dao.UserDao
 import be.multinet.database.Persist.PersistentChallenge
 import be.multinet.model.Category
 import be.multinet.model.Challenge
+import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
@@ -26,7 +27,7 @@ class ChallengeRepository(
     private val challengeDao: ChallengeDao,
     private val categoryDao: CategoryDao,
     private val userDao: UserDao,
-    private val multimedService: MultimedService,
+    private val multimedService: IApiProvider,
     application: Application) : IChallengeRepository
 
 {
