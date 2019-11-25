@@ -80,6 +80,7 @@ class UpdateProfileFragment : Fragment()
 
     private fun setupObservers()
     {
+        //Observer aanpassen, user is al ingevuld dus gaat direct terug navigeren
         val navController = findNavController()
         userViewModel.getUser().observe(viewLifecycleOwner, Observer<User>{
             if(it != null){
