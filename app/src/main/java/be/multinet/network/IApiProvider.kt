@@ -2,7 +2,9 @@ package be.multinet.network
 
 import be.multinet.model.Challenge
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Response.Ok
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -34,9 +36,9 @@ interface IApiProvider {
     /**
      * give the database the challenge that has to be completed
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON and then used for creating an [ErrorResponse]
-     *
-    suspend fun completeChallenge(userid: Int, challengeId: Int) : Response<>
-    */
+     */
+    suspend fun completeChallenge(token :String, challengeRequestBody: CompleteChallengeRequestBody) : Response<Ok>
+
 
     /**
      * give the database the challenge that has to be completed

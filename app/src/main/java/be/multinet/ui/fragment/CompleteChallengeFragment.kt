@@ -75,9 +75,10 @@ class CompleteChallengeFragment : Fragment() {
         btnSubmit.setOnClickListener(object : View.OnClickListener{
             override fun onClick(p0: View?) {
                 val navController = findNavController()
-                val userViewModel: UserViewModel = getSharedViewModel()
-                val challenge:Challenge = viewmodel.getChallenge()
-                userViewModel.completeChalenge(challenge)
+                val uservm: UserViewModel by sharedViewModel()
+                val user = uservm.getUser().value!!
+                viewmodel.completeChalenge(user.getUserId().toInt(), user.getToken() )
+
                 navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesCategoryFragment)
             }
         })

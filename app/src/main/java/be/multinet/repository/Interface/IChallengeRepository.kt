@@ -1,4 +1,4 @@
-package be.multinet.repository
+package be.multinet.repository.Interface
 
 import androidx.lifecycle.MutableLiveData
 import be.multinet.model.Category

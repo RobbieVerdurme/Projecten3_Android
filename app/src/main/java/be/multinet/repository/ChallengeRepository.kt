@@ -6,18 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import be.multinet.R
 import be.multinet.database.Dao.CategoryDao
 import be.multinet.database.Dao.ChallengeDao
-import be.multinet.database.Dao.TherapistDao
 import be.multinet.database.Dao.UserDao
 import be.multinet.database.Persist.PersistentChallenge
 import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.network.IApiProvider
-import be.multinet.network.MultimedService
-import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Request.CompleteChallengeRequestBody
+import be.multinet.network.Response.Ok
 import be.multinet.network.Response.UserChallengeResponse
-import com.auth0.android.jwt.JWT
+import be.multinet.repository.Interface.IChallengeRepository
 import kotlinx.coroutines.*
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  *  This class is the production implementation of [IChallengeRepository].
@@ -25,7 +26,6 @@ import retrofit2.Response
 class ChallengeRepository(
     private val challengeDao: ChallengeDao,
     private val categoryDao: CategoryDao,
-    private val userDao: UserDao,
     private val multimedService: IApiProvider,
     application: Application) : IChallengeRepository
 
@@ -114,8 +114,9 @@ class ChallengeRepository(
      * get challenges
      */
     override fun getChallenges(userId: Int, viewmodelScope: CoroutineScope): List<Challenge> {
-        //boadcast reciever via fragment. kijken online = > naar db call. offline => room
+        //boadcast reciever via fragment. kijken online => naar db call. offline => room
         //if online
+        //if data is not already filled
         getChallengesFromOnline(userId, viewmodelScope)
         //else
         //loadChallenges()
@@ -154,7 +155,7 @@ class ChallengeRepository(
                                         it.challenge.ChallengeImage ?: "",
                                         it.challenge.title,
                                         it.challenge.description,
-                                        it.challenge.completedDate,
+                                        it.completedDate,
                                         Category(it.challenge.category.categoryId.toString(), it.challenge.category.name)
                                     )
                                     localChallenges.add(challenge)
@@ -168,6 +169,54 @@ class ChallengeRepository(
                     }
                     isBusy.value = false
                 }
+            }
+        }
+    }
+
+    /**
+     * complete challenge online
+     * if responcecode 200 => save to local db
+     */
+    fun completeChallenge(userId: Int, challengeId: Int,token:String, viewmodelScope: CoroutineScope){
+        viewmodelScope.launch {
+            requestError.value = ""
+            if(!isBusy.value!!){
+                isBusy.value = true
+                val apiResult = async(Dispatchers.IO){
+                    multimedService.completeChallenge(token, CompleteChallengeRequestBody(challengeId, userId))
+                }
+                val response: Response<Ok>? = apiResult.await()
+                if(response == null){
+                    requestError.value = genericErrorMessage
+                }else{
+                    when(response.code()){
+                        400 -> {
+                            requestError.value = genericErrorMessage
+                        }
+                        200 -> {
+                            //save in local db
+                            val challenge = challenges.value!![challengeId]
+                            challenge.setDateCompleted(Date())
+                            val persist = PersistentChallenge(
+                                challenge.getChallengeId().toInt(),
+                                challenge.getImage(),
+                                challenge.getTitle(),
+                                challenge.getDescription(),
+                                challenge.getDateCompleted(),
+                                challenge.getCategory()?.getCategoryId()!!.toInt()
+                            )
+                            challengeDao.completeChallenge(persist)
+
+                            //refresh challenges
+                            isBusy.value = false
+                            getChallengesFromOnline(userId, viewmodelScope)
+                        }
+                        else -> {
+                            requestError.value = genericErrorMessage
+                        }
+                    }
+                }
+                isBusy.value = false
             }
         }
     }

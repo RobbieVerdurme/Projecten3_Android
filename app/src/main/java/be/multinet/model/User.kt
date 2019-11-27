@@ -15,18 +15,19 @@ import java.util.*
  */
 class User (
     private val userId: String,
+    private var token:String,
     private var surname: String,
     private var familyName: String,
     private var mail: String,
     private var phone: String,
-    private var category: List<Category> = listOf<Category>(),
-    private var therapist: List<Therapist> = listOf<Therapist>(
+    private var category: List<Category> = listOf<Category>()
+    /*private var therapist: List<Therapist> = listOf<Therapist>(
         Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
         Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruyt", mail = "piet.Huysentruyt@hotmail.com", number = ""),
         Therapist(therapistId = 3, name = "Klaas", familyName = "De Muynck", mail = "klaas.de.muynck@hotmail.com", number = ""),
         Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
-    ),
-    private var challenges: List<Challenge> = listOf<Challenge>()
+    )
+    private var challenges: List<Challenge> = listOf<Challenge>()*/
 ){
     /**
      * @return the id of the user
@@ -54,19 +55,14 @@ class User (
     fun getPhone(): String = phone
 
     /**
-     * @return the different challenges of the user
+     * @return the different categories of the user
      */
-    fun getChallenges(): List<Challenge> = challenges
-
-    /**
-     * @return the different therapists of the user
-     */
-    fun getTherapist(): List<Therapist> = therapist
+    fun getCategory(): List<Category> = category
 
     /**
      * @return the different categories of the user
      */
-    fun getCategory(): List<Category> = category
+    fun getToken(): String = token
 
     //setters
     /**
@@ -98,23 +94,16 @@ class User (
     }
 
     /**
-     * @return the different challenges of the user
-     */
-    fun setChallenges(challengeList : List<Challenge>){
-        challenges = challengeList
-    }
-
-    /**
-     * @return the different therapists of the user
-     */
-    fun setTherapist(therapistList: List<Therapist>){
-        therapist = therapistList
-    }
-
-    /**
      * @return the different categories of the user
      */
     fun setCategory(categoryList: List<Category>){
         category = categoryList
+    }
+
+    /**
+     *
+     */
+    fun setToken(newToken: String){
+        token = newToken
     }
 }

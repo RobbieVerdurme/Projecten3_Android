@@ -25,6 +25,12 @@ interface ChallengeDao {
     suspend fun getChallenges(): List<PersistentChallenge?>
 
     /**
+     * gets a challenge with a specific id
+     */
+    @Query("SELECT * FROM PersistentChallenge WHERE challengeId = :challengeId")
+    suspend fun getChallenge(challengeId:Int): PersistentChallenge
+
+    /**
      * Delete the list of [PersistentChallenge] of the user.
      */
     @Query("DELETE FROM PersistentChallenge")

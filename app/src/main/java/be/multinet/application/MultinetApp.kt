@@ -3,9 +3,11 @@ package be.multinet.application
 import android.app.Application
 import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
+import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
 import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
@@ -66,13 +68,16 @@ class MultinetApp : MultiDexApplication() {
                 ChallengeViewModel(get())
             }
             viewModel {
-                CompleteChallengeViewModel(get())
+                CompleteChallengeViewModel(get(),get())
             }
             viewModel{
                 InfoViewModel(get())
             }
             viewModel {
                 ChallengeCategoryViewModel(get())
+            }
+            viewModel {
+                TherapistViewModel(get(),get())
             }
         }
     }
@@ -109,7 +114,10 @@ class MultinetApp : MultiDexApplication() {
                 UserRepository(get(), get(), get(),get())
             }
             single {
-                ChallengeRepository(get(),get(),get(),get(),get())
+                ChallengeRepository(get(),get(),get(),get())
+            }
+            single {
+                TherapistRepository(get(),get(),get())
             }
         }
     }

@@ -74,7 +74,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * Load data into [ChallengeViewModel]
      */
     private fun loadChallengeViewModelData() {
-        val challenges = userViewModel.getChallenges()
+        val challenges = viewmodel.getChallenges(userViewModel.getUser().value!!.getUserId().toInt())
         viewmodel.setChallenges(challenges)
     }
 

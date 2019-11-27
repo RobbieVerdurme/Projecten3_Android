@@ -143,7 +143,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun login(username: String, password: String) {
 
-        saveUserToLocalDatabase(User("1","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889"))
+        saveUserToLocalDatabase(User("1","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJCb2VmZXJyb2JAZ21haWwuY29tIiwidW5pcXVlX25hbWUiOiJCb2VmZXJyb2IiLCJJZCI6IjEiLCJyb2xlcyI6IlVzZXIiLCJleHAiOjE1NzQ4ODQ0NDN9.g1GU1rE-HXKwHd9SeHaUpQz6TAbe7xizi_3oRmyUJg0","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889"))
         /*
         viewModelScope.launch {
             requestError.value = ""
@@ -185,7 +185,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     /**
      * backend call to get the information of the user
      */
-    private fun getUser(userid: Int){
+    private fun getUser(userid: Int, token:String){
         viewModelScope.launch {
             requestError.value = ""
             if(!isBusy.value!!){
@@ -206,7 +206,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         }
                         200 -> {
                             val body = response.body()!!
-                            val user = User(body.userId,body.surname,body.familyName,body.mail,body.mail,body.category)
+                            val user = User(body.userId,body.surname,body.familyName,body.mail,body.mail,token,body.category)
                             //save the loggedin user  to the database
                             saveUserToLocalDatabase(user)
                         }
@@ -221,28 +221,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     }
 
     /**
-     * get challenges from the user
-     */
-    fun getChallenges(): List<Challenge>{
-        if (user.value != null){
-            if(user.value!!.getChallenges().isEmpty()){
-                user.value!!.setChallenges(challengeRepository.getChallenges(user.value!!.getUserId().toInt(), viewModelScope))
-            }
-            return user.value!!.getChallenges()
-        }
-        return listOf<Challenge>()
-    }
-
-    /**
-     * backend call to get the challenges from the users
-     *
-    private fun getChallengesUser(userid: Int){
-        challengeRepository.getChallenges(userid)
-    }*/
-
-    /**
      * get therapists from the user
-     */
+     *
     fun getTherapists(): List<Therapist> {
         //TODO backend call for the therapists of the user
         if(user.value != null){
@@ -252,92 +232,11 @@ class UserViewModel constructor(private val repository: UserRepository, private 
             return user.value!!.getTherapist()
         }
         return listOf<Therapist>()
-    }
+    }*/
 
     /**
      * backend call to get the therapists from the user
      */
-    private fun getTherapistUser(userid: Int){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.getTherapists(userid)
-                }
-                val response: Response<List<Therapist>>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
-                        400 -> {
-                            requestError.value = genericErrorMessage
-                        }
-                        200 -> {
-                            val body = response.body()!!
 
-                            //save the therapists to local room db
-                            repository.inserttherapists(body)
-
-                            //assign the therapists to the user
-                            user.value!!.setTherapist(body)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
-                        }
-                    }
-                }
-                isBusy.value = false
-            }
-        }
-    }
-
-    /**
-     * check if the challenge is a challenge from the user
-     * do the backend call for complete challenge
-     */
-    fun completeChalenge(completedChallenge: Challenge){
-        if(user.value != null){
-            val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
-            if(challengeIndex != -1){
-                //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)
-                val date = Date()
-                user.value!!.getChallenges()[challengeIndex].setDateCompleted(date)
-            }
-        }
-    }
-
-    /**
-     * backend call to complete a challenge + change to room db
-     *
-    private fun completeChallengeUser(userid: Int, challenge: Challenge){
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.completeChallenge(userid, challenge.getChallengeId().toInt())
-                }
-                val response: Response<>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                        when(response.code()){
-                            400 -> {
-                                requestError.value = genericErrorMessage
-                            }
-                            200 -> {
-                                repository.completeChallenge(challenge)
-                            }
-                            else -> {
-                                requestError.value = genericErrorMessage
-                            }
-                        }
-                    }
-                isBusy.value = false
-            }
-        }
-    }
-    */
     //endregion
 }

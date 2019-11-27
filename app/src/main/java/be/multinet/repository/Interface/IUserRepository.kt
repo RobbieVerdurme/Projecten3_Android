@@ -1,4 +1,4 @@
-package be.multinet.repository
+package be.multinet.repository.Interface
 
 import be.multinet.model.User
 
