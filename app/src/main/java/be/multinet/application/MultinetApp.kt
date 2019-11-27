@@ -105,10 +105,10 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun repositoryModule(): Module {
         return module {
-            factory {
+            single {
                 UserRepository(get(), get(), get(),get())
             }
-            factory {
+            single {
                 ChallengeRepository(get(),get(),get(),get(),get())
             }
         }

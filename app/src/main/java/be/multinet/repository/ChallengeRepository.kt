@@ -16,8 +16,7 @@ import be.multinet.network.MultimedService
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import com.auth0.android.jwt.JWT
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.invoke
+import kotlinx.coroutines.*
 import retrofit2.Response
 
 /**
@@ -35,7 +34,7 @@ class ChallengeRepository(
      * [LiveData] that stores the challenges
      * This will be used by objects that need access to the list of challenges
      */
-    private val challenges = MutableLiveData<List<Challenge>>()
+    private val challenges = MutableLiveData<List<Challenge>>(listOf<Challenge>())
 
 
     //region retrofit
@@ -62,10 +61,14 @@ class ChallengeRepository(
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
 
     init {
+        challenges.value = listOf()
         requestError.value = ""
         isBusy.value = false
     }
 
+    /**
+     * Save challenges to room db
+     */
     override suspend fun saveChallenges(challenges: List<Challenge>) {
         /**
          * Insert challenges
@@ -80,19 +83,17 @@ class ChallengeRepository(
                     it.getTitle(),
                     it.getDescription(),
                     it.getDateCompleted(),
-                    it.getCategory()!!.getCategoryId().toInt()
+                    it.getCategory()?.getCategoryId()!!.toInt()
                 )
             )
         }
     }
 
+    /**
+     * get challenges from room db
+     */
     override suspend fun loadChallenges(): List<Challenge>? {
         val persistentChallenges = challengeDao.getChallenges()
-        if(persistentChallenges.isEmpty())
-        {
-            throw NullPointerException()
-        }
-        else{
             val localChallenges = ArrayList<Challenge>()
 
             persistentChallenges.forEach {
@@ -107,67 +108,73 @@ class ChallengeRepository(
                 localChallenges.add(challenge)
             }
             return localChallenges
-        }
-
     }
 
-    override fun getChallenges(userId: Int): MutableLiveData<List<Challenge>> {
-        if (challenges.value!!.isEmpty()) {
-            try {
-                suspend {
-                    challenges.value = loadChallenges()
-                }
-            } catch (ex: NullPointerException) {
-                //Hier moet de call naar de db geregeld worden
-                suspend {
-                    requestError.value = ""
-                    if (!isBusy.value!!) {
-                        isBusy.value = true
-                        val apiResult = (Dispatchers.IO) {
-                            multimedService.getChallengesUser(userId)
-                        }
-                        val response: Response<List<UserChallengeResponse>>? = apiResult
-                        if (response == null) {
-                            requestError.value = genericErrorMessage
-                        } else {
-                            when (response.code()) {
-                                400 -> {
-                                    requestError.value = genericErrorMessage
-                                }
-                                200 -> {
-                                    val userChallengeResponses: List<UserChallengeResponse> =
-                                        response.body()!!
-                                    val localChallenges = ArrayList<Challenge>()
+    /**
+     * get challenges
+     */
+    override fun getChallenges(userId: Int, viewmodelScope: CoroutineScope): List<Challenge> {
+        //boadcast reciever via fragment. kijken online = > naar db call. offline => room
+        //if online
+        getChallengesFromOnline(userId, viewmodelScope)
+        //else
+        //loadChallenges()
+        return challenges.value!!
+    }
 
-                                    userChallengeResponses.forEach()
-                                    {
-                                        val challenge = Challenge(
-                                            it.challenge.challengeId.toString(),
-                                            it.challenge.image,
-                                            it.challenge.title,
-                                            it.challenge.description,
-                                            it.challenge.completedDate,
-                                            getCategoryById(it.challenge.categoryId)
-                                        )
-                                        localChallenges.add(challenge)
-                                    }
-                                    saveChallenges(localChallenges)
+    /**
+     * get challenges from the online database
+     */
+    private fun getChallengesFromOnline(userId: Int, viewmodelScope: CoroutineScope){
+        viewmodelScope.launch {
+            if (challenges.value!!.isEmpty()) {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getChallengesUser(userId)
+                    }
+                    val response: Response<List<UserChallengeResponse>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = genericErrorMessage
+                            }
+                            200 -> {
+                                val userChallengeResponses: List<UserChallengeResponse> =
+                                    response.body()!!
+                                val localChallenges = ArrayList<Challenge>()
+
+                                userChallengeResponses.forEach()
+                                {
+                                    val challenge = Challenge(
+                                        it.challenge.challengeId.toString(),
+                                        it.challenge.ChallengeImage ?: "",
+                                        it.challenge.title,
+                                        it.challenge.description,
+                                        it.challenge.completedDate,
+                                        Category(it.challenge.category.categoryId.toString(), it.challenge.category.name)
+                                    )
+                                    localChallenges.add(challenge)
                                 }
-                                else -> {
-                                    requestError.value = genericErrorMessage
-                                }
+                                saveChallenges(localChallenges)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
                             }
                         }
-                        isBusy.value = false
                     }
+                    isBusy.value = false
                 }
             }
         }
-        return challenges
     }
 
-
-
+    /**
+     * get category from the given id
+     */
     private suspend fun getCategoryById(id: Int): Category?
     {
         return categoryDao.getCategory(id)

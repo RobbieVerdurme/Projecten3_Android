@@ -226,7 +226,7 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     fun getChallenges(): List<Challenge>{
         if (user.value != null){
             if(user.value!!.getChallenges().isEmpty()){
-                getChallengesUser(user.value!!.getUserId().toInt())
+                user.value!!.setChallenges(challengeRepository.getChallenges(user.value!!.getUserId().toInt(), viewModelScope))
             }
             return user.value!!.getChallenges()
         }
@@ -235,10 +235,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
 
     /**
      * backend call to get the challenges from the users
-     */
+     *
     private fun getChallengesUser(userid: Int){
         challengeRepository.getChallenges(userid)
-    }
+    }*/
 
     /**
      * get therapists from the user

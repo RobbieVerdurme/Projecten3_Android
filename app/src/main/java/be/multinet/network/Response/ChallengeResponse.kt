@@ -5,10 +5,10 @@ import java.util.*
 
 class ChallengeResponse(
     val challengeId: Int,
-    val image : String,
+    val ChallengeImage : String?,
     val title: String,
     val description:String,
     val completedDate: Date?,
-    val categoryId: Int
+    val category: CategoryResponse
 ) {
 }

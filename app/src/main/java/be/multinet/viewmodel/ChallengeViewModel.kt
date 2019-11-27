@@ -25,7 +25,8 @@ class ChallengeViewModel constructor(private val challengeRepository: ChallengeR
      * get the list of [Challenge]s
      */
     fun getChallenges(userId: Int): List<Challenge>{
-        return challengeRepository.getChallenges(userId).value!!
+        challenges.value = challengeRepository.getChallenges(userId, viewModelScope)
+        return challenges.value!!
     }
 
     /**

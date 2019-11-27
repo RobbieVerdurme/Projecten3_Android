@@ -60,24 +60,6 @@ class ChallengesCategoryFragment : Fragment() {
         challengeCategoryAdapter = ChallengeCategoryAdapter(fragmentManager!!)
         addChallengeCategory()
         initViewPagerAndTabs()
-        binding.challengesCategoryTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener
-        {
-            override fun onTabSelected(tab: TabLayout.Tab?)
-            {
-               // binding.challengesCategoryViewPager.setCurrentItem(1, false)
-                println(binding.challengesCategoryViewPager.currentItem)
-            }
-
-            override fun onTabReselected(p0: TabLayout.Tab?)
-            {
-                println(binding.challengesCategoryViewPager.currentItem)
-
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-                println("tab unselected")
-            }
-        })
     }
 
     private fun addChallengeCategory() {
