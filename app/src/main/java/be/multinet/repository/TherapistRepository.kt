@@ -42,6 +42,7 @@ class TherapistRepository(
     private val isBusy = MutableLiveData<Boolean>()
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
+    private val getTherapistErrorMassage: String = application.getString(R.string.therapistError)
 
     /**
      * @return [isBusy]
@@ -113,7 +114,7 @@ class TherapistRepository(
                 }else{
                     when(response.code()){
                         400 -> {
-                            requestError.value = genericErrorMessage
+                            requestError.value = getTherapistErrorMassage
                         }
                         200 -> {
                             val body = response.body()!!

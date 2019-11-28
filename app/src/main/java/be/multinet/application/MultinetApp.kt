@@ -114,7 +114,7 @@ class MultinetApp : MultiDexApplication() {
     private fun repositoryModule(): Module {
         return module {
             single {
-                UserRepository(get(), get(), get(),get())
+                UserRepository(get(), get(), get(),get(),get(),get())
             }
             single {
                 ChallengeRepository(get(),get(),get(),get())

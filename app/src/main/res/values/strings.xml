@@ -54,6 +54,8 @@
     <string name="userError">There was een error while getting your user details</string>
     <string name="therapistError">There was een error while getting your therapist details</string>
     <string name="challengeError">There was een error while getting your challenges details</string>
+    <string name="completeChalengeError">There was een error while completing the challenge</string>
+    <string name="contractErrorMessage">You\'re contract expired</string>
 
     <!-- Complete Challenge -->
     <string name="Complete_Challenge">Complete Challenge</string>

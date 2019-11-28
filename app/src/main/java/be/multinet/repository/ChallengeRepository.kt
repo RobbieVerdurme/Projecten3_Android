@@ -59,6 +59,8 @@ class ChallengeRepository(
     fun getIsBusy(): LiveData<Boolean> = isBusy
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
+    private val getChallengesErrorMassage: String = application.getString(R.string.challengeError)
+    private val completeChallengeErrorMessage:String = application.getString(R.string.completeChalengeError)
 
     init {
         challenges.value = listOf()
@@ -141,7 +143,7 @@ class ChallengeRepository(
                     } else {
                         when (response.code()) {
                             400 -> {
-                                requestError.value = genericErrorMessage
+                                requestError.value = getChallengesErrorMassage
                             }
                             200 -> {
                                 val userChallengeResponses: List<UserChallengeResponse> =
@@ -191,7 +193,7 @@ class ChallengeRepository(
                 }else{
                     when(response.code()){
                         400 -> {
-                            requestError.value = genericErrorMessage
+                            requestError.value = completeChallengeErrorMessage
                         }
                         200 -> {
                             //save in local db
