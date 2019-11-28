@@ -34,7 +34,8 @@ class UserRepository(
                 user.getFamilyName(),
                 user.getMail(),
                 user.getPhone(),
-                user.getContractDate()
+                user.getContractDate(),
+                user.getEXP()
             )
         )
         if(!user.getTherapist().isEmpty()){
@@ -91,7 +92,7 @@ class UserRepository(
                 }
             }
 
-            return User(persistentUser.userId.toString(), persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone,persistentUser.contract, categoriesUser.toList(), therapistsUser.toList(), challengesUser.toList())
+            return User(persistentUser.userId.toString(), persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone,persistentUser.contract, categoriesUser.toList(), persistentUser.exp, therapistsUser.toList(), challengesUser.toList())
         }
     }
 

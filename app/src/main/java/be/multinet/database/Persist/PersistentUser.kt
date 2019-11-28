@@ -15,5 +15,7 @@ data class PersistentUser(
     val familyName: String,
     val mail: String,
     val phone: String,
-    val contract: Date
-)
+    val contract: Date,
+    val exp: Int
+) {
+}
