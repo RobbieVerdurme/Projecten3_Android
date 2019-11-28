@@ -11,6 +11,7 @@ import java.util.*
 @Entity
 data class PersistentUser(
     @PrimaryKey val userId: Int,
+    val token:String,
     val surname: String,
     val familyName: String,
     val mail: String,

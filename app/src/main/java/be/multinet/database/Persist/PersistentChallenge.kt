@@ -3,6 +3,7 @@ package be.multinet.database.Persist
 import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import java.util.*
 
 /**

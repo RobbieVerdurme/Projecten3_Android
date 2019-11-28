@@ -7,6 +7,6 @@ class UserChallengeResponse(
     val userId: Int,
     val userFirstName: String,
     val challenge: ChallengeResponse,
-    val competedDate: Date?
+    val completedDate: Date?
 ) {
 }

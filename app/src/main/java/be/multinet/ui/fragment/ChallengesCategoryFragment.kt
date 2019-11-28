@@ -14,7 +14,9 @@ import be.multinet.adapter.ChallengeCategoryAdapter
 import be.multinet.databinding.FragmentChallengesCategoryBinding
 import be.multinet.model.Category
 import be.multinet.viewmodel.ChallengeCategoryViewModel
+import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_challenges_category.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,9 +30,16 @@ class ChallengesCategoryFragment : Fragment() {
     val viewModel: ChallengeCategoryViewModel by viewModel()
 
     /**
+     *
+     */
+    val challengeViewModel: ChallengeViewModel by sharedViewModel()
+
+    /**
      * userviewmodel for the categorys of the fragment
      */
     val userViewModel: UserViewModel by sharedViewModel()
+
+    lateinit var binding: FragmentChallengesCategoryBinding
 
     /**
      * adapter for the viewpager
@@ -38,10 +47,9 @@ class ChallengesCategoryFragment : Fragment() {
     private lateinit var challengeCategoryAdapter: ChallengeCategoryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentChallengesCategoryBinding.inflate(inflater, container, false)
+        binding = FragmentChallengesCategoryBinding.inflate(inflater, container, false)
         binding.challengeCategoryViewModel = viewModel
         binding.lifecycleOwner = this
-        retainInstance = true
         return binding.root
     }
 
@@ -73,7 +81,8 @@ class ChallengesCategoryFragment : Fragment() {
     }
 
     private fun loadChallengeCategory() {
-        val challenges = userViewModel.getChallenges()
+        val userId = userViewModel.getUser().value!!.getUserId().toInt()
+        val challenges = challengeViewModel.getChallenges(userId)
         val challengeCategories: ArrayList<Category> = ArrayList()
 
         //get categorys

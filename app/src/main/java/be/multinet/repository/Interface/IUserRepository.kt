@@ -1,4 +1,4 @@
-package be.multinet.repository
+package be.multinet.repository.Interface
 
 import be.multinet.model.User
 
@@ -6,6 +6,11 @@ import be.multinet.model.User
  * This interface defines a contract to manage the application user.
  */
 interface IUserRepository {
+
+    /**
+     * return the [userId] of the application User
+     */
+    suspend fun getUserId(): Int
 
     /**
      * Save [user] to local persistence.

@@ -3,8 +3,11 @@ package be.multinet.application
 import android.app.Application
 import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
+import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
+import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
 import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
@@ -35,7 +38,9 @@ class MultinetApp : MultiDexApplication() {
                     databaseModule(),
                     apiModule(),
                     repositoryModule(),
-                    viewModelModule()))
+                    viewModelModule()
+                    )
+            )
         }
     }
 
@@ -45,7 +50,7 @@ class MultinetApp : MultiDexApplication() {
     private fun viewModelModule(): Module {
         return module {
             viewModel {
-                UserViewModel(get(), get(), get())
+                UserViewModel(get(), get(), get(), get())
             }
             viewModel {
                 HomeViewModel(get())
@@ -63,13 +68,16 @@ class MultinetApp : MultiDexApplication() {
                 ChallengeViewModel(get())
             }
             viewModel {
-                CompleteChallengeViewModel(get())
+                CompleteChallengeViewModel(get(),get())
             }
             viewModel{
                 InfoViewModel(get())
             }
             viewModel {
                 ChallengeCategoryViewModel(get())
+            }
+            viewModel {
+                TherapistViewModel(get(),get())
             }
             viewModel{
                 UpdateProfileViewModel(get())
@@ -105,8 +113,14 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun repositoryModule(): Module {
         return module {
-            factory {
+            single {
                 UserRepository(get(), get(), get(),get())
+            }
+            single {
+                ChallengeRepository(get(),get(),get(),get())
+            }
+            single {
+                TherapistRepository(get(),get(),get())
             }
         }
     }

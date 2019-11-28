@@ -15,25 +15,14 @@ import java.util.*
  */
 class User (
     private val userId: String,
+    private var token:String,
     private var surname: String,
     private var familyName: String,
     private var mail: String,
     private var phone: String,
     private var contract: Date,
     private var category: List<Category> = listOf<Category>(),
-    private var exp: Int,
-    private var therapist: List<Therapist> = listOf<Therapist>(
-        Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
-        Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruyt", mail = "piet.Huysentruyt@hotmail.com", number = ""),
-        Therapist(therapistId = 3, name = "Klaas", familyName = "De Muynck", mail = "klaas.de.muynck@hotmail.com", number = ""),
-        Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
-    ),
-    private var challenges: List<Challenge> = listOf<Challenge>(
-        Challenge("1","", "Lopen","Loop vandaag 5 km",  null, Category("1", "Lopen")),
-        Challenge("2","","Rustdag","Rust vandaag lekker even uit",null, Category("2", "Koken")),
-        Challenge("3","","Gezonde maaltijd","Eet een gezond gerechtje",  null, Category("3", "Lopen")),
-        Challenge("4","","Yoga","Doe de ezelsbrug stand van in de joga", null, Category("4", "Koken"))
-    )
+    private var exp: Int
 ){
     /**
      * @return the id of the user
@@ -61,19 +50,14 @@ class User (
     fun getPhone(): String = phone
 
     /**
-     * @return the different challenges of the user
+     * @return the different categories of the user
      */
-    fun getChallenges(): List<Challenge> = challenges
-
-    /**
-     * @return the different therapists of the user
-     */
-    fun getTherapist(): List<Therapist> = therapist
+    fun getCategory(): List<Category> = category
 
     /**
      * @return the different categories of the user
      */
-    fun getCategory(): List<Category> = category
+    fun getToken(): String = token
 
     /**
      * @return the contract date of the user
@@ -115,24 +99,17 @@ class User (
     }
 
     /**
-     * sets the challenges of the user
-     */
-    fun setChallenges(challengeList : List<Challenge>){
-        challenges = challengeList
-    }
-
-    /**
      * sets the therapists of the user
-     */
-    fun setTherapist(therapistList: List<Therapist>){
-        therapist = therapistList
-    }
-
-    /**
-     * sets the list of categories of the user
      */
     fun setCategory(categoryList: List<Category>){
         category = categoryList
+    }
+
+    /**
+     * sets the token of the logged in user
+     */
+    fun setToken(newToken: String){
+        token = newToken
     }
 
     /**

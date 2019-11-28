@@ -12,24 +12,30 @@ import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.model.Therapist
 import be.multinet.model.User
+import be.multinet.repository.Interface.IUserRepository
 
 /**
  * This class is the production implementation of [IUserRepository].
  */
-class UserRepository(
-    private val userDao: UserDao,
-    private  val categoryDao: CategoryDao,
-    private val therapistDao: TherapistDao,
-    private val challengeDao: ChallengeDao) : IUserRepository {
+class UserRepository(private val userDao: UserDao,
+        private var categoryDao: CategoryDao,
+        private val therapistDao: TherapistDao,
+        private val challengeDao: ChallengeDao): IUserRepository {
+
+    override suspend fun getUserId(): Int
+    {
+        return userDao.getUser()!!.userId
+    }
+
 
     override suspend fun saveApplicationUser(user: User) {
         /**
          * insert user
          */
-        //TODO userDao.insertUser() -> change userID to integer
         userDao.insertUser(
             PersistentUser(
                 user.getUserId().toInt(),
+                user.getToken(),
                 user.getSurname(),
                 user.getFamilyName(),
                 user.getMail(),
@@ -38,16 +44,9 @@ class UserRepository(
                 user.getEXP()
             )
         )
-        if(!user.getTherapist().isEmpty()){
-            inserttherapists(user.getTherapist());
-        }
 
-        if(!user.getCategory().isEmpty()){
+        if(user.getCategory().isNotEmpty()){
             insertCategories(user.getCategory())
-        }
-
-        if(!user.getChallenges().isEmpty()){
-            insertChallenges(user.getChallenges())
         }
     }
 
@@ -62,37 +61,12 @@ class UserRepository(
             val categories = categoryDao.getCategories()
             val categoriesUser: MutableList<Category> = mutableListOf<Category>()
 
-            if(!categories.isEmpty()){
+            if(categories.isNotEmpty()){
                 for (category in categories){
                     categoriesUser.add(Category(category!!.categoryId.toString(), category!!.name))
                 }
             }
-
-            /**
-             * get therapists from user
-             */
-            val therapists = therapistDao.getTherapist()
-            val therapistsUser: MutableList<Therapist> = mutableListOf<Therapist>()
-
-            if(!therapists.isEmpty()){
-                for (therapist in therapists){
-                    therapistsUser.add(Therapist(therapist!!.therapistId, therapist!!.surname, therapist!!.familyName, therapist!!.phone, therapist!!.mail))
-                }
-            }
-            /**
-             * get challenges user
-             */
-            val challenges = challengeDao.getChallenges()
-            val challengesUser: MutableList<Challenge> = mutableListOf<Challenge>()
-
-            if(!challenges.isEmpty()){
-                for(challenge in challenges){
-                    val category = categoryDao.getCategory(challenge!!.categoryId)
-                    challengesUser.add(Challenge(challenge!!.challengeId.toString(), challenge!!.image, challenge!!.title, challenge.description, challenge!!.completedDate, category ))
-                }
-            }
-
-            return User(persistentUser.userId.toString(), persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone,persistentUser.contract, categoriesUser.toList(), persistentUser.exp, therapistsUser.toList(), challengesUser.toList())
+            return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone, categoriesUser.toList())
         }
     }
 
@@ -109,55 +83,6 @@ class UserRepository(
                 )
             )
         }
-    }
-
-    suspend fun inserttherapists(therapists: List<Therapist>){
-        /**
-         * insert therapists
-         */
-        for (therapist in therapists){
-            therapistDao.insertTherapist(
-                PersistentTherapist(
-                    therapist.getId(),
-                    therapist.getName(),
-                    therapist.getFamilyName(),
-                    therapist.getNumber(),
-                    therapist.getMail()
-                )
-            )
-        }
-    }
-
-    suspend fun insertChallenges(challenges: List<Challenge>){
-        /**
-         * insert challenges
-         */
-        for (challenge in challenges){
-            challengeDao.insertChallenge(
-                PersistentChallenge(
-                    challenge.getChallengeId().toInt(),
-                    challenge.getImage(),
-                    challenge.getTitle(),
-                    challenge.getDescription(),
-                    challenge.getDateCompleted(),
-                    challenge.getCategory()?.getCategoryId()!!.toInt()
-                )
-            )
-        }
-    }
-    //endregion
-    //region update value in database
-    suspend fun completeChallenge(challenge: Challenge){
-        challengeDao.completeChallenge(
-            PersistentChallenge(
-                challenge.getChallengeId().toInt(),
-                challenge.getTitle(),
-                challenge.getImage(),
-                challenge.getDescription(),
-                challenge.getDateCompleted(),
-                challenge.getCategory()?.getCategoryId()!!.toInt()
-            )
-        )
     }
     //endregion
 

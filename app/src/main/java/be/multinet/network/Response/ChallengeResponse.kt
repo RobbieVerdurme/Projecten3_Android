@@ -4,9 +4,11 @@ import be.multinet.model.Category
 import java.util.*
 
 class ChallengeResponse(
-    val challengeId:Int,
-    val title:String,
+    val challengeId: Int,
+    val ChallengeImage : String?,
+    val title: String,
     val description:String,
-    val category:Category
+    val completedDate: Date?,
+    val category: CategoryResponse
 ) {
 }

@@ -1,7 +1,10 @@
 package be.multinet.network
 
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Response.Ok
+import be.multinet.network.Response.TherapistResponse
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -113,16 +116,16 @@ class MultimedService : IApiProvider {
 
     /**
      * set the challenge to completed
-     *
-    override suspend fun completeChallenge(userid: Int, challengeId: Int): Response<>{
-        return server
+     */
+    override suspend fun completeChallenge(token :String,challengeRequestBody: CompleteChallengeRequestBody): Response<Ok>{
+        return server.completeChallenge(token ,challengeRequestBody)
     }
-    */
+
 
     /**
      * ask for the therapists of the user with id
      */
-    override suspend fun getTherapists(userid: Int): Response<List<Therapist>> {
-        return server.getTherapists(userid)
+    override suspend fun getTherapists(token:String, userid: Int): Response<List<TherapistResponse>> {
+        return server.getTherapists(token,userid)
     }
 }

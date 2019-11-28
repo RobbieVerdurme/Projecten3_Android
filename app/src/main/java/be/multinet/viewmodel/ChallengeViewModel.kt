@@ -3,23 +3,31 @@ package be.multinet.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import be.multinet.model.Category
 import be.multinet.model.Challenge
+import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class ChallengeViewModel(application: Application): AndroidViewModel(application) {
+class ChallengeViewModel constructor(private val challengeRepository: ChallengeRepository) : ViewModel()
+{
     /**
      * This [MutableLiveData] holds the list of challenges
      */
     private val challenges = MutableLiveData<List<Challenge>>()
 
+
     /**
      * get the list of [Challenge]s
      */
-    fun getChallenges(category: Category): MutableLiveData<List<Challenge>>{
-      return MutableLiveData<List<Challenge>>(challenges.value!!.filterIndexed { index, challenge ->
-        challenge.getCategory()?.getName() == category.getName()
-    })
-}
+    fun getChallenges(userId: Int): List<Challenge>{
+        challenges.value = challengeRepository.getChallenges(userId, viewModelScope)
+        return challenges.value!!
+    }
 
     /**
      * set the list of [Challenge]s

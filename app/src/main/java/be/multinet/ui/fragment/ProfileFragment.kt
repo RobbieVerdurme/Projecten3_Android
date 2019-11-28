@@ -15,6 +15,7 @@ import be.multinet.model.Company
 import be.multinet.model.User
 import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.ProfileViewModel
+import be.multinet.viewmodel.TherapistViewModel
 import be.multinet.viewmodel.UpdateProfileViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -29,6 +30,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ProfileFragment : Fragment() {
 
     val viewModel: ProfileViewModel by viewModel()
+    val therapistViewModel:TherapistViewModel by viewModel()
 
     /**
      * the TherapistAdapter for this fragment
@@ -52,7 +54,7 @@ class ProfileFragment : Fragment() {
         if(currentUser != null){
             viewModel.setUser(currentUser)
         }
-        //Set up the binding
+        //Set up the fragmentChallengesCategoryBinding
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
@@ -88,7 +90,7 @@ class ProfileFragment : Fragment() {
     private fun addTherapists(){
         val user = viewModel.getUserProfile().value
         if(user!= null){
-            therapistAdapter.submitList(user.getTherapist())
+            therapistAdapter.submitList(therapistViewModel.getTherapists(user.getToken(), user.getUserId().toInt()))
         }
     }
 
