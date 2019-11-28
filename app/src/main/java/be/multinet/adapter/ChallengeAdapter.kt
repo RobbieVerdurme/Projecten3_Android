@@ -22,7 +22,8 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
 
 
     fun addCardItems(item: List<Challenge>){
-        items.addAll(item)
+        val sortedList = item.sortedWith(nullsFirst(compareBy { it.getDateCompleted() }))
+        items.addAll(sortedList)
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {

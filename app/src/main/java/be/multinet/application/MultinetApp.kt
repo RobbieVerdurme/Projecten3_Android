@@ -71,6 +71,9 @@ class MultinetApp : MultiDexApplication() {
             viewModel {
                 ChallengeCategoryViewModel(get())
             }
+            viewModel{
+                UpdateProfileViewModel(get())
+            }
         }
     }
 
