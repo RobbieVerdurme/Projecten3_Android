@@ -89,23 +89,23 @@ class TherapistRepository(
         return localTherapists
     }
 
-    fun getTherapist(userId: Int, viewmodelScope: CoroutineScope): List<Therapist>{
+    fun getTherapist(token:String, userId: Int, viewmodelScope: CoroutineScope): List<Therapist>{
         //TODO call online if wifi or data
         //check if online
         //check if data filled
-        getTherapistFromOnline(userId, viewmodelScope)
+        getTherapistFromOnline(token, userId, viewmodelScope)
         //else get data from roomdb
 
         return therapists.value!!
     }
 
-    private fun getTherapistFromOnline(userId:Int, viewmodelScope: CoroutineScope){
+    private fun getTherapistFromOnline(token:String, userId:Int, viewmodelScope: CoroutineScope){
         viewmodelScope.launch {
             requestError.value = ""
             if(!isBusy.value!!){
                 isBusy.value = true
                 val apiResult = async(Dispatchers.IO){
-                    multimedService.getTherapists(userId)
+                    multimedService.getTherapists(token, userId)
                 }
                 val response: Response<List<TherapistResponse>>? = apiResult.await()
                 if(response == null){

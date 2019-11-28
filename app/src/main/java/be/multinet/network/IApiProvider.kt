@@ -45,5 +45,5 @@ interface IApiProvider {
      * give the database the challenge that has to be completed
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON and then used for creating an [ErrorResponse]
      */
-    suspend fun getTherapists(userid: Int) : Response<List<TherapistResponse>>
+    suspend fun getTherapists(token:String, userid: Int) : Response<List<TherapistResponse>>
 }

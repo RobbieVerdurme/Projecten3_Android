@@ -46,5 +46,5 @@ interface IMultimedApi {
      * get the list of challenges from the user
      */
     @GET("users/therapist/{id}")
-    suspend fun getTherapists(@Path("id") userid: Int) : Response<List<TherapistResponse>>
+    suspend fun getTherapists(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<TherapistResponse>>
 }

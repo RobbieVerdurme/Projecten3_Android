@@ -84,7 +84,7 @@ class ProfileFragment : Fragment() {
     private fun addTherapists(){
         val user = viewModel.getUserProfile().value
         if(user!= null){
-            therapistAdapter.submitList(therapistViewModel.getTherapists(user.getUserId().toInt()))
+            therapistAdapter.submitList(therapistViewModel.getTherapists(user.getToken(), user.getUserId().toInt()))
         }
     }
 

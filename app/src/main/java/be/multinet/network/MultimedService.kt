@@ -125,7 +125,7 @@ class MultimedService : IApiProvider {
     /**
      * ask for the therapists of the user with id
      */
-    override suspend fun getTherapists(userid: Int): Response<List<TherapistResponse>> {
-        return server.getTherapists(userid)
+    override suspend fun getTherapists(token:String, userid: Int): Response<List<TherapistResponse>> {
+        return server.getTherapists(token,userid)
     }
 }

@@ -11,7 +11,7 @@ class TherapistViewModel(private val therapistRepository: TherapistRepository, a
     /**
      * gets the list of therapits from the repository
      */
-    fun getTherapists(userId:Int): List<Therapist>{
-        return therapistRepository.getTherapist(userId, viewModelScope)
+    fun getTherapists(token:String, userId:Int): List<Therapist>{
+        return therapistRepository.getTherapist(token, userId, viewModelScope)
     }
 }
