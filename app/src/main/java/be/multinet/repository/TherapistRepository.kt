@@ -8,6 +8,7 @@ import be.multinet.database.Dao.TherapistDao
 import be.multinet.database.Persist.PersistentTherapist
 import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
+import be.multinet.network.Response.TherapistResponse
 import be.multinet.repository.Interface.ITherapistRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -106,7 +107,7 @@ class TherapistRepository(
                 val apiResult = async(Dispatchers.IO){
                     multimedService.getTherapists(userId)
                 }
-                val response: Response<List<Therapist>>? = apiResult.await()
+                val response: Response<List<TherapistResponse>>? = apiResult.await()
                 if(response == null){
                     requestError.value = genericErrorMessage
                 }else{
@@ -116,12 +117,20 @@ class TherapistRepository(
                         }
                         200 -> {
                             val body = response.body()!!
-
+                            val localtherapists = ArrayList<Therapist>()
                             //save the therapists to local room db
                             body.forEach {
-                                //TODO convert to persistTherapist for the roomdb
-                                //therapistDao.insertTherapist(it)
+                                val th = Therapist(
+                                    it.therapistId,
+                                    it.firstname,
+                                    it.lastname,
+                                    "",
+                                    it.email
+                                )
+
+                                localtherapists.add(th)
                             }
+                            saveTherapist(localtherapists)
                         }
                         else -> {
                             requestError.value = genericErrorMessage

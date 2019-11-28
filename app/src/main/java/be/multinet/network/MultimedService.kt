@@ -4,6 +4,7 @@ import be.multinet.model.Therapist
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.Ok
+import be.multinet.network.Response.TherapistResponse
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -124,7 +125,7 @@ class MultimedService : IApiProvider {
     /**
      * ask for the therapists of the user with id
      */
-    override suspend fun getTherapists(userid: Int): Response<List<Therapist>> {
+    override suspend fun getTherapists(userid: Int): Response<List<TherapistResponse>> {
         return server.getTherapists(userid)
     }
 }

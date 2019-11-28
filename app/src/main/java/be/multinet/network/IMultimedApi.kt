@@ -4,6 +4,7 @@ import be.multinet.model.Therapist
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.Ok
+import be.multinet.network.Response.TherapistResponse
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import com.auth0.android.jwt.JWT
@@ -44,6 +45,6 @@ interface IMultimedApi {
     /**
      * get the list of challenges from the user
      */
-    @GET("therapist/user/{id}")
-    suspend fun getTherapists(@Path("id") userid: Int) : Response<List<Therapist>>
+    @GET("users/therapist/{id}")
+    suspend fun getTherapists(@Path("id") userid: Int) : Response<List<TherapistResponse>>
 }
