@@ -21,13 +21,19 @@
     <!--Profile-->
     <string name="profile_title">Profiel</string>
     <string name="profile_image_description">Profielfoto</string>
-    <string name="profile_name">Naam</string>
-    <string name="profile_mail">Mail adres</string>
+    <string name="profile_surname">Naam</string>
+    <string name="profile_familyname">Familienaam</string>
+    <string name="profile_mail">Email</string>
     <string name="profile_number">Tel</string>
     <string name="profile_contract">Contractdatum</string>
     <string name="profile_company">Bedrijf</string>
     <string name="profile_user_info">Gegevens</string>
     <string name="profile_contact">Therapeuten</string>
+    <string name="Update_profile_button">Aanpassen</string>
+
+    <!--Update Profile-->
+    <string name="update_profile_title">Profiel aanpassen</string>
+    <string name="confirm_updated_profile_button">Bevestig</string>
     <!--Challenges-->
     <string name="challenges_title">Challenges</string>
     <!--Info-->

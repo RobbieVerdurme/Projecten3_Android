@@ -49,12 +49,24 @@
             style="@style/attributeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/profile_name" />
+            android:text="@string/profile_surname" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{profileViewModel.userProfile.surname}"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/attributeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_familyname" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{profileViewModel.userProfile.familyName}"
             android:textSize="18sp" />
 
         <TextView
@@ -92,6 +104,8 @@
             android:layout_height="wrap_content"
             android:text="@{profileViewModel.userProfile.contractDate.toString()}"
             android:textSize="18sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -119,6 +133,16 @@
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/updateProfileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/Update_profile_button"
+        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
