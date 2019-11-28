@@ -1,6 +1,7 @@
 package be.multinet.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,12 +50,12 @@ class ChallengesCategoryFragment : Fragment() {
         binding = FragmentChallengesCategoryBinding.inflate(inflater, container, false)
         binding.challengeCategoryViewModel = viewModel
         binding.lifecycleOwner = this
-        //The current challenge must be shown when clicking the tab
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i("pager","omViewCreated")
         setupFragement()
         loadChallengeCategory()
         challengeCategoryAdapter = ChallengeCategoryAdapter(fragmentManager!!)
@@ -73,6 +74,7 @@ class ChallengesCategoryFragment : Fragment() {
                 fragment.add(frag)
                 title.add(it.getName())
             }
+            Log.i("pager", "frag size: " + fragment.size.toString())
             challengeCategoryAdapter.addChallengeCategories(fragment, title)
             challengeCategoryAdapter.notifyDataSetChanged()
         }

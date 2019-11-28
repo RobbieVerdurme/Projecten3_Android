@@ -118,5 +118,9 @@ dependencies {
 
     //okhttp
     implementation "com.squareup.okhttp3:okhttp:4.2.1"
-
+    
+    
+    //geen idee
+    androidTestImplementation 'androidx.test:rules:1.2.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.1.0'
 }

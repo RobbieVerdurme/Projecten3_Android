@@ -96,7 +96,7 @@ class MultimedService : IApiProvider {
      * Login the user
      * returns a jwt token
      */
-    override suspend fun loginUser(userbody: LoginRequestBody): Response<JWT> {
+    override suspend fun loginUser(userbody: LoginRequestBody): Response<String> {
         return server.loginUser(userbody)
     }
 

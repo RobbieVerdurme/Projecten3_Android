@@ -9,6 +9,9 @@ import be.multinet.R
 import be.multinet.model.LeaderboardUser
 import be.multinet.model.User
 import com.github.mikephil.charting.data.Entry
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 /**
  * This class represents the [ViewModel] for the user's dashboard in HomeFragment.
@@ -35,12 +38,12 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
     /**
      * This integer is the user's current progress towards the next level and/or reward.
      */
-    private val userProgress = MutableLiveData(1)
+    private val userProgress = MutableLiveData<Int>()
 
     /**
      * The current user level.
      */
-    private val userLevel = MutableLiveData(1)
+    private val userLevel = MutableLiveData<Int>()
 
     /**
      * The label for the chart
@@ -117,7 +120,17 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
         list.sortByDescending { it.getScore() }
         return list
     }
+    //endregion
 
+    //region setters
+    fun setEXP(totalExp:Int){
+        val exp = totalExp.toDouble()/maxExperienceForLevel.value!!
+        //sets the userlevel
+        userLevel.value = floor(exp).toInt()
+
+        //sets the user progress
+        userProgress.value = ((exp - floor(exp)) * maxExperienceForLevel.value!!).toInt()
+    }
     //endregion
 
 }

@@ -1,5 +1,6 @@
 package be.multinet.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,8 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
 
 
     fun addCardItems(item: List<Challenge>){
-        items.addAll(item)
+        val sortedList = item.sortedWith(nullsFirst(compareBy { it.getDateCompleted() }))
+        items.addAll(sortedList)
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -38,6 +40,7 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
     }
 
     override fun getCardViewAt(position: Int): CardView {
+        Log.i("pager", mView.size.toString())
         return mView[position]
     }
 
@@ -67,6 +70,7 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
         }
         cardView.maxCardElevation = mBaseElevation * MAX_ELEVATION_FACTOR
         mView.add(position,cardView)
+        Log.i("pager", "init size: " + mView.size.toString())
         return view
 
     }

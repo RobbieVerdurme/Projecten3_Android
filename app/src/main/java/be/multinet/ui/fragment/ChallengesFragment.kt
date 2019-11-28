@@ -20,7 +20,6 @@ import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_challenges.*
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -58,6 +57,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
         val binding = FragmentChallengesBinding.inflate(inflater, container,false)
         binding.challengeViewModel = viewmodel
         binding.lifecycleOwner = this
+        retainInstance = true
         return binding.root
     }
 
@@ -121,4 +121,6 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
         completeChallengeViewModel.setChallenge(item)
         navController.navigate(R.id.action_challengesCategoryFragment_to_CompleteChallengeFragment)
     }
+
+
 }

@@ -20,7 +20,7 @@ import be.multinet.database.Persist.PersistentUser
  * It has a version number, which MUST be incremented after every schema change.
  * It does not export its schema, as this is not required anyway.
  */
-@Database(entities = [PersistentUser::class, PersistentCategory::class, PersistentChallenge::class, PersistentTherapist::class],version = 8,exportSchema = false)
+@Database(entities = [PersistentUser::class, PersistentCategory::class, PersistentChallenge::class, PersistentTherapist::class],version = 9,exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class ApplicationDatabase : RoomDatabase() {
 

@@ -39,7 +39,9 @@ class UserRepository(private val userDao: UserDao,
                 user.getSurname(),
                 user.getFamilyName(),
                 user.getMail(),
-                user.getPhone()
+                user.getPhone(),
+                user.getContractDate(),
+                user.getEXP()
             )
         )
 
@@ -64,7 +66,6 @@ class UserRepository(private val userDao: UserDao,
                     categoriesUser.add(Category(category!!.categoryId.toString(), category!!.name))
                 }
             }
-
             return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone, categoriesUser.toList())
         }
     }

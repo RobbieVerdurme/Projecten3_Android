@@ -1,6 +1,8 @@
 package be.multinet.viewmodel
 
+import android.app.AlertDialog
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,15 +10,19 @@ import androidx.lifecycle.viewModelScope
 import be.multinet.R
 import be.multinet.model.*
 import be.multinet.network.IApiProvider
+import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.ChallengeRepository
 import be.multinet.repository.UserRepository
+import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okio.Timeout
 import retrofit2.Response
 import java.util.*
+import java.util.concurrent.TimeoutException
 import kotlin.collections.ArrayList
 
 /**
@@ -48,6 +54,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun getUser(): MutableLiveData<User> = user
 
+
+
     //region retrofit
     /**
      * A property that holds the last request error, if we encountered any
@@ -71,6 +79,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val invalidLoginMessage: String = application.getString(R.string.login_invalid)
+    private val getUserErrorMassage: String = application.getString(R.string.userError)
+    private val getTherapistErrorMassage: String = application.getString(R.string.therapistError)
+    private val getChallengesErrorMassage: String = application.getString(R.string.challengeError)
+    private val contractErroMessage:String = "Contract ended"
 
     init {
         requestError.value = ""
@@ -142,44 +154,59 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * Login a user
      */
     fun login(username: String, password: String) {
-
-        saveUserToLocalDatabase(User("1","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJCb2VmZXJyb2JAZ21haWwuY29tIiwidW5pcXVlX25hbWUiOiJCb2VmZXJyb2IiLCJJZCI6IjEiLCJyb2xlcyI6IlVzZXIiLCJleHAiOjE1NzQ4ODQ0NDN9.g1GU1rE-HXKwHd9SeHaUpQz6TAbe7xizi_3oRmyUJg0","Robbie","Verdurme","robbievrdrm@gmail.com","0478995889"))
-        /*
-        viewModelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO) {
-                    multimedService.loginUser(LoginRequestBody(username, password))
-                }
-                val response: Response<JWT>? = apiResult.await()
-                if(response == null)
-                {
-                    requestError.value = genericErrorMessage
-                }else
-                {
-                    when(response.code())
-                    {
-                        400 -> {
-                            requestError.value = invalidLoginMessage
-                        }
-                        200 -> {
-                            val jwt:JWT = response.body()!!
-
-                            //get the id from the logged in user
-                            val userid = jwt.getClaim("Id").toString().toInt()
-
-                            //get the user info with id userid
-                            getUser(userid)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.loginUser(LoginRequestBody(username, password))
+                    }
+                    val response: Response<String>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = invalidLoginMessage
+                                makeToast()
+                            }
+                            401 ->{
+                                requestError.value = contractErroMessage
+                                makeToast()
+                            }
+                            200 -> {
+                                val jwt: JWT = JWT(response.body()!!)
+                                //get the user info with id userid
+                                val userid = claim.asInt()
+                                if (userid != null) {
+                                    isBusy.value = false
+                                    getUser(userid)
+                                }
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
-        }    */
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
+        }
+    }
+
+    /**
+     * Update a [User]
+     */
+    fun updateUser(updatedUser: User)
+    {
+        saveUserToLocalDatabase(updatedUser)
+        //Moet nog naar de backend ook
     }
 
     /**
@@ -214,9 +241,79 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                             requestError.value = genericErrorMessage
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
             }
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
+        }
+    }
+
+    /**
+     * get challenges from the user
+     */
+    fun getChallenges(): List<Challenge>{
+        if (user.value != null){
+            if(user.value!!.getChallenges().isEmpty()){
+                getChallengesUser(user.value!!.getUserId().toInt())
+            }
+            return user.value!!.getChallenges()
+        }
+        return listOf<Challenge>()
+    }
+
+    /**
+     * backend call to get the challenges from the users
+     */
+    private fun getChallengesUser(userid: Int){
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getChallengesUser(userid)
+                    }
+                    val response: Response<List<UserChallengeResponse>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = getChallengesErrorMassage
+                                makeToast()
+                            }
+                            200 -> {
+                                val body = response.body()!!
+                                val challenges: ArrayList<Challenge> = ArrayList()
+                                for (i in body) {
+                                    challenges.add(
+                                        Challenge(
+                                            i.challenge.challengeId.toString(),
+                                            "",
+                                            i.challenge.title,
+                                            i.challenge.description,
+                                            i.competedDate,
+                                            i.challenge.category
+                                        )
+                                    )
+                                }
+                            }
+                                else -> {
+                                    requestError.value = genericErrorMessage
+                                    makeToast()
+                                }
+                            }
+                        }
+                        isBusy.value = false
+                    }
+                }
+
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
         }
     }
 
@@ -237,6 +334,73 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     /**
      * backend call to get the therapists from the user
      */
+    private fun getTherapistUser(userid: Int){
+        try {
+            viewModelScope.launch {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getTherapists(userid)
+                    }
+                    val response: Response<List<Therapist>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = getTherapistErrorMassage
+                                makeToast()
+                            }
+                            200 -> {
+                                val body = response.body()!!
 
+                                //save the therapists to local room db
+                                repository.inserttherapists(body)
+
+                                //assign the therapists to the user
+                                user.value!!.setTherapist(body)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
+                        }
+                    }
+                    isBusy.value = false
+                }
+            }
+        }catch (e: Error){
+            requestError.value = genericErrorMessage + e.message
+            makeToast()
+        }
+    }
+
+    /**
+     * check if the challenge is a challenge from the user
+     * do the backend call for complete challenge
+     */
+    fun completeChalenge(completedChallenge: Challenge){
+        if(user.value != null){
+            //add user exp
+            user.value!!.setEXP(user.value!!.getEXP() + 1)
+
+            //complete the challenge
+            val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
+            if(challengeIndex != -1){
+                //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)
+                val date = Date()
+                user.value!!.getChallenges()[challengeIndex].setDateCompleted(date)
+            }
+        }
+    }
+
+    //endregion
+
+    //region hulpmethods
+    private fun makeToast(){
+        Toast.makeText(application, requestError.value, Toast.LENGTH_LONG).show()
+    }
     //endregion
 }

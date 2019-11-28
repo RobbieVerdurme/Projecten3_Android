@@ -2,7 +2,9 @@ package be.multinet.recyclerview
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +35,11 @@ class InfoAdapter(private val context: Context, private val viewmodel: InfoViewM
             is InfoViewHolder -> {
                 holder.binding.infoViewModel = viewmodel
                 holder.binding.subCategoryItemTitle.setOnClickListener {
-                    holder.binding.infoViewModel?.onClickTitle()
+                    //holder.binding.infoViewModel?.onClickTitle()
+                    if (holder.itemView.subCategoryItemList.visibility==View.VISIBLE)
+                        holder.itemView.subCategoryItemList.visibility=View.GONE
+                    else
+                        holder.itemView.subCategoryItemList.visibility=View.VISIBLE
                 }
                 holder.bind(items[position], context)
             }

@@ -2,6 +2,7 @@ package be.multinet.database.Persist
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * This class represents the user table within the local database.
@@ -14,5 +15,8 @@ data class PersistentUser(
     val surname: String,
     val familyName: String,
     val mail: String,
-    val phone: String
-)
+    val phone: String,
+    val contract: Date,
+    val exp: Int
+) {
+}

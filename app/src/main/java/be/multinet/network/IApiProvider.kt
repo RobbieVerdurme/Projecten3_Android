@@ -18,7 +18,7 @@ interface IApiProvider {
      * @param userbody the request payload
      * @return a [Response] with [JWT] as data
      */
-    suspend fun loginUser(userbody: LoginRequestBody): Response<JWT>
+    suspend fun loginUser(userbody: LoginRequestBody): Response<String>
 
     /**
      * get a [User] from the database

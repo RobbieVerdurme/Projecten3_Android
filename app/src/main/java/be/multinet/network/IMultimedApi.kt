@@ -21,12 +21,12 @@ interface IMultimedApi {
      * login a user
      */
     @POST("Account")
-    suspend fun loginUser(@Body userbody: LoginRequestBody) : Response<JWT>
+    suspend fun loginUser(@Body userbody: LoginRequestBody) : Response<String>
 
     /**
      * get data from a user
      */
-    @GET("User/{id}")
+    @GET("Users/{id}")
     suspend fun getUser(@Path("id") userid: Int) : Response<UserDataResponse>
 
     /**

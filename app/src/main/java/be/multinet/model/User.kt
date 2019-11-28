@@ -20,14 +20,9 @@ class User (
     private var familyName: String,
     private var mail: String,
     private var phone: String,
-    private var category: List<Category> = listOf<Category>()
-    /*private var therapist: List<Therapist> = listOf<Therapist>(
-        Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
-        Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruyt", mail = "piet.Huysentruyt@hotmail.com", number = ""),
-        Therapist(therapistId = 3, name = "Klaas", familyName = "De Muynck", mail = "klaas.de.muynck@hotmail.com", number = ""),
-        Therapist(therapistId = 4, name = "Max", familyName = "Van Belle", mail = "max.vanbelle@hotmail.com", number = "")
-    )
-    private var challenges: List<Challenge> = listOf<Challenge>()*/
+    private var contract: Date,
+    private var category: List<Category> = listOf<Category>(),
+    private var exp: Int
 ){
     /**
      * @return the id of the user
@@ -64,46 +59,70 @@ class User (
      */
     fun getToken(): String = token
 
+    /**
+     * @return the contract date of the user
+     */
+    fun getContractDate(): Date = contract
+
+    /**
+     * @return the contract date of the user
+     */
+    fun getEXP(): Int = exp
+
     //setters
     /**
-     * @return the surname of the user
+     * sets the surname of the user
      */
     fun setSurname(firstname: String){
         surname = firstname
     }
 
     /**
-     * @return the family name of the user
+     * sets the family name of the user
      */
     fun setFamilyName(familyname: String){
         familyName = familyname
     }
 
     /**
-     * @return the e-mail address of the user
+     * sets the email of the user
      */
     fun setMail(email: String){
         mail = email
     }
 
     /**
-     * @return the phone number of the user
+     * sets the phone of the user
      */
     fun setPhone(phoneNumber:String){
         phone = phoneNumber
     }
 
     /**
-     * @return the different categories of the user
+     * sets the therapists of the user
      */
     fun setCategory(categoryList: List<Category>){
         category = categoryList
     }
 
     /**
-     *
+     * sets the token of the logged in user
      */
     fun setToken(newToken: String){
         token = newToken
+    }
+
+    /**
+     * sets the contract date to the new date
+     */
+    fun setContract(contractDate: Date){
+        contract = contractDate
+    }
+
+    /**
+     * sets the contract date to the new date
+     */
+    fun setEXP(totalEXP: Int){
+        exp = totalEXP
     }
 }

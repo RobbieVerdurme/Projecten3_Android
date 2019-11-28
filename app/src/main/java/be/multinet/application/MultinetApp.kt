@@ -79,6 +79,9 @@ class MultinetApp : MultiDexApplication() {
             viewModel {
                 TherapistViewModel(get(),get())
             }
+            viewModel{
+                UpdateProfileViewModel(get())
+            }
         }
     }
 
