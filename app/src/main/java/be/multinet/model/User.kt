@@ -21,6 +21,7 @@ class User (
     private var phone: String,
     private var contract: Date,
     private var category: List<Category> = listOf<Category>(),
+    private var exp: Int,
     private var therapist: List<Therapist> = listOf<Therapist>(
         Therapist(therapistId = 1, name = "Jan", familyName = "Verstraete", mail = "jan.verstraete@hotmail.com", number = ""),
         Therapist(therapistId = 2, name = "Piet", familyName = "Huysentruyt", mail = "piet.Huysentruyt@hotmail.com", number = ""),
@@ -79,6 +80,11 @@ class User (
      */
     fun getContractDate(): Date = contract
 
+    /**
+     * @return the contract date of the user
+     */
+    fun getEXP(): Int = exp
+
     //setters
     /**
      * sets the surname of the user
@@ -134,5 +140,12 @@ class User (
      */
     fun setContract(contractDate: Date){
         contract = contractDate
+    }
+
+    /**
+     * sets the contract date to the new date
+     */
+    fun setEXP(totalEXP: Int){
+        exp = totalEXP
     }
 }

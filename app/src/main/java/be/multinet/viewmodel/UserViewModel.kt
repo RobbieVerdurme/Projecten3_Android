@@ -53,6 +53,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun getUser(): MutableLiveData<User> = user
 
+
+
     //region retrofit
     /**
      * A property that holds the last request error, if we encountered any
@@ -202,6 +204,15 @@ class UserViewModel constructor(private val repository: UserRepository, private 
     }
 
     /**
+     * Update a [User]
+     */
+    fun updateUser(updatedUser: User)
+    {
+        saveUserToLocalDatabase(updatedUser)
+        //Moet nog naar de backend ook
+    }
+
+    /**
      * backend call to get the information of the user
      */
     private fun getUser(userid: Int){
@@ -232,7 +243,8 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                                     body.email,
                                     body.phone,
                                     body.contract,
-                                    body.categories
+                                    body.categories,
+                                    body.experiencePoints
                                 )
                                 //save the loggedin user  to the database
                                 saveUserToLocalDatabase(user)
@@ -283,35 +295,36 @@ class UserViewModel constructor(private val repository: UserRepository, private 
                         makeToast()
                     } else {
                         when (response.code()) {
-                        400 -> {
+                            400 -> {
                                 requestError.value = getChallengesErrorMassage
                                 makeToast()
-                        }
-                        200 -> {
-                            val body = response.body()!!
-                            val challenges: ArrayList<Challenge> = ArrayList()
-                            for (i in body) {
-                                challenges.add(
-                                    Challenge(
-                                        i.challenge.challengeId.toString(),
-                                        "",
-                                        i.challenge.title,
-                                        i.challenge.description,
-                                        i.competedDate,
-                                        i.challenge.category
+                            }
+                            200 -> {
+                                val body = response.body()!!
+                                val challenges: ArrayList<Challenge> = ArrayList()
+                                for (i in body) {
+                                    challenges.add(
+                                        Challenge(
+                                            i.challenge.challengeId.toString(),
+                                            "",
+                                            i.challenge.title,
+                                            i.challenge.description,
+                                            i.competedDate,
+                                            i.challenge.category
+                                        )
                                     )
-                                )
+                                }
+                            }
+                                else -> {
+                                    requestError.value = genericErrorMessage
+                                    makeToast()
+                                }
                             }
                         }
-                            else -> {
-                                requestError.value = genericErrorMessage
-                                makeToast()
-                            }
-                        }
+                        isBusy.value = false
                     }
-                    isBusy.value = false
                 }
-            }
+
         }catch (e: Error){
             requestError.value = genericErrorMessage + e.message
             makeToast()
@@ -384,6 +397,10 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     fun completeChalenge(completedChallenge: Challenge){
         if(user.value != null){
+            //add user exp
+            user.value!!.setEXP(user.value!!.getEXP() + 1)
+
+            //complete the challenge
             val challengeIndex  = user.value!!.getChallenges().indexOf(completedChallenge)
             if(challengeIndex != -1){
                 //completeChallengeUser(user.value!!.getUserId().toInt(), completedChallenge)

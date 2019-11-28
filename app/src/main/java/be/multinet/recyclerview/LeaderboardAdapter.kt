@@ -20,20 +20,9 @@ class LeaderboardAdapter(private val myDataset: List<LeaderboardUser>): Recycler
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val user = myDataset[position]
-
         holder.view.leaderboard_place.text = (position+1).toString()
         holder.view.leaderboard_name.text = user.getName()
         holder.view.leaderboard_score.text = user.getScore().toString()
-
-       /* if(position%2 == 1){
-            holder.view.leaderboard_place.setBackgroundResource(R.color.leaderboard_accent)
-            holder.view.leaderboard_name.setBackgroundResource(R.color.leaderboard_accent)
-            holder.view.leaderboard_score.setBackgroundResource(R.color.leaderboard_accent)
-        } else{
-            holder.view.leaderboard_place.setBackgroundColor(Color.TRANSPARENT)
-            holder.view.leaderboard_name.setBackgroundColor(Color.TRANSPARENT)
-            holder.view.leaderboard_score.setBackgroundColor(Color.TRANSPARENT)
-        }*/
     }
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)

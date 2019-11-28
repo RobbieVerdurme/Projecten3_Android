@@ -11,6 +11,7 @@ class UserDataResponse(
     val email: String,
     val phone: String,
     val contract: Date,
-    val categories: List<Category>
+    val categories: List<Category>,
+    val experiencePoints:Int
 ) {
 }
