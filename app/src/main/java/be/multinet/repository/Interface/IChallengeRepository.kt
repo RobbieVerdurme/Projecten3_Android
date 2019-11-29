@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 interface IChallengeRepository {
 
     /**
-     * Save [challenge] to local persistence.
+     * Save [challenges] to local persistence.
      */
     suspend fun saveChallenges(challenges: List<Challenge>)
 
@@ -17,7 +17,7 @@ interface IChallengeRepository {
      * @return the list of challenges, if present or null if not.
      * Note that this only populates the data that resides in the PersistentChallenge table.
      */
-    suspend fun loadChallenges(): List<Challenge>?
+    fun loadChallengesFromDb(viewmodelScope: CoroutineScope)
 
-    fun getChallenges(userId: Int, viewmodelScope: CoroutineScope): List<Challenge>
+    fun getChallengesFromDataSource(userId: Int, viewmodelScope: CoroutineScope, isOnline: Boolean)
 }

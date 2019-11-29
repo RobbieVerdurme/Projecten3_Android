@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 
 import be.multinet.R
 import be.multinet.adapter.ChallengeAdapter
@@ -20,7 +22,6 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_challenges_category.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ChallengesCategoryFragment : Fragment() {
@@ -55,7 +56,6 @@ class ChallengesCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i("pager","omViewCreated")
         setupFragement()
         loadChallengeCategory()
         challengeCategoryAdapter = ChallengeCategoryAdapter(fragmentManager!!)
@@ -64,37 +64,31 @@ class ChallengesCategoryFragment : Fragment() {
     }
 
     private fun addChallengeCategory() {
-        val challengesCategory = viewModel.getCategories().value
-        if(challengesCategory != null){
+        viewModel.getCategories().observe(viewLifecycleOwner, Observer {
             val fragment: ArrayList<ChallengesFragment> = ArrayList()
             val title: ArrayList<String> = ArrayList()
-            challengesCategory.forEach {
+            it.forEach { category ->
                 val frag = ChallengesFragment()
-                frag.category = it
+                frag.category = category
                 fragment.add(frag)
-                title.add(it.getName())
+                title.add(category.getName())
             }
-            Log.i("pager", "frag size: " + fragment.size.toString())
             challengeCategoryAdapter.addChallengeCategories(fragment, title)
             challengeCategoryAdapter.notifyDataSetChanged()
-        }
+        })
     }
 
     private fun loadChallengeCategory() {
-        val userId = userViewModel.getUser().value!!.getUserId().toInt()
-        val challenges = challengeViewModel.getChallenges(userId)
-        val challengeCategories: ArrayList<Category> = ArrayList()
-
-        //get categorys
-        challenges.forEach { challenge ->
-            val category = challenge.getCategory()
-            if(category != null && !challengeCategories.any { it.getName() == category.getName() }){
-                challengeCategories.add(challenge.getCategory()!!)
+        challengeViewModel.getChallenges().observe(viewLifecycleOwner, Observer {
+            val challengeCategories: ArrayList<Category> = ArrayList()
+            it.forEach { challenge ->
+                val category = challenge.getCategory()
+                if(category != null && !challengeCategories.any { it.getName() == category.getName() }){
+                    challengeCategories.add(challenge.getCategory()!!)
+                }
             }
-        }
-
-        //setcategories in viewmodel
-        viewModel.setCategories(challengeCategories)
+            viewModel.setCategories(challengeCategories)
+        })
     }
 
     /**
