@@ -1,6 +1,7 @@
 package be.multinet.repository
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import be.multinet.R
@@ -15,11 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.lang.Error
 
 class TherapistRepository(
     private val therapistDao: TherapistDao,
     private val multimedService: IApiProvider,
-    application: Application
+    private val application: Application
 ) : ITherapistRepository {
     /**
      * [LiveData] that stores the therapists
@@ -31,7 +33,7 @@ class TherapistRepository(
      */
     private val requestError = MutableLiveData<String>()
 
-    /**
+    /**qqqq
      * @return [requestError]
      */
     fun getRequestError(): LiveData<String> = requestError
@@ -102,44 +104,58 @@ class TherapistRepository(
 
     private fun getTherapistFromOnline(token:String, userId:Int, viewmodelScope: CoroutineScope){
         viewmodelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.getTherapists(token, userId)
-                }
-                val response: Response<List<TherapistResponse>>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
-                        400 -> {
-                            requestError.value = getTherapistErrorMassage
-                        }
-                        200 -> {
-                            val body = response.body()!!
-                            val localtherapists = ArrayList<Therapist>()
-                            //save the therapists to local room db
-                            body.forEach {
-                                val th = Therapist(
-                                    it.therapistId,
-                                    it.firstname,
-                                    it.lastname,
-                                    "",
-                                    it.email
-                                )
-
-                                localtherapists.add(th)
+            try {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.getTherapists(token, userId)
+                    }
+                    val response: Response<List<TherapistResponse>>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = getTherapistErrorMassage
+                                makeToast()
                             }
-                            saveTherapist(localtherapists)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+                            200 -> {
+                                val body = response.body()!!
+                                val localtherapists = ArrayList<Therapist>()
+                                //save the therapists to local room db
+                                body.forEach {
+                                    val th = Therapist(
+                                        it.therapistId,
+                                        it.firstname,
+                                        it.lastname,
+                                        "",
+                                        it.email
+                                    )
+
+                                    localtherapists.add(th)
+                                }
+                                saveTherapist(localtherapists)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
+            }catch (e:Error){
+                requestError.value = genericErrorMessage + " " + e.message
+                makeToast()
             }
         }
     }
+
+    //region hulpmethods
+    private fun makeToast(){
+        Toast.makeText(application, requestError.value, Toast.LENGTH_LONG).show()
+    }
+    //endregion
 }

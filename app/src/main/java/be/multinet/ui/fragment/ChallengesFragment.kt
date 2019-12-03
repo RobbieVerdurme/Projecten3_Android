@@ -99,6 +99,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
             offscreenPageLimit = 3
             mCardShadowTransformer = ShadowTransformer(challengesViewPager, challengeAdapter)
             setPageTransformer(false, mCardShadowTransformer )
+            //TODO shadowtransformer crashes because there is no data in the adapter so it gives an indexOutOfBoundsException
 //            mCardShadowTransformer.enableScaling(true)
         }
     }

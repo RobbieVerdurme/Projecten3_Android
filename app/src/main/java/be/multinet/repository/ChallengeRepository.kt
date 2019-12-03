@@ -1,6 +1,7 @@
 package be.multinet.repository
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import be.multinet.R
@@ -17,6 +18,7 @@ import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.repository.Interface.IChallengeRepository
 import kotlinx.coroutines.*
 import retrofit2.Response
+import java.lang.Error
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -27,7 +29,7 @@ class ChallengeRepository(
     private val challengeDao: ChallengeDao,
     private val categoryDao: CategoryDao,
     private val multimedService: IApiProvider,
-    application: Application) : IChallengeRepository
+    private val application: Application) : IChallengeRepository
 
 {
     /**
@@ -132,47 +134,58 @@ class ChallengeRepository(
      */
     private fun getChallengesFromOnline(userId: Int, viewmodelScope: CoroutineScope){
         viewmodelScope.launch {
-            if (challenges.value!!.isEmpty()) {
-                requestError.value = ""
-                if (!isBusy.value!!) {
-                    isBusy.value = true
-                    val apiResult = async(Dispatchers.IO) {
-                        multimedService.getChallengesUser(userId)
-                    }
-                    val response: Response<List<UserChallengeResponse>>? = apiResult.await()
-                    if (response == null) {
-                        requestError.value = genericErrorMessage
-                    } else {
-                        when (response.code()) {
-                            400 -> {
-                                requestError.value = getChallengesErrorMassage
-                            }
-                            200 -> {
-                                val userChallengeResponses: List<UserChallengeResponse> =
-                                    response.body()!!
-                                val localChallenges = ArrayList<Challenge>()
-
-                                userChallengeResponses.forEach()
-                                {
-                                    val challenge = Challenge(
-                                        it.challenge.challengeId.toString(),
-                                        it.challenge.ChallengeImage ?: "",
-                                        it.challenge.title,
-                                        it.challenge.description,
-                                        it.completedDate,
-                                        Category(it.challenge.category.categoryId.toString(), it.challenge.category.name)
-                                    )
-                                    localChallenges.add(challenge)
+            try {
+                if (challenges.value!!.isEmpty()) {
+                    requestError.value = ""
+                    if (!isBusy.value!!) {
+                        isBusy.value = true
+                        val apiResult = async(Dispatchers.IO) {
+                            multimedService.getChallengesUser(userId)
+                        }
+                        val response: Response<List<UserChallengeResponse>>? = apiResult.await()
+                        if (response == null) {
+                            requestError.value = genericErrorMessage
+                            makeToast()
+                        } else {
+                            when (response.code()) {
+                                400 -> {
+                                    requestError.value = getChallengesErrorMassage
+                                    makeToast()
                                 }
-                                saveChallenges(localChallenges)
-                            }
-                            else -> {
-                                requestError.value = genericErrorMessage
+                                200 -> {
+                                    val userChallengeResponses: List<UserChallengeResponse> =
+                                        response.body()!!
+                                    val localChallenges = ArrayList<Challenge>()
+
+                                    userChallengeResponses.forEach()
+                                    {
+                                        val challenge = Challenge(
+                                            it.challenge.challengeId.toString(),
+                                            it.challenge.ChallengeImage ?: "",
+                                            it.challenge.title,
+                                            it.challenge.description,
+                                            it.completedDate,
+                                            Category(
+                                                it.challenge.category.categoryId.toString(),
+                                                it.challenge.category.name
+                                            )
+                                        )
+                                        localChallenges.add(challenge)
+                                    }
+                                    saveChallenges(localChallenges)
+                                }
+                                else -> {
+                                    requestError.value = genericErrorMessage
+                                    makeToast()
+                                }
                             }
                         }
+                        isBusy.value = false
                     }
-                    isBusy.value = false
                 }
+            }catch (e:Error){
+                requestError.value = genericErrorMessage + " " + e.message
+                makeToast()
             }
         }
     }
@@ -183,48 +196,65 @@ class ChallengeRepository(
      */
     fun completeChallenge(userId: Int, challengeId: Int,token:String, viewmodelScope: CoroutineScope){
         viewmodelScope.launch {
-            requestError.value = ""
-            if(!isBusy.value!!){
-                isBusy.value = true
-                val apiResult = async(Dispatchers.IO){
-                    multimedService.completeChallenge(token, CompleteChallengeRequestBody(challengeId, userId))
-                }
-                val response: Response<Ok>? = apiResult.await()
-                if(response == null){
-                    requestError.value = genericErrorMessage
-                }else{
-                    when(response.code()){
-                        400 -> {
-                            requestError.value = completeChallengeErrorMessage
-                        }
-                        200 -> {
-                            //save in local db
-                            val index = challengeId - 1
-                            val challenge = challenges.value!![index]
-                            challenge.setDateCompleted(Date())
-                            val persist = PersistentChallenge(
-                                challenge.getChallengeId().toInt(),
-                                challenge.getImage(),
-                                challenge.getTitle(),
-                                challenge.getDescription(),
-                                challenge.getDateCompleted(),
-                                challenge.getCategory()?.getCategoryId()!!.toInt()
-                            )
-                            challengeDao.completeChallenge(persist)
+            try {
+                requestError.value = ""
+                if (!isBusy.value!!) {
+                    isBusy.value = true
+                    val apiResult = async(Dispatchers.IO) {
+                        multimedService.completeChallenge(
+                            token,
+                            CompleteChallengeRequestBody(challengeId, userId)
+                        )
+                    }
+                    val response: Response<Ok>? = apiResult.await()
+                    if (response == null) {
+                        requestError.value = genericErrorMessage
+                        makeToast()
+                    } else {
+                        when (response.code()) {
+                            400 -> {
+                                requestError.value = completeChallengeErrorMessage
+                                makeToast()
+                            }
+                            200 -> {
+                                //save in local db
+                                val index = challengeId - 1
+                                val challenge = challenges.value!![index]
+                                challenge.setDateCompleted(Date())
+                                val persist = PersistentChallenge(
+                                    challenge.getChallengeId().toInt(),
+                                    challenge.getImage(),
+                                    challenge.getTitle(),
+                                    challenge.getDescription(),
+                                    challenge.getDateCompleted(),
+                                    challenge.getCategory()?.getCategoryId()!!.toInt()
+                                )
+                                challengeDao.completeChallenge(persist)
 
-                            //refresh challenges
-                            isBusy.value = false
-                            getChallengesFromOnline(userId, viewmodelScope)
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
+                                //refresh challenges
+                                isBusy.value = false
+                                getChallengesFromOnline(userId, viewmodelScope)
+                            }
+                            else -> {
+                                requestError.value = genericErrorMessage
+                                makeToast()
+                            }
                         }
                     }
+                    isBusy.value = false
                 }
-                isBusy.value = false
+            }catch (e:Error){
+                requestError.value = genericErrorMessage + " " + e.message
+                makeToast()
             }
         }
     }
+
+    //region hulpmethods
+    private fun makeToast(){
+        Toast.makeText(application, requestError.value, Toast.LENGTH_LONG).show()
+    }
+    //endregion
 
     /**
      * get category from the given id

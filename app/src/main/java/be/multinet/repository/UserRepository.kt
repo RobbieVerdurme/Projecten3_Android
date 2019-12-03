@@ -150,8 +150,8 @@ class UserRepository(private val userDao: UserDao,
      * Login a user
      */
     fun login(username:String, password: String, viewmodelScope: CoroutineScope){
-        try {
             viewmodelScope.launch {
+                try {
                 requestError.value = ""
                 if (!isBusy.value!!) {
                     isBusy.value = true
@@ -190,11 +190,11 @@ class UserRepository(private val userDao: UserDao,
                     }
                     isBusy.value = false
                 }
+                }catch (e: Error){
+                    requestError.value = genericErrorMessage + e.message
+                    makeToast()
+                }
             }
-        }catch (e: Error){
-            requestError.value = genericErrorMessage + e.message
-            makeToast()
-        }
     }
 
     /**
