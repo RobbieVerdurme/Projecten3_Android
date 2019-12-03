@@ -12,20 +12,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 
 import be.multinet.R
-import be.multinet.databinding.FragmentProfileBinding
 import be.multinet.databinding.FragmentUpdateProfileBinding
 import be.multinet.model.User
 import be.multinet.network.ConnectionState
-import be.multinet.viewmodel.NetworkViewModel
+import be.multinet.network.NetworkHandler
 import be.multinet.viewmodel.ProfileViewModel
 import be.multinet.viewmodel.UpdateProfileViewModel
 import be.multinet.viewmodel.UserViewModel
-import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.fragment_profile.view.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,8 +35,6 @@ class UpdateProfileFragment : Fragment()
     val viewModel: UpdateProfileViewModel by viewModel()
 
     val userViewModel: UserViewModel by sharedViewModel()
-
-    val networkViewModel: NetworkViewModel by sharedViewModel()
 
     /**
      * The [Button] to update the profile of the user
@@ -144,21 +138,22 @@ class UpdateProfileFragment : Fragment()
         updatedUser.setPhone(phoneTextField.text.toString())
 
         viewModel.setUpdatedUser(updatedUser)
-        when(networkViewModel.getCurrentNetworkState())
+        when(NetworkHandler.getNetworkState().value)
         {
             ConnectionState.CONNECTED -> {
                 userViewModel.updateUser(viewModel.getUserProfile().value!!)
             }
             ConnectionState.DISCONNECTED -> {
                 //request wifi enable
-                TaskerDialogBuilder.buildDialog(context!!,networkViewModel.enableWifiDialogTitle,
-                    networkViewModel.enableWifiDialogDescription, DialogInterface.OnClickListener { _, _ ->
-                        startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
-                    },networkViewModel.enableWifiDialogContinue,
+                AppDialogBuilder.buildDialog(context!!,
+                    getString(R.string.dialog_enable_wireless_title),
+                    R.string.dialog_enable_wireless_description,
                     DialogInterface.OnClickListener { _, _ ->
+                        startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
+                    },R.string.dialog_enable_wireless_continue,DialogInterface.OnClickListener { _, _ ->
                         //do nothing, the user doesn't want to enable wifi
                         //we will prompt again next time, until the user finally enables it
-                    },networkViewModel.enableWifiDialogCancel).show()
+                    },R.string.dialog_cancel).show()
             }
             ConnectionState.UNAVAILABLE -> {
                 //do nothing, we can't fix the network :/

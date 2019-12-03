@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 /**
  * This class builds [AlertDialog]s
  */
-class TaskerDialogBuilder {
+class AppDialogBuilder {
 
     companion object {
         /**
