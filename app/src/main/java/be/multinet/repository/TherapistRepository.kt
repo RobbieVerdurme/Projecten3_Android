@@ -28,6 +28,9 @@ class TherapistRepository(
      * This will be used by objects that need access to the list of therapists
      */
     private val therapists = MutableLiveData<List<Therapist>>(listOf<Therapist>())
+
+    fun getTherapist(): LiveData<List<Therapist>> = therapists
+
     /**
      * A property that holds the last request error, if we encountered any
      */
@@ -57,8 +60,10 @@ class TherapistRepository(
         isBusy.value = false
     }
 
+    /**
+     * Save challenges to room db
+     */
     override suspend fun saveTherapist(therapists: List<Therapist>) {
-        this.therapists.value = therapists
         /**
          * insert therapists
          */
@@ -73,33 +78,37 @@ class TherapistRepository(
                 )
             )
         }
+        this.therapists.value = therapists
     }
 
-    override suspend fun loadTherapist(): List<Therapist>? {
-        val persistentTherapist = therapistDao.getTherapist()
-        val localTherapists = ArrayList<Therapist>()
+    /**
+     * get therapists from room db
+     */
+    override fun loadTherapist(viewmodelScope: CoroutineScope) {
+        viewmodelScope.launch {
+            val persistentTherapist = therapistDao.getTherapist()
+            val localTherapists = ArrayList<Therapist>()
 
-        persistentTherapist.forEach {
-            val therapist = Therapist(
-                it!!.therapistId,
-                it.surname,
-                it.familyName,
-                it.phone,
-                it.mail
-            )
-            localTherapists.add(therapist)
+            persistentTherapist.forEach {
+                val therapist = Therapist(
+                    it!!.therapistId,
+                    it.surname,
+                    it.familyName,
+                    it.phone,
+                    it.mail
+                )
+                localTherapists.add(therapist)
+            }
+            therapists.value = localTherapists
         }
-        return localTherapists
     }
 
-    fun getTherapist(token:String, userId: Int, viewmodelScope: CoroutineScope): List<Therapist>{
-        //TODO call online if wifi or data
-        //check if online
-        //check if data filled
-        getTherapistFromOnline(token, userId, viewmodelScope)
-        //else get data from roomdb
-
-        return therapists.value!!
+    fun getTherapistFromDataSource(token:String, userId: Int, viewmodelScope: CoroutineScope, isOnline: Boolean){
+        if(isOnline && therapists.value!!.isEmpty()){
+            getTherapistFromOnline(token, userId, viewmodelScope)
+        }else if(therapists.value!!.isEmpty()){
+            loadTherapist(viewmodelScope)
+        }
     }
 
     private fun getTherapistFromOnline(token:String, userId:Int, viewmodelScope: CoroutineScope){
