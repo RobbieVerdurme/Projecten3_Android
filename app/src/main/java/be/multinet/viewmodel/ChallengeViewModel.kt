@@ -15,6 +15,8 @@ class ChallengeViewModel constructor(private val challengeRepository: ChallengeR
 
     fun getChallenges(): LiveData<List<Challenge>> = challengeRepository.getChallenges()
 
+    fun getChallenges(category:Category): LiveData<List<Challenge>> = challengeRepository.getChallenges(category)
+
     fun loadUserChallenges(userId: Int,isOnline: Boolean){
         challengeRepository.getChallengesFromDataSource(userId,viewModelScope,isOnline)
     }

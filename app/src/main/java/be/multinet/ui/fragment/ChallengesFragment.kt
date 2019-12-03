@@ -74,7 +74,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * give data to the adapter
      */
     private fun loadChallenges() {
-        viewmodel.getChallenges().observe(viewLifecycleOwner,Observer<List<Challenge>>{
+        viewmodel.getChallenges(category).observe(viewLifecycleOwner,Observer<List<Challenge>>{
             challengeAdapter.addCardItems(it)
             challengeAdapter.notifyDataSetChanged()
         })

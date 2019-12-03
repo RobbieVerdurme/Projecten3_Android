@@ -40,6 +40,16 @@ class ChallengeRepository(
 
     fun getChallenges(): LiveData<List<Challenge>> = challenges
 
+    fun getChallenges(category: Category): LiveData<List<Challenge>>{
+        val challengesToReturn = ArrayList<Challenge>()
+        challenges.value!!.forEach{
+            if(it.getCategory() != null && it.getCategory()!!.getName().equals(category.getName())){
+                challengesToReturn.add(it)
+            }
+        }
+        return MutableLiveData<List<Challenge>>(challengesToReturn)
+    }
+
 
     //region retrofit
     /**
