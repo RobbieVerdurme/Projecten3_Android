@@ -79,6 +79,7 @@ class ChallengesCategoryFragment : Fragment() {
     }
 
     private fun loadChallengeCategory() {
+        challengeViewModel.loadUserChallenges(userViewModel.getUser().value!!.getUserId().toInt(),true)
         challengeViewModel.getChallenges().observe(viewLifecycleOwner, Observer {
             val challengeCategories: ArrayList<Category> = ArrayList()
             it.forEach { challenge ->

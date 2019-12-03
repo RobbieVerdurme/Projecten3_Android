@@ -40,7 +40,6 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
     }
 
     override fun getCardViewAt(position: Int): CardView {
-        Log.i("pager", mView.size.toString())
         return mView[position]
     }
 

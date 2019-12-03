@@ -122,7 +122,7 @@ class ChallengeRepository(
     override fun getChallengesFromDataSource(userId: Int, viewmodelScope: CoroutineScope,isOnline: Boolean) {
         if(isOnline && challenges.value!!.isEmpty()){
             getChallengesFromOnline(userId,viewmodelScope)
-        }else{
+        }else if (challenges.value!!.isEmpty()){
             loadChallengesFromDb(viewmodelScope)
         }
     }
@@ -199,7 +199,8 @@ class ChallengeRepository(
                         }
                         200 -> {
                             //save in local db
-                            val challenge = challenges.value!![challengeId]
+                            val index = challengeId - 1
+                            val challenge = challenges.value!![index]
                             challenge.setDateCompleted(Date())
                             val persist = PersistentChallenge(
                                 challenge.getChallengeId().toInt(),

@@ -174,11 +174,12 @@ class UserRepository(private val userDao: UserDao,
                             }
                             200 -> {
                                 val jwt: JWT = JWT(response.body()!!)
+                                val token: String = "Bearer " + response.body()!!
                                 //get the user info with id userid
                                 val userid = jwt.getClaim("Id").asInt()
                                 if (userid != null) {
                                     isBusy.value = false
-                                    getUserFromOnline(userid, response.body()!!, viewmodelScope)
+                                    getUserFromOnline(userid, token, viewmodelScope)
                                 }
                             }
                             else -> {

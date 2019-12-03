@@ -1,4 +1,4 @@
 package be.multinet.network.Response
 
-class Ok {
+class Ok() {
 }

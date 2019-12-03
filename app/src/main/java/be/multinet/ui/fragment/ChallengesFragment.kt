@@ -99,7 +99,7 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
             offscreenPageLimit = 3
             mCardShadowTransformer = ShadowTransformer(challengesViewPager, challengeAdapter)
             setPageTransformer(false, mCardShadowTransformer )
-            mCardShadowTransformer.enableScaling(true)
+//            mCardShadowTransformer.enableScaling(true)
         }
     }
 
