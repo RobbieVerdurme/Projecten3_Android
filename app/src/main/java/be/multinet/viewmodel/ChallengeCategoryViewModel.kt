@@ -9,7 +9,7 @@ class ChallengeCategoryViewModel(application: Application): AndroidViewModel(app
     /**
      * list of categories of the user
      */
-    private var categories:MutableLiveData<List<Category>> = MutableLiveData()
+    private var categories: MutableLiveData<List<Category>> = MutableLiveData()
 
     /**
      * gets the list of categories

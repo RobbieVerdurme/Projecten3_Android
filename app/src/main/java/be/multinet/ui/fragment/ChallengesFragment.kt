@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -64,30 +65,21 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
-        loadChallengeViewModelData()
         challengeAdapter = ChallengeAdapter(this)
-        addChallenges()
+        loadChallenges()
         initViewPager()
-    }
-
-    /**
-     * Load data into [ChallengeViewModel]
-     */
-    private fun loadChallengeViewModelData() {
-        val challenges = viewmodel.getChallenges(userViewModel.getUser().value!!.getUserId().toInt())
-        viewmodel.setChallenges(challenges)
     }
 
     /**
      * give data to the adapter
      */
-    private fun addChallenges() {
-        val userId = userViewModel.getUser().value!!.getUserId().toInt()
-        val challenges = viewmodel.getChallenges(userId)
-        if(challenges!= null){
-            challengeAdapter.addCardItems(challenges)
+    private fun loadChallenges() {
+        viewmodel.getChallenges().observe(viewLifecycleOwner,Observer<List<Challenge>>{
+            challengeAdapter.addCardItems(it)
             challengeAdapter.notifyDataSetChanged()
-        }
+        })
+        //TODO: change boolean flag
+        viewmodel.loadUserChallenges(userViewModel.getUser().value!!.getUserId().toInt(),true)
     }
 
     /**

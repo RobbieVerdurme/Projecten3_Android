@@ -34,7 +34,9 @@ class ChallengeRepository(
      * [LiveData] that stores the challenges
      * This will be used by objects that need access to the list of challenges
      */
-    private val challenges = MutableLiveData<List<Challenge>>(listOf<Challenge>())
+    private val challenges = MutableLiveData<List<Challenge>>(listOf())
+
+    fun getChallenges(): LiveData<List<Challenge>> = challenges
 
 
     //region retrofit
@@ -75,7 +77,6 @@ class ChallengeRepository(
         /**
          * Insert challenges
          */
-        this.challenges.value = challenges
         challenges.forEach()
         {
             challengeDao.insertChallenge(
@@ -89,13 +90,15 @@ class ChallengeRepository(
                 )
             )
         }
+        this.challenges.value = challenges
     }
 
     /**
      * get challenges from room db
      */
-    override suspend fun loadChallenges(): List<Challenge>? {
-        val persistentChallenges = challengeDao.getChallenges()
+    override fun loadChallengesFromDb(viewmodelScope: CoroutineScope) {
+        viewmodelScope.launch {
+            val persistentChallenges = challengeDao.getChallenges()
             val localChallenges = ArrayList<Challenge>()
 
             persistentChallenges.forEach {
@@ -109,20 +112,19 @@ class ChallengeRepository(
                 )
                 localChallenges.add(challenge)
             }
-            return localChallenges
+            challenges.value = localChallenges
+        }
     }
 
     /**
      * get challenges
      */
-    override fun getChallenges(userId: Int, viewmodelScope: CoroutineScope): List<Challenge> {
-        //boadcast reciever via fragment. kijken online => naar db call. offline => room
-        //if online
-        //if data is not already filled
-        getChallengesFromOnline(userId, viewmodelScope)
-        //else
-        //loadChallenges()
-        return challenges.value!!
+    override fun getChallengesFromDataSource(userId: Int, viewmodelScope: CoroutineScope,isOnline: Boolean) {
+        if(isOnline && challenges.value!!.isEmpty()){
+            getChallengesFromOnline(userId,viewmodelScope)
+        }else{
+            loadChallengesFromDb(viewmodelScope)
+        }
     }
 
     /**
