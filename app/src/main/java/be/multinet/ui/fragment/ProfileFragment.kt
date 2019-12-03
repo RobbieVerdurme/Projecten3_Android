@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
 import be.multinet.databinding.FragmentProfileBinding
 import be.multinet.model.Company
+import be.multinet.model.Therapist
 import be.multinet.model.User
 import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.ProfileViewModel
@@ -67,7 +69,6 @@ class ProfileFragment : Fragment() {
         setupFragment()
         loadProfileViewModelData()
         initRecyclerView()
-        addTherapists()
         setupClickListenerForUpdateButton()
     }
 
@@ -83,15 +84,13 @@ class ProfileFragment : Fragment() {
      * Load data into [ProfileViewModel]
      */
     private fun loadProfileViewModelData(){
-        val company = Company("1", "Patisserie Stefan")
-        viewModel.setCompany(company)
-    }
-
-    private fun addTherapists(){
-        val user = viewModel.getUserProfile().value
-        if(user!= null){
-            therapistAdapter.submitList(therapistViewModel.getTherapists(user.getToken(), user.getUserId().toInt()))
-        }
+        val user = viewModel.getUserProfile().value!!
+        //TODO: change boolean flag
+        therapistViewModel.getTherapistsFromDataSource(user.getToken(),user.getUserId().toInt(), true )
+        therapistViewModel.getTherapists().observe(viewLifecycleOwner, Observer<List<Therapist>>{
+          therapistAdapter.submitList(it)
+          therapistAdapter.notifyDataSetChanged()
+        })
     }
 
     /**
