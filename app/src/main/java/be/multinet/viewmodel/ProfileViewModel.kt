@@ -1,11 +1,16 @@
 package be.multinet.viewmodel
 
 import android.app.Application
+import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import be.multinet.R
+import be.multinet.application.MultinetApp
 import be.multinet.model.Company
 import be.multinet.model.User
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * This class is the [AndroidViewModel] for the profile screen.
@@ -35,6 +40,24 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
      */
     fun setCompany(company: Company){
         userCompanyProfile.value = company
+    }
+
+    fun getUserContractDate(): String {
+        val app = getApplication<MultinetApp>()
+        val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            app.resources.configuration.locales.get(0)
+        } else{
+            app.resources.configuration.locale
+        }
+        val user = userProfile.value
+        return if(user == null) app.getString(R.string.profile_contract_date_invalid)
+        else{
+            val contract: Date = user.getContractDate()
+            return if (user.getContractDate().before(Date())) {
+                app.getString(R.string.profile_contract_date_expired)
+            } else SimpleDateFormat("dd-MM-yyyy",locale).format(contract)
+        }
+
     }
 
 

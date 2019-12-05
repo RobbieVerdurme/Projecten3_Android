@@ -30,6 +30,9 @@
     <string name="profile_user_info">Gegevens</string>
     <string name="profile_contact">Therapeuten</string>
     <string name="Update_profile_button">Aanpassen</string>
+    <string name="profile_contract_date_format">%1d-%2d-%3d</string>
+    <string name="profile_contract_date_invalid">Ongeldige Contract Datum</string>
+    <string name="profile_contract_date_expired">Contract Is Verlopen</string>
 
     <!--Update Profile-->
     <string name="update_profile_title">Profiel aanpassen</string>
