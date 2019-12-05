@@ -77,6 +77,7 @@ class CompleteChallengeFragment : Fragment() {
                 val navController = findNavController()
                 val uservm: UserViewModel by sharedViewModel()
                 val user = uservm.getUser().value!!
+
                 viewmodel.completeChalenge(user.getUserId().toInt(), user.getToken())
                 user.setEXP(user.getEXP() + 1)
                 navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesCategoryFragment)

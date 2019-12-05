@@ -13,7 +13,7 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content">
 
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -23,18 +23,28 @@ android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/challengeImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/challengeTitle"
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/challengeImage"/>
 
     <ScrollView
+        android:id="@+id/ScrollviewDescription"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:paddingTop="24dp">
+        android:layout_height="300dp"
+        android:paddingTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/challengeTitle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +55,7 @@ android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/challengeDescription"
                 style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
@@ -56,7 +66,11 @@ android:layout_height="wrap_content">
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/complete_challenge"
-        app:backgroundTint="@color/colorPrimary" />
-</LinearLayout>
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ScrollviewDescription" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
 </androidx.cardview.widget.CardView>
