@@ -38,12 +38,10 @@ class UserTherapistsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     ): RecyclerView.ViewHolder(itemView){
 
         val therapistName = itemView.therapist_name
-        val therapistNumber = itemView.therapist_number
         val therapistMail = itemView.therapis_mail
 
         fun bind(therapist: Therapist){
             therapistName.setText(therapist.getName())
-            therapistNumber.setText(therapist.getNumber())
             therapistMail.setText(therapist.getMail())
         }
     }
