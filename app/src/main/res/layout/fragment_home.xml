@@ -21,11 +21,10 @@
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="98dp"
+                android:layout_height="98dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:srcCompat="@drawable/ic_person_24px" />
         </androidx.cardview.widget.CardView>
 
         <ProgressBar

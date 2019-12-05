@@ -15,6 +15,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="54dp"
+                app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+                app:layout_constraintEnd_toEndOf="@+id/progressBar"
+                app:layout_constraintStart_toStartOf="@+id/progressBar"
+                app:layout_constraintTop_toTopOf="@+id/progressBar">
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="98dp"
+                    android:layout_height="98dp"
+                    android:contentDescription="TODO"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_person_24px" />
+            </androidx.cardview.widget.CardView>
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"

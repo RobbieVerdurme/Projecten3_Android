@@ -1,6 +1,5 @@
 package be.multinet.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +68,6 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
         }
         cardView.maxCardElevation = mBaseElevation * MAX_ELEVATION_FACTOR
         mView.add(position,cardView)
-        Log.i("pager", "init size: " + mView.size.toString())
         return view
 
     }
@@ -82,7 +80,7 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
         val complete: Button?= view.findViewById(R.id.challengeComplete)
 
         //set text on textview
-        img.setImageResource(R.drawable.ic_multimed_background)
+        img.setImageResource(R.mipmap.ic_multimed_2)
         title.setText(challenge.getTitle())
         description.setText(challenge.getDescription())
         //complete onclick?
