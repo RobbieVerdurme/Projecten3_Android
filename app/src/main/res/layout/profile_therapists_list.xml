@@ -19,16 +19,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/therapist_number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Telefoon nummer"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/therapist_name" />
-
-    <TextView
         android:id="@+id/therapis_mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,6 +26,6 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/therapist_number" />
+        app:layout_constraintTop_toBottomOf="@+id/therapist_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
