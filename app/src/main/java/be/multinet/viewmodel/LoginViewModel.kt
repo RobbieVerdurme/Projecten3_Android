@@ -48,6 +48,16 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
+     * Validate all form inputs
+     * @return whether the form is valid
+     */
+    fun validateForm(): Boolean {
+        onUsernameChanged(username.value!!)
+        onPasswordChanged(password.value!!)
+        return usernameError.value != null && passwordError.value != null
+    }
+
+    /**
      * Remove [usernameObserver] and [passwordObserver] to prevents memory leaks.
      */
     override fun onCleared() {
