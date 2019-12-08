@@ -54,7 +54,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun validateForm(): Boolean {
         onUsernameChanged(username.value!!)
         onPasswordChanged(password.value!!)
-        return usernameError.value != null && passwordError.value != null
+        return usernameError.value == null && passwordError.value == null
     }
 
     /**
