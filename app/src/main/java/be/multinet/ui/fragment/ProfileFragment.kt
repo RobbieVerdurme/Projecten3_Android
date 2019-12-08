@@ -1,9 +1,7 @@
 package be.multinet.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -39,8 +37,6 @@ class ProfileFragment : Fragment() {
      */
     private lateinit var therapistAdapter: UserTherapistsAdapter
 
-    private lateinit var  updateProfileButton: Button
-
     /**
      * Set up the layout.
      */
@@ -60,8 +56,30 @@ class ProfileFragment : Fragment() {
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
-        updateProfileButton = binding.updateProfileButton!!
         return binding.root
+    }
+
+    /**
+     * Notify that this fragment has an options menu
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu,menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.profileEditButton ->{
+                findNavController().navigate(R.id.action_profileFragment_To_UpdateProfileFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +87,6 @@ class ProfileFragment : Fragment() {
         setupFragment()
         loadProfileViewModelData()
         initRecyclerView()
-        setupClickListenerForUpdateButton()
     }
 
     /**
@@ -101,17 +118,6 @@ class ProfileFragment : Fragment() {
             layoutManager  = LinearLayoutManager(activity)
             therapistAdapter = UserTherapistsAdapter()
             adapter = therapistAdapter
-        }
-    }
-
-    /**
-     * Setup the [onClick] event for updateProfileButton
-     */
-    private fun setupClickListenerForUpdateButton() {
-        updateProfileButton.setOnClickListener()
-        {
-            val navController = findNavController()
-            navController.navigate(R.id.action_profileFragment_To_UpdateProfileFragment)
         }
     }
 }
