@@ -91,7 +91,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/profile_number"
-                    android:text="@={updateProfileViewModel.phone}"/>
+                    android:text="@={updateProfileViewModel.phone}"
+                    android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

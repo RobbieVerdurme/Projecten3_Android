@@ -7,7 +7,8 @@
             name="updateProfileViewModel"
             type="be.multinet.viewmodel.UpdateProfileViewModel" />
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="4dp"
@@ -56,9 +57,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
-            app:layout_constraintTop_toBottomOf="@id/header"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -116,17 +119,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/profile_number"
-                        android:text="@={updateProfileViewModel.phone}" />
+                        android:text="@={updateProfileViewModel.phone}"
+                        android:inputType="phone"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
-
-
-
-
-
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>
