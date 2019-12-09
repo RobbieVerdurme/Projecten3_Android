@@ -63,7 +63,10 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
             s.length < firstNameMinLength -> firstNameError.value = firstNameMinLengthMessage
             else -> firstNameError.value = null
         }
-        firstName.value = s.toString()
+        val value = s.toString()
+        if(firstName.value != value){
+            firstName.value = value
+        }
     }
 
     private fun validateLastName(s: CharSequence){
@@ -72,7 +75,10 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
             s.length < lastNameMinLength -> lastNameError.value = lastNameMinLengthMessage
             else -> lastNameError.value = null
         }
-        lastName.value = s.toString()
+        val value = s.toString()
+        if(lastName.value != value){
+            lastName.value = value
+        }
     }
 
     private fun validatePhone(s: CharSequence){
@@ -82,7 +88,10 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
             s.length > phoneMaxLength -> phoneError.value = phoneMaxLengthMessage
             else -> phoneError.value = null
         }
-        phone.value = s.toString()
+        val value = s.toString()
+        if(phone.value != value){
+            phone.value = value
+        }
     }
 
     private fun validateEmail(s:CharSequence){
@@ -97,7 +106,10 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
                 emailError.value = null
             }
         }
-        email.value = s.toString()
+        val value = s.toString()
+        if(email.value != value){
+            email.value = value
+        }
     }
 
     fun validateForm(): Boolean {

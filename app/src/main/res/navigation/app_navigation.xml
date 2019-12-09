@@ -21,7 +21,7 @@
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile">
         <action
-            android:id="@+id/action_profileFragment_To_UpdateProfileFragment"
+            android:id="@+id/action_profileFragment_to_updateProfileFragment"
             app:destination="@id/updateProfileFragment" />
     </fragment>
 
@@ -45,10 +45,5 @@
     <fragment
         android:id="@+id/updateProfileFragment"
         android:name="be.multinet.ui.fragment.UpdateProfileFragment"
-        android:label="UpdateProfileFragment"
-        tools:layout="@layout/fragment_update_profile">
-        <action
-            android:id="@+id/action_updateProfileFragment_To_ProfileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
+        android:label="UpdateProfileFragment" />
 </navigation>

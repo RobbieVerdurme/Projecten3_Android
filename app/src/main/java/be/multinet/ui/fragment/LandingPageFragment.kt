@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 
 import be.multinet.R
 import be.multinet.model.User
@@ -42,18 +43,7 @@ class LandingPageFragment : Fragment() {
         val bottomNavigation = view?.findViewById<BottomNavigationView>(R.id.landingPageBottomNavigation)
         //Find the nested nav host
         val navController = Navigation.findNavController(view?.findViewById<View>(R.id.landingPageNavHost)!!)
-        //Setup a listener for the bottom navigation
-        bottomNavigation?.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.homeFragment,R.id.challengesCategoryFragment,R.id.infoFragment,R.id.profileFragment -> {
-                    navController.navigate(it.itemId)
-                    true
-                }
-                else -> {
-                    true
-                }
-            }
-        }
+        NavigationUI.setupWithNavController(bottomNavigation!!,navController)
         userViewModel.getUser().observe(viewLifecycleOwner, Observer<User?>{
             //TODO: if null use action that navigates to login, popping until landing page(inclusive)
             //effectively going back to login

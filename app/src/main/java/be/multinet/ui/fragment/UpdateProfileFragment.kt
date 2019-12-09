@@ -38,7 +38,6 @@ class UpdateProfileFragment : Fragment()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        viewModel.initValues(userViewModel.getUser().value!!)
         val binding = FragmentUpdateProfileBinding.inflate(inflater,container,false)
         binding.updateProfileViewModel = viewModel
         binding.lifecycleOwner = this
@@ -47,6 +46,7 @@ class UpdateProfileFragment : Fragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initValues(userViewModel.getUser().value!!)
         setupFragment()
     }
 
@@ -54,16 +54,7 @@ class UpdateProfileFragment : Fragment()
      * Setup this fragment
      */
     private fun setupFragment() {
-        val toolbar = (activity as AppCompatActivity).supportActionBar!!
-        toolbar.title = getString(R.string.update_profile_title)
-        viewModel.updateResult.observe(viewLifecycleOwner, Observer<Boolean> {
-            if(it){
-                findNavController().navigate(R.id.action_updateProfileFragment_To_ProfileFragment)
-            }
-        })
-        view?.findViewById<Button>(R.id.confirmUpdateButton)?.setOnClickListener {
-            onUpdateClick()
-        }
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
     }
 
     /**
