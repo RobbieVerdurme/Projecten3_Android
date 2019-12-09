@@ -74,7 +74,7 @@ class ChallengeRepository(
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val getChallengesErrorMassage: String = application.getString(R.string.challengeError)
-    private val completeChallengeErrorMessage:String = application.getString(R.string.completeChalengeError)
+    private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
 
     init {
         challenges.value = listOf()
