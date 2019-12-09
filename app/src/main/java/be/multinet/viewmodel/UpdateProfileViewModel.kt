@@ -4,42 +4,113 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import be.multinet.R
 import be.multinet.model.User
+import android.util.Patterns.EMAIL_ADDRESS
+import androidx.lifecycle.Observer
 
 class UpdateProfileViewModel(application: Application): AndroidViewModel(application) {
 
-    /**
-     * The [User] for which the profile will be updated
-     */
-    private val userProfile = MutableLiveData<User>()
+    private val firstNameMinLength = 2
+    private val lastNameMinLength = 2
+    private val phoneMinLength = 8//See ISO phone number spec
+    private val phoneMaxLength = 16//See ISO phone number spec
 
-    private val updatedUserProfile = MutableLiveData<User>()
+    private val firstnameRequiredMessage = application.getString(R.string.update_profile_firstname_required)
+    private val firstNameMinLengthMessage = application.getString(R.string.update_profile_firstname_minlength,firstNameMinLength)
+    private val lastnameRequiredMessage = application.getString(R.string.update_profile_lastname_required)
+    private val lastNameMinLengthMessage = application.getString(R.string.update_profile_lastname_minlength,lastNameMinLength)
+    private val phoneRequiredMessage = application.getString(R.string.update_profile_phone_required)
+    private val phoneMinLengthMessage = application.getString(R.string.update_profile_phone_minlength,phoneMinLength)
+    private val phoneMaxLengthMessage = application.getString(R.string.update_profile_phone_maxlength,phoneMaxLength)
+    private val emailRequiredMessage = application.getString(R.string.update_profile_email_required)
+    private val emailInvalidMessage = application.getString(R.string.update_profile_email_invalid)
 
+    private val firstNameObserver = Observer<String>{ validateFirstName(it) }
+    private val lastNameObserver = Observer<String>{ validateLastName(it) }
+    private val phoneObserver = Observer<String>{ validatePhone(it) }
+    private val emailObserver = Observer<String>{ validateEmail(it) }
 
-    /**
-     * Set the [User] to show
-     */
-    fun setUser(user:User)
-    {
-        userProfile.value = user
+    val firstName = MutableLiveData<String>("")
+    val lastName = MutableLiveData<String>("")
+    val phone = MutableLiveData<String>("")
+    val email = MutableLiveData<String>("")
+
+    val firstNameError = MutableLiveData<String>()
+    val lastNameError = MutableLiveData<String>()
+    val phoneError = MutableLiveData<String>()
+    val emailError = MutableLiveData<String>()
+
+    init {
+        firstName.observeForever(firstNameObserver)
+        lastName.observeForever(lastNameObserver)
+        phone.observeForever(phoneObserver)
+        email.observeForever(emailObserver)
     }
 
-    /**
-     * Getter that exposes [user] as [LiveData] to prevent writable leaks.
-     */
-    fun getUserProfile(): MutableLiveData<User> = userProfile
-
-    /**
-     * Set the updatedUser
-     */
-    fun setUpdatedUser(user: User)
-    {
-        updatedUserProfile.value = user
+    fun initValues(user: User){
+        firstName.value = user.getName()
+        lastName.value = user.getFamilyName()
+        phone.value = user.getPhone()
+        email.value = user.getMail()
     }
 
-    /**
-     * Getter that exposes [updatedUser] as [LiveData] to prevent writable leaks
-     */
-    fun getUpdatedUser(): MutableLiveData<User> = updatedUserProfile
+    private fun validateFirstName(s: CharSequence){
+        when{
+            s.isBlank() -> firstNameError.value = firstnameRequiredMessage
+            s.length < firstNameMinLength -> firstNameError.value = firstNameMinLengthMessage
+            else -> firstNameError.value = null
+        }
+        firstName.value = s.toString()
+    }
 
+    private fun validateLastName(s: CharSequence){
+        when{
+            s.isBlank() -> lastNameError.value = lastnameRequiredMessage
+            s.length < lastNameMinLength -> lastNameError.value = lastNameMinLengthMessage
+            else -> lastNameError.value = null
+        }
+        lastName.value = s.toString()
+    }
+
+    private fun validatePhone(s: CharSequence){
+        when{
+            s.isBlank() -> phoneError.value = phoneRequiredMessage
+            s.length < phoneMinLength -> phoneError.value = phoneMinLengthMessage
+            s.length > phoneMaxLength -> phoneError.value = phoneMaxLengthMessage
+            else -> phoneError.value = null
+        }
+        phone.value = s.toString()
+    }
+
+    private fun validateEmail(s:CharSequence){
+        when {
+            s.isBlank() -> {
+                emailError.value = emailRequiredMessage
+            }
+            !EMAIL_ADDRESS.matcher(s).matches() -> {
+                emailError.value = emailInvalidMessage
+            }
+            else -> {
+                emailError.value = null
+            }
+        }
+        email.value = s.toString()
+    }
+
+    fun validateForm(): Boolean {
+        validateFirstName(firstName.value!!)
+        validateLastName(lastName.value!!)
+        validateEmail(email.value!!)
+        validatePhone(phone.value!!)
+        return firstNameError.value == null && lastNameError.value == null && phoneError.value == null && emailError.value == null
+    }
+
+    override fun onCleared() {
+        firstName.removeObserver(firstNameObserver)
+        lastName.removeObserver(lastNameObserver)
+        phone.removeObserver(phoneObserver)
+        email.removeObserver(emailObserver)
+        super.onCleared()
+    }
 }
