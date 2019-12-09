@@ -45,11 +45,6 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
      */
     private val userLevel = MutableLiveData<Int>()
 
-    /**
-     * The label for the chart
-     */
-    val chartLabel = application.getString(R.string.home_chart_label)
-
     //endregion
 
     //region getters

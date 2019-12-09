@@ -49,14 +49,14 @@
                 style="@style/attributeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_surname" />
+                android:text="@string/profile_name" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/surnameTextField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:text="@{updateProfileViewModel.userProfile.surname}"
+                android:text="@{updateProfileViewModel.userProfile.name}"
                 android:textSize="18sp" />
 
             <TextView

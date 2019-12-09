@@ -20,7 +20,7 @@
     <!--Profile-->
     <string name="profile_title">Profiel</string>
     <string name="profile_image_description">Profielfoto</string>
-    <string name="profile_surname">Naam</string>
+    <string name="profile_name">Naam</string>
     <string name="profile_familyname">Familienaam</string>
     <string name="profile_mail">Email</string>
     <string name="profile_number">Tel</string>
@@ -56,7 +56,7 @@
     <string name="userError">Kon uw details niet ophalen</string>
     <string name="therapistError">Kon uw therapeuten niet ophalen</string>
     <string name="challengeError">Kon uw uitdagingen niet ophalen</string>
-    <string name="completeChalengeError">Kon de uitdaging niet voltooien</string>
+    <string name="completeChallengeError">Kon de uitdaging niet voltooien</string>
 
     <!-- Complete Challenge -->
     <string name="Complete_Challenge">Uitdaging voltooien</string>

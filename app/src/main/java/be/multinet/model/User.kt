@@ -5,7 +5,7 @@ import java.util.*
 /**
  * This class represents a user within the app.
  * @property userId the user's ID
- * @property surname the user's first name
+ * @property name the user's first name
  * @property familyName the user's family name
  * @property mail the user's e-mail address
  * @property phone the user's phone number
@@ -16,7 +16,7 @@ import java.util.*
 class User (
     private val userId: String,
     private var token:String,
-    private var surname: String,
+    private var name: String,
     private var familyName: String,
     private var mail: String,
     private var phone: String,
@@ -32,7 +32,7 @@ class User (
     /**
      * @return the surname of the user
      */
-    fun getSurname(): String = surname
+    fun getName(): String = name
 
     /**
      * @return the family name of the user
@@ -73,8 +73,8 @@ class User (
     /**
      * sets the surname of the user
      */
-    fun setSurname(firstname: String){
-        surname = firstname
+    fun setName(firstname: String){
+        name = firstname
     }
 
     /**

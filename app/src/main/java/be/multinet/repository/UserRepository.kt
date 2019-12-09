@@ -73,7 +73,7 @@ class UserRepository(private val userDao: UserDao,
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val invalidLoginMessage: String = application.getString(R.string.login_invalid)
     private val getUserErrorMassage: String = application.getString(R.string.userError)
-    private val contractErrorMessage:String = application.getString(R.string.contractErrorMessage)
+    private val contractErrorMessage:String = application.getString(R.string.profile_contract_date_expired)
 
 
     init {
@@ -93,7 +93,7 @@ class UserRepository(private val userDao: UserDao,
             PersistentUser(
                 user.getUserId().toInt(),
                 user.getToken(),
-                user.getSurname(),
+                user.getName(),
                 user.getFamilyName(),
                 user.getMail(),
                 user.getPhone(),
@@ -126,7 +126,7 @@ class UserRepository(private val userDao: UserDao,
                     categoriesUser.add(Category(category!!.categoryId.toString(), category!!.name))
                 }
             }
-            return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.surname, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
+            return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
         }
     }
 

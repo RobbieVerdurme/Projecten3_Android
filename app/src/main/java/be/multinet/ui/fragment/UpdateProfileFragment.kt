@@ -31,64 +31,24 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class UpdateProfileFragment : Fragment()
 {
-
     val viewModel: UpdateProfileViewModel by viewModel()
 
     val userViewModel: UserViewModel by sharedViewModel()
 
-    /**
-     * The [Button] to update the profile of the user
-     */
-    private lateinit var updateProfileButton: Button
-
-    /**
-     * The [Textfield]s used to update the profile data
-     */
-    private lateinit var surnameTextField: EditText
-    private lateinit var familynameTextField: EditText
-    private lateinit var mailTextField: EditText
-    private lateinit var phoneTextField: EditText
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        /**
-         * Fetch the current user from [UserViewModel].
-         * Note the activity lifecycle scope.
-         * Pass it on to the [ProfileViewModel] of this fragment.
-         */
-        val userViewModel: UserViewModel = getSharedViewModel()
-        val currentUser: User? = userViewModel.getUser().value
-        //Only pass a user if not null
-        if(currentUser != null){
-            viewModel.setUser(currentUser)
-        }
-        //Set up the binding
+        //viewModel.initValues(userVM.getUser)
         val binding = FragmentUpdateProfileBinding.inflate(inflater,container,false)
-        setUpBinding(binding)
+        binding.updateProfileViewModel = viewModel
+        binding.lifecycleOwner = this
         return binding.root
     }
 
-    /*override fun onStart()
-    {
-        super.onStart()
-        setupObservers()
-    }*/
 
-    private fun setUpBinding(binding: FragmentUpdateProfileBinding)
-    {
-        binding.updateProfileViewModel = viewModel
-        binding.lifecycleOwner = this
-        updateProfileButton = binding.confirmUpdateButton
-        surnameTextField = binding.surnameTextField
-        familynameTextField = binding.familynameTextField
-        mailTextField = binding.mailTextField
-        phoneTextField = binding.phoneTextField
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
-        setupClickListenerForUpdateButton()
     }
 
     /**
@@ -99,45 +59,19 @@ class UpdateProfileFragment : Fragment()
         toolbar.title = getString(R.string.update_profile_title)
     }
 
-   /* private fun setupObservers()
-    {
-        //Observer aanpassen, user is al ingevuld dus gaat direct terug navigeren
-        val navController = findNavController()
-        viewModel.getUpdatedUser().observe(viewLifecycleOwner, Observer<User>{
-            if(it != null){
-                if(navController.currentDestination?.id == R.id.updateProfileFragment){
-                    navController.navigate(R.id.action_updateProfileFragment_To_ProfileFragment)
-                }
-            }
-        })
-    }*/
-
-    /**
-     * Setup the [onClick] event for updateProfileButton
-     */
-    private fun setupClickListenerForUpdateButton() {
-        updateProfileButton.setOnClickListener()
-        {
-            onUpdateClick()
-            val navController = findNavController()
-            navController.navigate(R.id.action_updateProfileFragment_To_ProfileFragment)
-        }
-    }
-
     /**
      * Process to update profile
      */
     private fun onUpdateClick(){
-        // Make the update validation check
-        //First check if we have a connection
-        val updatedUser = userViewModel.getUser().value!!
-        //Set the updated values for the user profile
-        updatedUser.setSurname(surnameTextField.text.toString())
-        updatedUser.setFamilyName(familynameTextField.text.toString())
-        updatedUser.setMail(mailTextField.text.toString())
-        updatedUser.setPhone(phoneTextField.text.toString())
+        //TODO
+        //validate form
+        //if valid -> do update
+        //on successful update -> trigger livedata
+        //observe livedata for navigation
 
-        viewModel.setUpdatedUser(updatedUser)
+        //val navController = findNavController()
+        //navController.navigate(R.id.action_updateProfileFragment_To_ProfileFragment)
+
         when(NetworkHandler.getNetworkState().value)
         {
             ConnectionState.CONNECTED -> {
