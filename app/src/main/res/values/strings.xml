@@ -17,7 +17,6 @@
     <!--Home-->
     <string name="home_title">Home</string>
     <string name="home_next_reward_at">Volgende Beloning op niveau %1$d</string>
-    <string name="home_chart_label">Voortgang per week</string>
     <!--Profile-->
     <string name="profile_title">Profiel</string>
     <string name="profile_image_description">Profielfoto</string>
@@ -43,30 +42,26 @@
     <string name="info_title">Info</string>
 
     <!--Network-->
-    <string name="dialog_enable_wireless_title">Enable the wifi</string>
+    <string name="dialog_enable_wireless_title">Wifi inschakelen</string>
     <string name="dialog_enable_wireless_continue">OK</string>
-    <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_enable_wireless_description">Enable the wifi in settings</string>
+    <string name="dialog_cancel">Annuleren</string>
+    <string name="dialog_enable_wireless_description">U hebt geen verbinding. Wifi aanzetten via instelligen?</string>
     <string name="offline">Offline</string>
-    <string name="network_unavailable">Network unavailable</string>
+    <string name="network_unavailable">Netwerk onbereikbaar</string>
 
     <!--Retrofit Error-->
-    <string name="generic_error">There was een error</string>
-    <string name="login_invalid">Invalid login</string>
-    <string name="complete_challenge">Complete challenge</string>
-    <string name="userError">There was een error while getting your user details</string>
-    <string name="therapistError">There was een error while getting your therapist details</string>
-    <string name="challengeError">There was een error while getting your challenges details</string>
-    <string name="completeChalengeError">There was een error while completing the challenge</string>
-    <string name="contractErrorMessage">You\'re contract expired</string>
+    <string name="generic_error">Er liep iets fout</string>
+    <string name="login_invalid">Login ongeldig</string>
+    <string name="complete_challenge">Challenge voltooien</string>
+    <string name="userError">Kon uw details niet ophalen</string>
+    <string name="therapistError">Kon uw therapeuten niet ophalen</string>
+    <string name="challengeError">Kon uw uitdagingen niet ophalen</string>
+    <string name="completeChalengeError">Kon de uitdaging niet voltooien</string>
 
     <!-- Complete Challenge -->
-    <string name="Complete_Challenge">Complete Challenge</string>
+    <string name="Complete_Challenge">Uitdaging voltooien</string>
     <string name="leaderboard_title">Leaderboard</string>
     <string name="leaderboard_place_text">Plaats</string>
     <string name="leaderboard_name_text">Naam</string>
     <string name="leaderboard_score_text">Score</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
