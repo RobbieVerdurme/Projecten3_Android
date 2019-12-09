@@ -41,6 +41,8 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
     val phoneError = MutableLiveData<String>()
     val emailError = MutableLiveData<String>()
 
+    val updateResult = MutableLiveData<Boolean>(false)
+
     init {
         firstName.observeForever(firstNameObserver)
         lastName.observeForever(lastNameObserver)
