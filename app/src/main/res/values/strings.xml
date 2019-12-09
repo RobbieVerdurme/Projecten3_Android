@@ -23,7 +23,7 @@
     <string name="profile_name">Naam</string>
     <string name="profile_familyname">Familienaam</string>
     <string name="profile_mail">Email</string>
-    <string name="profile_number">Tel</string>
+    <string name="profile_number">Telefoon</string>
     <string name="profile_contract">Contractdatum</string>
     <string name="profile_company">Bedrijf</string>
     <string name="profile_user_info">Gegevens</string>
@@ -35,6 +35,18 @@
 
     <!--Update Profile-->
     <string name="update_profile_title">Profiel aanpassen</string>
+    <string name="update_profile_header_label">Gegevens Aanpassen</string>
+    <string name="update_profile_firstname_required">Voornaam is verplicht</string>
+    <string name="update_profile_firstname_minlength">Voornaam is minstens %1d karakters lang</string>
+    <string name="update_profile_lastname_required">Familienaam is verplicht</string>
+    <string name="update_profile_lastname_minlength">Familienaam is minstens %1d karakters lang</string>
+    <string name="update_profile_phone_required">Telefoon is verplicht</string>
+    <string name="update_profile_phone_minlength">Telefoon is minimum %1d cijfers lang</string>
+    <string name="update_profile_phone_maxlength">Telefoon is maximum %1d cijfers lang</string>
+    <string name="update_profile_email_required">Email is verplicht</string>
+    <string name="update_profile_email_invalid">Ongeldige email</string>
+
+
     <string name="confirm_updated_profile_button">Bevestig</string>
     <!--Challenges-->
     <string name="challenges_title">Challenges</string>

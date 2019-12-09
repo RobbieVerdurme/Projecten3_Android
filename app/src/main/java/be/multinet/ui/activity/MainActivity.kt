@@ -10,11 +10,15 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import be.multinet.R
 import be.multinet.network.NetworkBroadcastReceiver
 import be.multinet.network.NetworkHandler
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**

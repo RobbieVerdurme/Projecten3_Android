@@ -29,7 +29,8 @@
             style="@style/subTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/profile_user_info"
+            android:text="@string/update_profile_header_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
@@ -45,74 +46,65 @@
             app:layout_constraintTop_toBottomOf="@+id/infoLabel">
 
 
-            <TextView
-                style="@style/attributeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_name" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:error="@{updateProfileViewModel.firstNameError}">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/surnameTextField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:text="@{updateProfileViewModel.userProfile.name}"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/profile_name"
+                    android:text="@={updateProfileViewModel.firstName}"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                style="@style/attributeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_familyname" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:error="@{updateProfileViewModel.lastNameError}">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/familynameTextField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:text="@{updateProfileViewModel.userProfile.familyName}"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/profile_familyname"
+                    android:text="@={updateProfileViewModel.lastName}"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                style="@style/attributeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_mail" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:error="@{updateProfileViewModel.emailError}">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/profile_mail"
+                    android:text="@={updateProfileViewModel.email}"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/mailTextField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:text="@{updateProfileViewModel.userProfile.mail}"
-                android:textSize="18sp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:error="@{updateProfileViewModel.phoneError}">
 
-            <TextView
-                style="@style/attributeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_number" />
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phoneTextField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:text="@{updateProfileViewModel.userProfile.phone}"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/profile_number"
+                    android:text="@={updateProfileViewModel.phone}"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <Button
             android:id="@+id/confirmUpdateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
             android:text="@string/confirm_updated_profile_button"
-            app:layout_constraintStart_toEndOf="@+id/profileImage"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
