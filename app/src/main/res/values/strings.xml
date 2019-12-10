@@ -18,6 +18,7 @@
     <string name="home_title">Home</string>
     <string name="home_next_reward_at">Volgende Beloning op niveau %1$d</string>
     <!--Profile-->
+    <string name="logout">Uitloggen</string>
     <string name="profile_title">Profiel</string>
     <string name="profile_image_description">Profielfoto</string>
     <string name="profile_name">Naam</string>

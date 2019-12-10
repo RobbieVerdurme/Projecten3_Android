@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="loginViewModel"
             type="be.multinet.viewmodel.LoginViewModel" />
@@ -17,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/logo"
-                android:layout_width="250dp"
-                android:layout_height="200dp"
+                android:layout_width="125dp"
+                android:layout_height="100dp"
                 android:contentDescription="@string/logo"
                 android:src="@mipmap/ic_multimed_foreground"
                 app:layout_constraintBottom_toTopOf="@+id/sign_in"
@@ -43,13 +44,12 @@
                 android:id="@+id/username"
                 android:layout_width="@dimen/login_form"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="52dp"
+                app:error="@{loginViewModel.getUsernameError()}"
+                app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in"
-                app:errorEnabled="true"
-                app:error="@{loginViewModel.getUsernameError()}">
+                app:layout_constraintTop_toBottomOf="@+id/sign_in">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameInput"
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/username"
                     android:inputType="text"
-                    android:text="@={loginViewModel.username}"/>
+                    android:text="@={loginViewModel.username}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -81,18 +81,37 @@
                     android:text="@={loginViewModel.password}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/login_title"
-                app:backgroundTint="@color/multimed_green"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="200dp"
+                android:layout_height="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/password"
-                app:layout_constraintVertical_bias="0.0"/>
+                app:layout_constraintTop_toBottomOf="@+id/password">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_title"
+                    android:visibility="@{loginViewModel.busy ? View.GONE : View.VISIBLE }"
+                    app:backgroundTint="@color/multimed_green"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:indeterminate="true"
+                    android:visibility="@{loginViewModel.busy ? View.VISIBLE : View.GONE }"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

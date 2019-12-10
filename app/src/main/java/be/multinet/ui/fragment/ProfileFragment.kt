@@ -33,6 +33,7 @@ class ProfileFragment : Fragment() {
 
     val viewModel: ProfileViewModel by viewModel()
     val therapistViewModel:TherapistViewModel by viewModel()
+    val userViewModel: UserViewModel by sharedViewModel()
 
     /**
      * the TherapistAdapter for this fragment
@@ -48,7 +49,6 @@ class ProfileFragment : Fragment() {
          * Note the activity lifecycle scope.
          * Pass it on to the [ProfileViewModel] of this fragment.
          */
-        val userViewModel: UserViewModel = getSharedViewModel()
         val currentUser: User? = userViewModel.getUser().value
         //Only pass a user if not null
         if(currentUser != null){
@@ -78,6 +78,10 @@ class ProfileFragment : Fragment() {
         return when(item.itemId){
             R.id.profileEditButton -> {
                 findNavController().navigate(R.id.updateProfileFragment)
+                true
+            }
+            R.id.logout -> {
+                userViewModel.logoutUser()
                 true
             }
             else -> super.onOptionsItemSelected(item)

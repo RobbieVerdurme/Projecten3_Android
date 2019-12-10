@@ -7,6 +7,9 @@ import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.Interface.IChallengeRepository
+import be.multinet.repository.Interface.ITherapistRepository
+import be.multinet.repository.Interface.IUserRepository
 import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
 import be.multinet.viewmodel.*
@@ -50,13 +53,13 @@ class MultinetApp : MultiDexApplication() {
     private fun viewModelModule(): Module {
         return module {
             viewModel {
-                UserViewModel(get(), get(), get(), get())
+                UserViewModel(get())
             }
             viewModel {
                 HomeViewModel(get())
             }
             viewModel {
-                LoginViewModel(get())
+                LoginViewModel(get(),get())
             }
             viewModel {
                 ProfileViewModel(get())
@@ -110,13 +113,13 @@ class MultinetApp : MultiDexApplication() {
      */
     private fun repositoryModule(): Module {
         return module {
-            single {
-                UserRepository(get(), get(), get(),get(),get(),get())
+            single<IUserRepository> {
+                UserRepository(get(), get(), get(),get(),get())
             }
-            single {
+            single<ChallengeRepository> {
                 ChallengeRepository(get(),get(),get(),get())
             }
-            single {
+            single<TherapistRepository> {
                 TherapistRepository(get(),get(),get())
             }
         }

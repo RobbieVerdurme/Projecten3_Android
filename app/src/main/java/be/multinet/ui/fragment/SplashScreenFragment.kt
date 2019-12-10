@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.model.UserLoginState
 import be.multinet.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -23,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class SplashScreenFragment : Fragment() {
 
-    val userViewModel: UserViewModel by viewModel()
+    val userViewModel: UserViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_splash_screen, container, false)

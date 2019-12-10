@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 
 import be.multinet.R
@@ -25,7 +26,6 @@ class LandingPageFragment : Fragment() {
     private val userViewModel: UserViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //TODO use a DataBinding class (LandingPageFragmentBinding) to inflate and setup lifecycleowner + viewmodel etc
         return inflater.inflate(R.layout.fragment_landing_page, container, false)
     }
 
@@ -44,9 +44,10 @@ class LandingPageFragment : Fragment() {
         //Find the nested nav host
         val navController = Navigation.findNavController(view?.findViewById<View>(R.id.landingPageNavHost)!!)
         NavigationUI.setupWithNavController(bottomNavigation!!,navController)
-        userViewModel.getUser().observe(viewLifecycleOwner, Observer<User?>{
-            //TODO: if null use action that navigates to login, popping until landing page(inclusive)
-            //effectively going back to login
+        userViewModel.getUser().observe(viewLifecycleOwner, Observer{
+            if(it == null){
+                activity!!.findNavController(R.id.mainActivityNavHost).navigate(R.id.action_landingPageFragment_to_loginFragment)
+            }
         })
 
     }
