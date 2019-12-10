@@ -1,6 +1,8 @@
 package be.multinet.repository.Interface
 
 import be.multinet.model.User
+import be.multinet.network.Response.UserDataResponse
+import retrofit2.Response
 
 /**
  * This interface defines a contract to manage the application user.
@@ -23,4 +25,8 @@ interface IUserRepository {
      * This is effectively a 'logout'
      */
     suspend fun logoutUser()
+
+    suspend fun login(username:String, password: String): Response<String>
+
+    suspend fun getUserFromServer(userid:Int, token:String): Response<UserDataResponse>
 }

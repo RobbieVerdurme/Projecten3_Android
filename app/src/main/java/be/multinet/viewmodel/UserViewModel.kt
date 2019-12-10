@@ -2,6 +2,7 @@ package be.multinet.viewmodel
 
 import android.app.AlertDialog
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,7 @@ import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.Interface.IUserRepository
 import be.multinet.repository.UserRepository
 import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +31,7 @@ import kotlin.collections.ArrayList
  * This [ViewModel] manages the application user throughout the app lifecycle.
  * It provides logout and loading the user from local persistence.
  */
-class UserViewModel constructor(private val repository: UserRepository, private val challengeRepository: ChallengeRepository, private val multimedService: IApiProvider, private val application: Application) : ViewModel() {
+class UserViewModel(private val userRepository: IUserRepository) : ViewModel() {
 
     /**
      * A [LiveData] that stores the user's login state.
@@ -39,10 +41,12 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      */
     private val userState = MutableLiveData<UserLoginState>(UserLoginState.UNKNOWN)
 
+    private val user = MutableLiveData<User?>(null)
+
     /**
      * Getter that exposes [user] as [LiveData] to prevent writable leaks.
      */
-    fun getUser(): MutableLiveData<User> = repository.getUser()
+    fun getUser(): LiveData<User?> = user
 
     /**
      * Getter that exposes [userState] as [LiveData] to prevent writable leaks.
@@ -55,69 +59,42 @@ class UserViewModel constructor(private val repository: UserRepository, private 
      * Then once loaded, update userLoginState and user.
      */
     fun loadUserFromLocalDatabase(){
-        //Temporary to test until we get a repository to do this
-        userState.value = UserLoginState.LOGGED_OUT
-        viewModelScope.launch {
-            if(repository.getUser().value == null){
-                val deferredDbCall = async(Dispatchers.IO){
-                    repository.loadApplicationUser()
-                }
-                repository.setUser(deferredDbCall.await())
-                userState.value = UserLoginState.LOGGED_IN
-            }
-        }
-        //check the returned value
-        //update live data objects so observers get notified
-    }
-
-    /**
-     * Save [user] to local persistence.
-     */
-    private fun saveUserToLocalDatabase(user: User){
-        //Set local user and status to logged in
-        //TODO save the user to the local database
         viewModelScope.launch {
             val deferredDbCall = async(Dispatchers.IO){
-                repository.saveApplicationUser(user)
+                userRepository.loadApplicationUser()
             }
-            deferredDbCall.await()
+            user.value = deferredDbCall.await()
+            when (user.value) {
+                null -> {
+                    userState.value = UserLoginState.LOGGED_OUT
+                }
+                else -> {
+                    userState.value = UserLoginState.LOGGED_IN
+                }
+            }
         }
-
-        //and set the user state if successful
-        userState.value = UserLoginState.LOGGED_IN
-    }
-
-    /**
-     * ask the repository to da a login
-     */
-    fun login(username:String, password:String){
-        repository.login(username, password, viewModelScope)
     }
 
     /**
      * Do a logout for the current user.
      */
     fun logoutUser(){
-        //TODO ask repository to do a logout
         viewModelScope.launch {
-            if(repository.getUser().value != null){
-                val deferredDbCall = async(Dispatchers.IO){
-                    repository.logoutUser()
-                }
-                deferredDbCall.await()
-                repository.setUser(null)
+            val deferredDbCall = async(Dispatchers.IO){
+                userRepository.logoutUser()
             }
+            deferredDbCall.await()
+            user.value = null
+            userState.value = UserLoginState.LOGGED_OUT
         }
-        //update live data objects so observers get notified
+    }
+
+    fun setUser(user: User){
+        this.user.value = user
+        if(this.user.value != null){
+            userState.value = UserLoginState.LOGGED_IN
+        }
     }
 
     //endregion
-
-    /**
-     * Update a [User]
-     */
-    fun updateUser(updatedUser: User)
-    {
-        repository.updateUser(updatedUser, viewModelScope)
-    }
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -76,11 +77,21 @@ class LoginFragment : Fragment() {
      */
     private fun setupObservers(){
         val navController = findNavController()
-        userViewModel.getUser().observe(viewLifecycleOwner, Observer<User>{
+        userViewModel.getUser().observe(viewLifecycleOwner, Observer{
             if(it != null){
                 if(navController.currentDestination?.id == R.id.loginFragment){
                     navController.navigate(R.id.action_loginFragment_to_landingPageFragment)
                 }
+            }
+        })
+        viewModel.getRquestError().observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                userViewModel.setUser(it)
             }
         })
     }
@@ -96,7 +107,7 @@ class LoginFragment : Fragment() {
             when(NetworkHandler.getNetworkState().value)
             {
                 ConnectionState.CONNECTED -> {
-                    userViewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
+                    viewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
                 }
                 ConnectionState.DISCONNECTED -> {
                     //request wifi enable

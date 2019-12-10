@@ -3,7 +3,10 @@
     <item android:id="@+id/profileEditButton"
         android:icon="@drawable/ic_edit_24px"
         android:title="@string/update_profile_title"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:iconTint="@color/colorWhite"
         app:iconTint="@color/colorWhite"/>
+    <item android:id="@+id/logout"
+        android:title="@string/logout"
+        app:showAsAction="never"/>
 </menu>

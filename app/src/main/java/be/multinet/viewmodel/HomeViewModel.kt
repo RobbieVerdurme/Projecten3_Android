@@ -25,6 +25,8 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
      */
     private var nextRewardLevel = 2
 
+    private var user: User? = null
+
     /**
      * This [MutableLiveData] defines a label for the next reward.
      */
@@ -74,19 +76,6 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
      */
     fun getUserLevel(): LiveData<Int> = userLevel
 
-    /**
-     * Get the chart data.
-     */
-    fun getChartData(): List<Entry> {
-        //Test data
-        val list = ArrayList<Entry>()
-        list.add(Entry(1.0f,3.0f))
-        list.add(Entry(2.0f,5.0f))
-        list.add(Entry(3.0f,7.0f))
-        list.add(Entry(4.0f,0.0f))
-        return list
-    }
-
     fun getLeaderboardData(): List<LeaderboardUser>{
         val list = ArrayList<LeaderboardUser>()
         list.add(LeaderboardUser("Tomos Leal", 31))
@@ -118,7 +107,7 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
     //endregion
 
     //region setters
-    fun setEXP(totalExp:Int){
+    private fun setEXP(totalExp:Int){
         val exp = totalExp.toDouble()/maxExperienceForLevel.value!!
         //sets the userlevel
         userLevel.value = floor(exp).toInt()
@@ -127,5 +116,10 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
         userProgress.value = ((exp - floor(exp)) * maxExperienceForLevel.value!!).toInt()
     }
     //endregion
+
+    fun updateUserData(user: User){
+        this.user = user
+        setEXP(this.user?.getEXP()!!)
+    }
 
 }

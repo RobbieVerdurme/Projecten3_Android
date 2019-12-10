@@ -18,7 +18,9 @@ import androidx.navigation.findNavController
 import be.multinet.R
 import be.multinet.network.NetworkBroadcastReceiver
 import be.multinet.network.NetworkHandler
+import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
@@ -26,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : AppCompatActivity() {
 
+    val userViewModel: UserViewModel by viewModel()
     /**
      * Broadcast receiver for API < 24
      */

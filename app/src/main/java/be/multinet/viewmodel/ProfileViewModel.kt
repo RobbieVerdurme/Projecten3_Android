@@ -5,41 +5,51 @@ import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import be.multinet.R
 import be.multinet.application.MultinetApp
 import be.multinet.model.Company
+import be.multinet.model.Therapist
 import be.multinet.model.User
+import be.multinet.network.ConnectionState
+import be.multinet.network.NetworkHandler
+import be.multinet.repository.Interface.ITherapistRepository
+import be.multinet.repository.TherapistRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * This class is the [AndroidViewModel] for the profile screen.
  */
-class ProfileViewModel(application: Application) : AndroidViewModel(application) {
+class ProfileViewModel(private val therapistRepository: ITherapistRepository, application: Application) : AndroidViewModel(application) {
 
     /**
      * This [MutableLiveData] holds the user for this profile.
      */
     private val userProfile = MutableLiveData<User>()
 
-    /**
-     * This [MutableLiveData] holds the users's company for the profile.
-     */
-    private val userCompanyProfile = MutableLiveData<Company>()
+    private val loadingTherapists = MutableLiveData<Boolean>(true)
 
+    private val therapists: ArrayList<Therapist> = ArrayList()
+
+    private val requestError = MutableLiveData<String>(null)
+
+    private val genericErrorMessage: String = application.getString(R.string.generic_error)
+    private val getTherapistErrorMessage: String = application.getString(R.string.therapistError)
+
+    fun getLoadingTherapists(): LiveData<Boolean> = loadingTherapists
+    fun getTherapists(): List<Therapist> = therapists
+    fun getRequestError(): LiveData<String> = requestError
 
     /**
      * Set the [user] to display.
      */
     fun setUser(user: User){
         userProfile.value = user
-    }
-
-    /**
-     * Set the [Company] to display
-     */
-    fun setCompany(company: Company){
-        userCompanyProfile.value = company
     }
 
     fun getUserContractDate(): String {
@@ -66,9 +76,56 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
      */
     fun getUserProfile(): MutableLiveData<User> = userProfile
 
-    /**
-     * Getter that exposes [Company] as [LiveData] to prevent writable leaks.
-     */
-    fun getUserCompanyProfile(): MutableLiveData<Company> = userCompanyProfile
+    fun loadTherapists(){
+        val user = userProfile.value
+        viewModelScope.launch {
+            requestError.value = null
+            val loadedData = async(Dispatchers.IO) {
+                therapistRepository.loadTherapists(user!!.getToken(),user.getUserId().toInt())
+            }
+            val result = loadedData.await()
+            if(result.apiResponse != null){
+                when(result.apiResponse.code()){
+                    400 -> {
+                        requestError.value = getTherapistErrorMessage
+                        loadingTherapists.value = false
+                    }
+                    200 -> {
+                        val body = result.apiResponse.body()!!
+                        val localtherapists = ArrayList<Therapist>()
+                        body.forEach {
+                            val th = Therapist(
+                                it.therapistId,
+                                it.firstname,
+                                it.lastname,
+                                "",
+                                it.email
+                            )
+
+                            localtherapists.add(th)
+                        }
+                        val saveToDb = async(Dispatchers.IO){
+                            therapistRepository.saveTherapists(localtherapists)
+                        }
+                        saveToDb.await()
+                        therapists.clear()
+                        therapists.addAll(localtherapists)
+                        loadingTherapists.value = false
+                    }
+                    else -> {
+                        requestError.value = genericErrorMessage
+                        loadingTherapists.value = false
+                    }
+                }
+            }else if(result.databaseResponse != null){
+                therapists.clear()
+                therapists.addAll(result.databaseResponse)
+                loadingTherapists.value = false
+            }else{
+                requestError.value = genericErrorMessage
+                loadingTherapists.value = false
+            }
+        }
+    }
 
 }

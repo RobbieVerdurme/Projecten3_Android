@@ -50,6 +50,8 @@ abstract class ApplicationDatabase : RoomDatabase() {
             {
                 instance = Room.databaseBuilder(context,ApplicationDatabase::class.java, databaseName).fallbackToDestructiveMigration().build()
             }
+            //drop database if needed
+            //dropDatabase(context)
             return instance!!
         }
 

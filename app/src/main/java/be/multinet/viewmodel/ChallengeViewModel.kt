@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.Interface.IChallengeRepository
 import be.multinet.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
