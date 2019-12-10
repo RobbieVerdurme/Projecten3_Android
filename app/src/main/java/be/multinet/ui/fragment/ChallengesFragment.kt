@@ -33,10 +33,6 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * Viewmodel of this fragment
      */
     val viewmodel: ChallengeViewModel by viewModel()
-    /**
-     * category of challenge
-     */
-    lateinit var category : Category
 
     /**
      * The ChallengesAdapter for this fragment
@@ -58,7 +54,6 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
         val binding = FragmentChallengesBinding.inflate(inflater, container,false)
         binding.challengeViewModel = viewmodel
         binding.lifecycleOwner = this
-        retainInstance = true
         return binding.root
     }
 
@@ -74,6 +69,8 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
      * give data to the adapter
      */
     private fun loadChallenges() {
+
+
         viewmodel.getChallenges(category).observe(viewLifecycleOwner,Observer<List<Challenge>>{
             challengeAdapter.addCardItems(it)
             challengeAdapter.notifyDataSetChanged()

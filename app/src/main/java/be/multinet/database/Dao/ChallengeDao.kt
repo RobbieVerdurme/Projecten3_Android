@@ -3,6 +3,7 @@ package be.multinet.database.Dao
 import androidx.room.*
 import be.multinet.database.Persist.PersistentCategory
 import be.multinet.database.Persist.PersistentChallenge
+import java.util.*
 
 /**
  * This interface defines a contract to manipulate [PersistentChallenge]s in the [ApplicationDatabase].
@@ -39,6 +40,6 @@ interface ChallengeDao {
     /**
      * update the challenge
      */
-    @Update
-    suspend fun completeChallenge(challenge:PersistentChallenge)
+    @Query("UPDATE PersistentChallenge SET completedDate = :completed WHERE challengeId = :challengeId AND completedDate IS NULL")
+    suspend fun completeChallenge(challengeId: Int, completed: Date)
 }

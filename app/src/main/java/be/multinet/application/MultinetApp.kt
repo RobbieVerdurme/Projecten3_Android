@@ -65,7 +65,7 @@ class MultinetApp : MultiDexApplication() {
                 ProfileViewModel(get(),get())
             }
             viewModel {
-                ChallengeViewModel(get())
+                ChallengeViewModel(get(),get())
             }
             viewModel {
                 CompleteChallengeViewModel(get(),get())
@@ -113,8 +113,8 @@ class MultinetApp : MultiDexApplication() {
             single<IUserRepository> {
                 UserRepository(get(), get(), get(),get(),get())
             }
-            single<ChallengeRepository> {
-                ChallengeRepository(get(),get(),get(),get())
+            single<IChallengeRepository> {
+                ChallengeRepository(get(),get(),get())
             }
             single<ITherapistRepository> {
                 TherapistRepository(get(),get())
