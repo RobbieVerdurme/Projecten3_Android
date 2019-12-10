@@ -8,28 +8,22 @@ import be.multinet.R
 import be.multinet.model.Therapist
 import kotlinx.android.synthetic.main.profile_therapists_list.view.*
 
-class UserTherapistsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private var items: List<Therapist> = ArrayList()
+class UserTherapistsAdapter(private val dataset: List<Therapist>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return TherapistViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.profile_therapists_list, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return dataset.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is TherapistViewHolder ->{
-                holder.bind(items.get(position))
+                holder.bind(dataset[position])
             }
         }
-    }
-
-    fun submitList(therapistList: List<Therapist>){
-        items = therapistList
     }
 
 
