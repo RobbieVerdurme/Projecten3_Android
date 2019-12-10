@@ -5,8 +5,8 @@
     <data>
         <import type="android.view.View"/>
         <variable
-            name="viewModel"
-            type="be.multinet.viewmodel.CompleteChallengeViewModel" />
+            name="challenge"
+            type="be.multinet.model.Challenge" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.challenge.title}"
+            android:text="@{challenge.title}"
             app:layout_constraintBottom_toBottomOf="@+id/challengeImage"
             app:layout_constraintStart_toEndOf="@+id/challengeImage"
             app:layout_constraintTop_toTopOf="@+id/challengeImage" />
@@ -49,18 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/complete_challenge"
-                android:visibility="@{viewModel.challenge.dateCompleted == null ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ProgressBar
-                android:id="@+id/progressBar3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="@{viewModel.completing == true ? View.VISIBLE : View.GONE }"
+                android:visibility="@{challenge.dateCompleted == null ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +87,7 @@
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.challenge.description}"/>
+                android:text="@{challenge.description}"/>
 
             </LinearLayout>
         </ScrollView>
