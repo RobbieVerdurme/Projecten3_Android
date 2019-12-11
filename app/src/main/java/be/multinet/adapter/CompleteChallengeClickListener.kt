@@ -1,4 +1,4 @@
-package be.multinet.recyclerview
+package be.multinet.adapter
 
 import be.multinet.model.Challenge
 

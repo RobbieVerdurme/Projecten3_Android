@@ -29,21 +29,18 @@
         android:id="@+id/CompleteChallengeFragment"
         android:name="be.multinet.ui.fragment.CompleteChallengeFragment"
         android:label="CompleteChallengeFragment"
-        tools:layout="@layout/fragment_complete_challenge">
-        <action
-            android:id="@+id/action_CompleteChallengeFragment_to_challengesCategoryFragment"
-            app:destination="@id/challengesCategoryFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/challengesCategoryFragment"
-        android:name="be.multinet.ui.fragment.ChallengesCategoryFragment"
-        android:label="ChallengesCategoryFragment">
-        <action
-            android:id="@+id/action_challengesCategoryFragment_to_CompleteChallengeFragment"
-            app:destination="@id/CompleteChallengeFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_complete_challenge"/>
     <fragment
         android:id="@+id/updateProfileFragment"
         android:name="be.multinet.ui.fragment.UpdateProfileFragment"
         android:label="UpdateProfileFragment" />
+    <fragment
+        android:id="@+id/challengesFragment"
+        android:name="be.multinet.ui.fragment.ChallengesFragment"
+        android:label="ChallengesFragment"
+        tools:layout="@layout/fragment_challenges">
+        <action
+            android:id="@+id/action_challengesFragment_to_CompleteChallengeFragment"
+            app:destination="@id/CompleteChallengeFragment" />
+    </fragment>
 </navigation>

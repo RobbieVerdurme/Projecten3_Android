@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.multinet.R
 import be.multinet.databinding.FragmentCompleteChallengeBinding
@@ -22,6 +23,8 @@ class CompleteChallengeFragment : Fragment() {
      * viewmodel of this fragment
      */
     val viewmodel: CompleteChallengeViewModel by sharedViewModel()
+
+    val userVM: UserViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentCompleteChallengeBinding.inflate(inflater, container, false)
@@ -42,6 +45,11 @@ class CompleteChallengeFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.Complete_Challenge)
+        viewmodel.getCompleting().observe(viewLifecycleOwner, Observer {
+            if(it && viewmodel.getRequestError().value == null){
+                findNavController().navigateUp()
+            }
+        })
     }
 
     /**
@@ -72,16 +80,9 @@ class CompleteChallengeFragment : Fragment() {
         /**
          * redirect to homepage and say that the challenge has been completed
          */
-        btnSubmit.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                val navController = findNavController()
-                val uservm: UserViewModel by sharedViewModel()
-                val user = uservm.getUser().value!!
-
-                viewmodel.completeChalenge(user.getUserId().toInt(), user.getToken())
-                user.setEXP(user.getEXP() + 1)
-                navController.navigate(R.id.action_CompleteChallengeFragment_to_challengesCategoryFragment)
-            }
-        })
+        btnSubmit.setOnClickListener {
+            val user = userVM.getUser().value!!
+            viewmodel.completeChallenge(user, user.getToken())
+        }
     }
 }

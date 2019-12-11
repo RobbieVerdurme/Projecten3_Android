@@ -1,6 +1,7 @@
 package be.multinet.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import be.multinet.R
 import be.multinet.database.Persist.PersistentChallenge
@@ -22,144 +23,117 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val getChallengesErrorMessage: String = application.getString(R.string.challengeError)
-    private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
 
-    /**
-     * The public challenges are stored here.
-     */
-    private val challenges = MutableLiveData<List<Challenge>>()
-
-    private val selectedCategory = MutableLiveData<Category>()
-
-    /**
-     * All challenges are stored here, needed for a filter on category.
-     */
+    private val allCategories = ArrayList<Category>()
     private val allChallenges = ArrayList<Challenge>()
+    private val viewPagerDataset = ArrayList<Challenge>()
+
+    private val selectedCategory = MutableLiveData(-1)
 
     private val loadingChallenges = MutableLiveData<Boolean>(true)
 
-    private val completingChallenge = MutableLiveData<Boolean>(false)
-
     private val requestError = MutableLiveData<String>(null)
+
+    fun setSelectedCategory(index: Int){
+        selectedCategory.value = index
+        getChallengesForCategory(allCategories[index])
+    }
+
+    fun showTabs(): Boolean {
+        return (requestError.value != null || loadingChallenges.value!!)
+    }
 
     fun getRequestError(): LiveData<String> = requestError
 
-    fun getChallenges(): LiveData<List<Challenge>> = challenges
+    fun getDataset(): List<Challenge> = viewPagerDataset
+
+    fun getCategories(): List<Category> = allCategories
 
     fun getIsLoading(): LiveData<Boolean> = loadingChallenges
 
-    fun getIsCompleting(): LiveData<Boolean> = completingChallenge
+    fun getSelectedCategory(): LiveData<Int> = selectedCategory
 
-    fun getSelectedCategory(): LiveData<Category> = selectedCategory
-
-    fun getChallengesForCategory(category:Category){
-        challenges.value = allChallenges.filter {
-            it.getCategory()!!.getCategoryId() == category.getCategoryId()
-        }.toList()
-    }
-
-    private suspend fun refreshChallenges(userId: Int){
-        val loadChallengesResult = challengeRepository.loadChallenges(userId)
-        when{
-            loadChallengesResult.apiResponse != null -> {
-                when(loadChallengesResult.apiResponse.code()){
-                    400 -> {
-                        requestError.value = getChallengesErrorMessage
-                        loadingChallenges.value = false
-                    }
-                    200 -> {
-                        val body = loadChallengesResult.apiResponse.body()!!
-                        val localChallenges = ArrayList<Challenge>()
-
-                        body.forEach()
-                        {
-                            val challenge = Challenge(
-                                it.challenge.challengeId.toString(),
-                                it.challenge.ChallengeImage ?: "",
-                                it.challenge.title,
-                                it.challenge.description,
-                                it.completedDate,
-                                Category(
-                                    it.challenge.category.categoryId.toString(),
-                                    it.challenge.category.name
-                                )
-                            )
-                            localChallenges.add(challenge)
-                        }
-                        challengeRepository.saveChallenges(localChallenges)
-                        allChallenges.clear()
-                        allChallenges.addAll(localChallenges)
-                        selectedCategory.value = allChallenges.firstOrNull()?.getCategory()
-                        if(selectedCategory.value != null){
-                            getChallengesForCategory(selectedCategory.value!!)
-                        }
-                        loadingChallenges.value = false
-                    }
-                    else -> {
-                        requestError.value = genericErrorMessage
-                    }
-                }
-            }
-            loadChallengesResult.databaseResponse != null -> {
-                allChallenges.clear()
-                allChallenges.addAll(loadChallengesResult.databaseResponse)
-                loadingChallenges.value = false
-            }
-            else -> {
-                requestError.value = genericErrorMessage
-                loadingChallenges.value = false
-            }
-        }
+    private fun getChallengesForCategory(category:Category){
+        viewPagerDataset.clear()
+        viewPagerDataset.addAll(allChallenges.filter {
+            it.getCategory()!!.getName() == category.getName()
+        }.toList())
+        Log.d("dataset",viewPagerDataset.isEmpty().toString())
     }
 
     fun loadChallenges(userId: Int) {
         viewModelScope.launch {
-            val refresh = async(Dispatchers.IO){
-                refreshChallenges(userId)
+            loadingChallenges.value = true
+            val loadResult = async(Dispatchers.IO){
+                challengeRepository.loadChallenges(userId)
             }
-            refresh.await()
-        }
-    }
-
-    fun completeChallenge(challengeId: Int,userId:Int, token: String){
-        if(!completingChallenge.value!!){
-            completingChallenge.value = true
-            viewModelScope.launch {
-                val apiResult = async (Dispatchers.IO){
-                    challengeRepository.completeChallengeOnServer(challengeId,userId,token)
-                }
-                val apiResponse = apiResult.await()
-                if(apiResponse == null){
-                    requestError.value = genericErrorMessage
-                    completingChallenge.value = false
-                }else{
-                    when(apiResponse.code()){
+            val loadDataResponse = loadResult.await()
+            when{
+                loadDataResponse.apiResponse != null -> {
+                    when(loadDataResponse.apiResponse.code()){
                         400 -> {
-                            requestError.value = completeChallengeErrorMessage
-                            completingChallenge.value = false
+                            requestError.value = getChallengesErrorMessage
                         }
                         200 -> {
-                            val completedDate = async(Dispatchers.IO){
-                                challengeRepository.completeChallengeLocally(challengeId)
+                            val body = loadDataResponse.apiResponse.body()!!
+                            val localChallenges = ArrayList<Challenge>()
+
+                            body.forEach()
+                            {
+                                val challenge = Challenge(
+                                    it.challenge.challengeId.toString(),
+                                    it.challenge.ChallengeImage ?: "",
+                                    it.challenge.title,
+                                    it.challenge.description,
+                                    it.completedDate,
+                                    Category(
+                                        it.challenge.category.categoryId.toString(),
+                                        it.challenge.category.name
+                                    )
+                                )
+                                localChallenges.add(challenge)
                             }
-                            allChallenges.filter {
-                                it.getChallengeId().toInt() == challengeId
-                            }.first().setDateCompleted(completedDate.await())
-                            completingChallenge.value = false
-                            //refresh challenges
-                            loadingChallenges.value = true
-                            val refresh = async(Dispatchers.IO){
-                                refreshChallenges(userId)
+                            val saveResult = async (Dispatchers.IO){
+                                challengeRepository.saveChallenges(localChallenges)
                             }
-                            refresh.await()
+                            saveResult.await()
+                            allChallenges.clear()
+                            allChallenges.addAll(localChallenges)
+                            allCategories.clear()
+                            allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
+                                it.getCategoryId()
+                            })
+                            if(allCategories.isEmpty()){
+                                selectedCategory.value = -1
+                            }else{
+                                selectedCategory.value = 0
+                                getChallengesForCategory(allCategories[selectedCategory.value!!])
+                            }
                         }
                         else -> {
                             requestError.value = genericErrorMessage
-                            completingChallenge.value = false
                         }
                     }
                 }
+                loadDataResponse.databaseResponse != null -> {
+                    allChallenges.clear()
+                    allChallenges.addAll(loadDataResponse.databaseResponse)
+                    allCategories.clear()
+                    allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
+                        it.getCategoryId()
+                    })
+                    if(allCategories.isEmpty()){
+                        selectedCategory.value = -1
+                    }else{
+                        selectedCategory.value = 0
+                        getChallengesForCategory(allCategories[selectedCategory.value!!])
+                    }
+                }
+                else -> {
+                    requestError.value = genericErrorMessage
+                }
             }
+            loadingChallenges.value = false
         }
     }
 }
