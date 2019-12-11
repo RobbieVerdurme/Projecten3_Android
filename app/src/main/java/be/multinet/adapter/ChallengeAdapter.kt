@@ -2,6 +2,7 @@ package be.multinet.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import be.multinet.databinding.ChallengeItemBinding
 import be.multinet.model.Challenge

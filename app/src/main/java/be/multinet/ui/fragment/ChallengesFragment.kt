@@ -1,16 +1,17 @@
 package be.multinet.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import be.multinet.R
 import be.multinet.adapter.ChallengeAdapter
 import be.multinet.databinding.FragmentChallengesBinding
@@ -20,7 +21,6 @@ import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayout
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,6 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class ChallengesFragment : Fragment(),
     CompleteChallengeClickListener {
+
     /**
      * Viewmodel of this fragment
      */
@@ -92,6 +93,21 @@ class ChallengesFragment : Fragment(),
         viewPager.apply {
             adapter = challengeAdapter
             offscreenPageLimit = 3
+            setPageTransformer { page, position ->
+                val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+                val offsetPx = resources.getDimensionPixelOffset(R.dimen.offset)
+                val viewPager = page.parent.parent as ViewPager2
+                val offset = position * -(2 * offsetPx + pageMarginPx)
+                if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
+                    if (ViewCompat.getLayoutDirection(viewPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                        page.translationX = -offset
+                    } else {
+                        page.translationX = offset
+                    }
+                } else {
+                    page.translationY = offset
+                }
+            }
         }
         tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(p0: TabLayout.Tab?) {}

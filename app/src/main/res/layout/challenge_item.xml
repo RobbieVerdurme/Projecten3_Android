@@ -11,7 +11,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardElevation="10dp">
+        app:cardElevation="10dp"
+        android:layout_margin="@dimen/pageMarginAndOffset">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -46,11 +47,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toTopOf="@id/bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/challengeTitle"
-                app:layout_constraintBottom_toTopOf="@id/bottom">
+                app:layout_constraintTop_toBottomOf="@+id/challengeTitle">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                         style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{challenge.description}"/>
+                        android:text="@{challenge.description}" />
 
                 </LinearLayout>
             </ScrollView>

@@ -11,7 +11,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardElevation="10dp">
+        app:cardElevation="10dp"
+        android:layout_margin="@dimen/pageMarginAndOffset">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
