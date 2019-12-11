@@ -88,7 +88,7 @@ class CompleteChallengeFragment : Fragment() {
             challenge.setFeedback(ChallengeFeedback.text.toString())
 
             viewmodel.setChallenge(challenge)
-            //viewmodel.completeChallenge(user, user.getToken())
+            viewmodel.completeChallenge(user, user.getToken())
         }
     }
 }
