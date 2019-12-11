@@ -82,7 +82,13 @@ class CompleteChallengeFragment : Fragment() {
          */
         btnSubmit.setOnClickListener {
             val user = userVM.getUser().value!!
-            viewmodel.completeChallenge(user, user.getToken())
+            val challenge = viewmodel.getChallenge()
+
+            challenge.setRating(challengeStar.numStars)
+            challenge.setFeedback(ChallengeFeedback.text.toString())
+
+            viewmodel.setChallenge(challenge)
+            //viewmodel.completeChallenge(user, user.getToken())
         }
     }
 }

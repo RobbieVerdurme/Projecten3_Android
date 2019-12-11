@@ -111,10 +111,10 @@ class ChallengesFragment : Fragment(),
      * redirect to complete challenge fragment
      */
     override fun onItemClicked(item: Challenge) {
-        //val navController = findNavController()
+        val navController = findNavController()
         //this vm crashes the app somehow
-        //completeChallengeViewModel.setChallenge(item)
-        //navController.navigate(R.id.CompleteChallengeFragment)
+        completeChallengeViewModel.setChallenge(item)
+        navController.navigate(R.id.CompleteChallengeFragment)
     }
 
     private fun initializeTabs(){

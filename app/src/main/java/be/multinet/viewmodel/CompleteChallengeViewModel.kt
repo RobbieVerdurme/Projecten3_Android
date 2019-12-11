@@ -11,13 +11,14 @@ import be.multinet.model.User
 import be.multinet.network.ConnectionState
 import be.multinet.network.NetworkHandler
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.Interface.IChallengeRepository
 import be.multinet.repository.Interface.IUserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CompleteChallengeViewModel(private val challengeRepo:ChallengeRepository,private val userRepo: IUserRepository,application: Application): AndroidViewModel(application) {
+class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository, private val userRepo: IUserRepository, application: Application): AndroidViewModel(application) {
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
@@ -43,7 +44,7 @@ class CompleteChallengeViewModel(private val challengeRepo:ChallengeRepository,p
             completing.value = true
             viewModelScope.launch {
                 val apiResult = async (Dispatchers.IO){
-                    challengeRepo.completeChallengeOnServer(challenge.getChallengeId().toInt(),user.getUserId().toInt(),token)
+                    challengeRepo.completeChallengeOnServer(challenge.getChallengeId().toInt(),user.getUserId().toInt(),challenge.getRating(), if(challenge.getFeedback() == null){""}else{challenge.getFeedback()!!},token)
                 }
                 val apiResponse = apiResult.await()
                 if(apiResponse == null){

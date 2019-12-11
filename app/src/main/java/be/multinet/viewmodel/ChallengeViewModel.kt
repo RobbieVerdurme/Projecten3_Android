@@ -89,7 +89,9 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                                     Category(
                                         it.challenge.category.categoryId.toString(),
                                         it.challenge.category.name
-                                    )
+                                    ),
+                                    it.rating,
+                                    it.feedback
                                 )
                                 localChallenges.add(challenge)
                             }

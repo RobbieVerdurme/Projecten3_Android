@@ -18,5 +18,5 @@ interface IChallengeRepository {
 
     suspend fun completeChallengeLocally(challengeId: Int): Date
 
-    suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, token: String): Response<Ok>?
+    suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<Ok>?
 }

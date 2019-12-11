@@ -49,7 +49,9 @@ class ChallengeRepository(
                     it.getTitle(),
                     it.getDescription(),
                     it.getDateCompleted(),
-                    it.getCategory()?.getCategoryId()!!.toInt()
+                    it.getCategory()?.getCategoryId()!!.toInt(),
+                    it.getRating(),
+                    it.getFeedback()
                 )
             )
         }
@@ -68,7 +70,9 @@ class ChallengeRepository(
                     it.title,
                     it.description,
                     it.completedDate,
-                    getCategoryById(it.categoryId)
+                    getCategoryById(it.categoryId),
+                    it.rating,
+                    it.feedback
                 )
                 localChallenges.add(challenge)
             }
@@ -76,9 +80,9 @@ class ChallengeRepository(
         }
     }
 
-    override suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, token: String): Response<Ok>?{
+    override suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<Ok>?{
         return multimedService.completeChallenge(token,
-            CompleteChallengeRequestBody(challengeId,userId)
+            CompleteChallengeRequestBody(challengeId,userId, rating, feedback)
         )
     }
 
