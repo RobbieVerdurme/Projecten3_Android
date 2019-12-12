@@ -53,24 +53,17 @@ class UserViewModel(private val userRepository: IUserRepository) : ViewModel() {
      */
     fun getUserState(): LiveData<UserLoginState> = userState
 
-    //region roomdbfunctions
-    /**
-     * Load the user from local persistence.
-     * Then once loaded, update userLoginState and user.
-     */
-    fun loadUserFromLocalDatabase(){
+    fun loadUser(){
         viewModelScope.launch {
-            val deferredDbCall = async(Dispatchers.IO){
+            val loadUser = async {
                 userRepository.loadApplicationUser()
             }
-            user.value = deferredDbCall.await()
-            when (user.value) {
-                null -> {
-                    userState.value = UserLoginState.LOGGED_OUT
-                }
-                else -> {
-                    userState.value = UserLoginState.LOGGED_IN
-                }
+            val data = loadUser.await()
+            if(data.data == null){
+                userState.value = UserLoginState.LOGGED_OUT
+            }else{
+                user.value = data.data
+                userState.value = UserLoginState.LOGGED_IN
             }
         }
     }
@@ -80,7 +73,7 @@ class UserViewModel(private val userRepository: IUserRepository) : ViewModel() {
      */
     fun logoutUser(){
         viewModelScope.launch {
-            val deferredDbCall = async(Dispatchers.IO){
+            val deferredDbCall = async{
                 userRepository.logoutUser()
             }
             deferredDbCall.await()

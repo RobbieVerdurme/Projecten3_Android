@@ -86,7 +86,19 @@ class LoginFragment : Fragment() {
         })
         viewModel.getRquestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
-                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                if(it == viewModel.offline){
+                    AppDialogBuilder.buildDialog(context!!,
+                        getString(R.string.dialog_enable_wireless_title),
+                        R.string.dialog_enable_wireless_description,
+                        DialogInterface.OnClickListener { _, _ ->
+                            startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
+                        },R.string.dialog_enable_wireless_continue,DialogInterface.OnClickListener { _, _ ->
+                            //do nothing, the user doesn't want to enable wifi
+                            //we will prompt again next time, until the user finally enables it
+                        },R.string.dialog_cancel).show()
+                }else{
+                    Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                }
             }
         })
         viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer {
@@ -101,30 +113,8 @@ class LoginFragment : Fragment() {
      * Process to login
      */
     private fun onLoginClick(){
-        // Make the login validation check
-        //First check if we have a connection
         if(viewModel.validateForm()){
-            when(NetworkHandler.getNetworkState().value)
-            {
-                ConnectionState.CONNECTED -> {
-                    viewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
-                }
-                ConnectionState.DISCONNECTED -> {
-                    //request wifi enable
-                    AppDialogBuilder.buildDialog(context!!,
-                        getString(R.string.dialog_enable_wireless_title),
-                        R.string.dialog_enable_wireless_description,
-                        DialogInterface.OnClickListener { _, _ ->
-                            startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
-                        },R.string.dialog_enable_wireless_continue,DialogInterface.OnClickListener { _, _ ->
-                            //do nothing, the user doesn't want to enable wifi
-                            //we will prompt again next time, until the user finally enables it
-                        },R.string.dialog_cancel).show()
-                }
-                ConnectionState.UNAVAILABLE -> {
-                    //do nothing, we can't fix the network :/
-                }
-            }
+            viewModel.login(viewModel.username.value.toString(), viewModel.password.value.toString())
         }
     }
 

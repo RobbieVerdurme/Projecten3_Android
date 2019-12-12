@@ -1,22 +1,24 @@
 package be.multinet.repository.Interface
 
-import androidx.lifecycle.MutableLiveData
-import be.multinet.model.Category
 import be.multinet.model.Challenge
-import be.multinet.model.LoadDataResult
-import be.multinet.network.Response.Ok
+import be.multinet.network.Response.CompleteChallengeResponse
 import be.multinet.network.Response.UserChallengeResponse
-import kotlinx.coroutines.CoroutineScope
+import be.multinet.repository.DataOrError
 import retrofit2.Response
-import java.util.*
 
 interface IChallengeRepository {
 
     suspend fun saveChallenges(challenges: List<Challenge>)
 
-    suspend fun loadChallenges(userId: Int): LoadDataResult<List<UserChallengeResponse>, List<Challenge>>
+    suspend fun loadChallenges(userId: Int): DataOrError<List<Challenge>>
 
-    suspend fun completeChallengeLocally(challengeId: Int): Date
+    suspend fun loadChallengesFromLocalStorage(): List<Challenge>
 
-    suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<Ok>?
+    suspend fun loadChallengesFromServer(userId: Int): Response<List<UserChallengeResponse>>
+
+    suspend fun completeChallenge(challenge: Challenge, userId: Int, rating:Int, feedback:String, token: String): DataOrError<Nothing?>
+
+    suspend fun completeChallengeLocally(challenge: Challenge, date: String)
+
+    suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<CompleteChallengeResponse>
 }

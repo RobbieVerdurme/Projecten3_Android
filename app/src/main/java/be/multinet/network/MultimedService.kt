@@ -3,10 +3,7 @@ package be.multinet.network
 import be.multinet.model.Therapist
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
-import be.multinet.network.Response.Ok
-import be.multinet.network.Response.TherapistResponse
-import be.multinet.network.Response.UserChallengeResponse
-import be.multinet.network.Response.UserDataResponse
+import be.multinet.network.Response.*
 import com.auth0.android.jwt.JWT
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -117,7 +114,7 @@ class MultimedService : IApiProvider {
     /**
      * set the challenge to completed
      */
-    override suspend fun completeChallenge(token :String,challengeRequestBody: CompleteChallengeRequestBody): Response<Ok>{
+    override suspend fun completeChallenge(token :String,challengeRequestBody: CompleteChallengeRequestBody): Response<CompleteChallengeResponse>{
         return server.completeChallenge(token ,challengeRequestBody)
     }
 

@@ -15,7 +15,11 @@ import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.Interface.IUserRepository
 import com.auth0.android.jwt.JWT
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.IOException
 
 /**
  * This class is the production implementation of [IUserRepository].
@@ -32,35 +36,90 @@ class UserRepository(private val userDao: UserDao,
             return DataOrError(data = null)
         }else{
             if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED){
-                val userResponse: Response<UserDataResponse>? = getUserFromServer(user.getUserId().toInt(),user.getToken())
-                if(userResponse == null){
-                    //return old user
-                    return DataOrError(data = user)
-                }else{
-                    when(userResponse.code()){
-                        404 -> return DataOrError(data = user)
-                        200 -> {
-                            val body = userResponse.body()!!
-                            val newUser = User(
-                                user.getUserId(),
-                                user.getToken(),
-                                body.firstName,
-                                body.familyName,
-                                body.email,
-                                body.phone,
-                                body.contract,
-                                body.categories,
-                                body.experiencePoints
-                            )
-                            saveApplicationUser(newUser)
-                            return DataOrError(data = newUser)
-                        }
-                        else -> return DataOrError(data = user)
+                val userResponse: Response<UserDataResponse>?
+                try{
+                    userResponse = getUserFromServer(user.getUserId().toInt(),user.getToken())
+                }catch (e: IOException){
+                    return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                }
+                when(userResponse.code()){
+                    404 -> return DataOrError(data = user)
+                    200 -> {
+                        val body = userResponse.body()!!
+                        val newUser = User(
+                            user.getUserId(),
+                            user.getToken(),
+                            body.firstName,
+                            body.familyName,
+                            body.email,
+                            body.phone,
+                            body.contract,
+                            body.categories,
+                            body.experiencePoints
+                        )
+                        saveApplicationUser(newUser)
+                        return DataOrError(data = newUser)
                     }
+                    else -> return DataOrError(data = user)
                 }
             }
             //return old user
             return DataOrError(data = user)
+        }
+    }
+
+    override suspend fun login(username:String, password: String): DataOrError<User?> {
+        if(NetworkHandler.getNetworkState().value != ConnectionState.CONNECTED){
+            return DataOrError(DataError.OFFLINE,null)
+        }else{
+            val jwtResponse: Response<String>
+            try{
+                jwtResponse = withContext(Dispatchers.IO){
+                    multimedService.loginUser(LoginRequestBody(username, password))
+                }
+            }catch (e: IOException){
+                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+            }
+            when(jwtResponse.code()){
+                400 -> return DataOrError(DataError.API_BAD_REQUEST,null)
+                401 -> return DataOrError(DataError.API_UNAUTHORIZED,null)
+                200 -> {
+                    val jwt = JWT(jwtResponse.body()!!)
+                    val token: String = "Bearer " + jwtResponse.body()!!
+                    //get the user info with id userid
+                    val userid = jwt.getClaim("Id").asInt()
+                    if (userid != null){
+                        val userResponse: Response<UserDataResponse>?
+                        try{
+                            userResponse = getUserFromServer(userid,token)
+                        }catch (e: IOException){
+                            return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                        }
+                        when(userResponse.code()){
+                            404 -> return DataOrError(DataError.API_NOT_FOUND,null)
+                            200 -> {
+                                val body = userResponse.body()!!
+                                val user = User(
+                                    userid.toString(),
+                                    token,
+                                    body.firstName,
+                                    body.familyName,
+                                    body.email,
+                                    body.phone,
+                                    body.contract,
+                                    body.categories,
+                                    body.experiencePoints
+                                )
+                                saveApplicationUser(user)
+                                return DataOrError(data = user)
+                            }
+                            else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+                        }
+                    }
+                    return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+                }
+                else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+            }
         }
     }
 
@@ -71,21 +130,22 @@ class UserRepository(private val userDao: UserDao,
         /**
          * insert user
          */
-        userDao.insertUser(
-            PersistentUser(
-                user.getUserId().toInt(),
-                user.getToken(),
-                user.getName(),
-                user.getFamilyName(),
-                user.getMail(),
-                user.getPhone(),
-                user.getContractDate(),
-                user.getEXP()
+        withContext(Dispatchers.IO){
+            userDao.insertUser(
+                PersistentUser(
+                    user.getUserId().toInt(),
+                    user.getToken(),
+                    user.getName(),
+                    user.getFamilyName(),
+                    user.getMail(),
+                    user.getPhone(),
+                    user.getContractDate(),
+                    user.getEXP()
+                )
             )
-        )
-
-        if(user.getCategory().isNotEmpty()){
-            insertCategories(user.getCategory())
+            if(user.getCategory().isNotEmpty()){
+                insertCategories(user.getCategory())
+            }
         }
     }
 
@@ -93,80 +153,39 @@ class UserRepository(private val userDao: UserDao,
      * clear the data from the user
      */
     override suspend fun logoutUser() {
-        userDao.deleteUser()
-        categoryDao.deleteCategories()
-        therapistDao.deleteTherapist()
-        challengeDao.deleteChallenges()
-    }
-
-    override suspend fun login(username:String, password: String): DataOrError<User?> {
-        if(NetworkHandler.getNetworkState().value != ConnectionState.CONNECTED){
-            return DataOrError(DataError.OFFLINE,null)
-        }else{
-            val jwtResponse = multimedService.loginUser(LoginRequestBody(username, password))
-            when(jwtResponse.code()){
-                400 -> return DataOrError(DataError.API_BAD_REQUEST,null)
-                401 -> return DataOrError(DataError.API_UNAUTHORIZED,null)
-                200 -> {
-                    val jwt = JWT(jwtResponse.body()!!)
-                    val token: String = "Bearer " + jwtResponse.body()!!
-                    //get the user info with id userid
-                    val userid = jwt.getClaim("Id").asInt()
-                    if (userid != null){
-                        val userResponse: Response<UserDataResponse>? = getUserFromServer(userid,token)
-                        if (userResponse == null) {
-                            return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
-                        }else{
-                            when(userResponse.code()){
-                                404 -> return DataOrError(DataError.API_NOT_FOUND,null)
-                                200 -> {
-                                    val body = userResponse.body()!!
-                                    val user = User(
-                                        userid.toString(),
-                                        token,
-                                        body.firstName,
-                                        body.familyName,
-                                        body.email,
-                                        body.phone,
-                                        body.contract,
-                                        body.categories,
-                                        body.experiencePoints
-                                    )
-                                    saveApplicationUser(user)
-                                    return DataOrError(data = user)
-                                }
-                                else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
-                            }
-                        }
-                    }
-                    return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
-                }
-                else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
-            }
+        withContext(Dispatchers.IO){
+            userDao.deleteUser()
+            categoryDao.deleteCategories()
+            therapistDao.deleteTherapist()
+            challengeDao.deleteChallenges()
         }
     }
 
     override suspend fun getUserFromServer(userid:Int, token:String): Response<UserDataResponse> {
-        return multimedService.getUser(userid)
+        return withContext(Dispatchers.IO){
+            multimedService.getUser(userid)
+        }
     }
 
     override suspend fun getUserFromLocalStorage(): User? {
-        val persistentUser = userDao.getUser()
-        if (persistentUser == null) {
-            return null
-        }else {
-            /**
-             * get categories from user
-             */
-            val categories = categoryDao.getCategories()
-            val categoriesUser: MutableList<Category> = mutableListOf()
+        return withContext(Dispatchers.IO){
+            val persistentUser = userDao.getUser()
+            if (persistentUser == null) {
+                null
+            }else {
+                /**
+                 * get categories from user
+                 */
+                val categories = categoryDao.getCategories()
+                val categoriesUser: MutableList<Category> = mutableListOf()
 
-            if(categories.isNotEmpty()){
-                for (category in categories){
-                    categoriesUser.add(Category(category!!.categoryId.toString(), category.name))
+                if(categories.isNotEmpty()){
+                    for (category in categories){
+                        categoriesUser.add(Category(category!!.categoryId.toString(), category.name))
+                    }
                 }
+                User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
             }
-            return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
         }
     }
 
@@ -174,13 +193,15 @@ class UserRepository(private val userDao: UserDao,
         /**
          * insert categories
          */
-        for (category in categories){
-            categoryDao.insertCategory(
-                PersistentCategory(
-                    category.getCategoryId().toInt(),
-                    category.getName()
+        withContext(Dispatchers.IO){
+            for (category in categories){
+                categoryDao.insertCategory(
+                    PersistentCategory(
+                        category.getCategoryId().toInt(),
+                        category.getName()
+                    )
                 )
-            )
+            }
         }
     }
 }
