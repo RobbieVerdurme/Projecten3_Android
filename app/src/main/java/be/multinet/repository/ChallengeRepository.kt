@@ -116,6 +116,7 @@ class ChallengeRepository(
         withContext(Dispatchers.IO){
             //overwrite the old ones
             challengeDao.deleteChallenges()
+            categoryDao.deleteCategories()
             challenges.forEach()
             {
                 challengeDao.insertChallenge(

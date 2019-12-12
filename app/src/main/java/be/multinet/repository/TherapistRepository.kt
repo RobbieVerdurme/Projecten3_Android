@@ -1,31 +1,21 @@
 package be.multinet.repository
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import be.multinet.R
 import be.multinet.database.Dao.TherapistDao
 import be.multinet.database.Persist.PersistentTherapist
-import be.multinet.model.LoadDataResult
 import be.multinet.model.Therapist
 import be.multinet.network.ConnectionState
 import be.multinet.network.IApiProvider
 import be.multinet.network.NetworkHandler
 import be.multinet.network.Response.TherapistResponse
 import be.multinet.repository.Interface.ITherapistRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Response
-import java.lang.Error
+import java.io.IOException
 
 class TherapistRepository(
     private val therapistDao: TherapistDao,
     private val multimedService: IApiProvider
 ) : ITherapistRepository {
-
 
 
     /**
@@ -35,36 +25,67 @@ class TherapistRepository(
         /**
          * insert therapists
          */
-        for (therapist in therapists){
-            therapistDao.insertTherapist(
-                PersistentTherapist(
-                    therapist.getId(),
-                    therapist.getName(),
-                    therapist.getFamilyName(),
-                    therapist.getNumber(),
-                    therapist.getMail()
+        withContext(Dispatchers.IO){
+            therapistDao.deleteTherapist()
+            for (therapist in therapists){
+                therapistDao.insertTherapist(
+                    PersistentTherapist(
+                        therapist.getId(),
+                        therapist.getName(),
+                        therapist.getFamilyName(),
+                        therapist.getMail()
+                    )
                 )
-            )
+            }
         }
     }
 
-    override suspend fun loadTherapists(token:String, userId:Int): LoadDataResult<List<TherapistResponse>,List<Therapist>> {
-        if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED){
-            return LoadDataResult(multimedService.getTherapists(token,userId),null)
-        }else{
-            val persistentTherapist = therapistDao.getTherapist()
-            val localTherapists = ArrayList<Therapist>()
-            persistentTherapist.forEach {
-                val therapist = Therapist(
+    override suspend fun loadTherapistsFromLocalStorage(): List<Therapist> {
+        return withContext(Dispatchers.IO){
+            therapistDao.getTherapist().map{
+                Therapist(
                     it!!.therapistId,
-                    it.surname,
+                    it.name,
                     it.familyName,
-                    it.phone,
                     it.mail
                 )
-                localTherapists.add(therapist)
+            }.toList()
+        }
+    }
+
+    override suspend fun loadTherapistsFromServer(token: String, userId: Int): Response<List<TherapistResponse>> {
+        return withContext(Dispatchers.IO){
+            multimedService.getTherapists(token,userId)
+        }
+    }
+
+
+    override suspend fun loadTherapists(token:String, userId:Int): DataOrError<List<Therapist>> {
+        if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED){
+            val apiResponse :Response<List<TherapistResponse>>
+            try{
+                apiResponse = loadTherapistsFromServer(token,userId)
+            }catch(e: IOException){
+                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = listOf())
             }
-            return LoadDataResult(null,localTherapists)
+            when(apiResponse.code()){
+                400 -> return DataOrError(error = DataError.API_BAD_REQUEST,data = listOf())
+                200 -> {
+                    val therapists = apiResponse.body()!!.map {
+                        Therapist(
+                            it.therapistId,
+                            it.firstname,
+                            it.lastname,
+                            it.email
+                        )
+                    }.toList()
+                    saveTherapists(therapists)
+                    return DataOrError(data = therapists)
+                }
+                else -> return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = listOf())
+            }
+        }else{
+            return DataOrError(data = loadTherapistsFromLocalStorage())
         }
     }
 }

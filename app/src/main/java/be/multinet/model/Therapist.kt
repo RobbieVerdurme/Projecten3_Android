@@ -11,7 +11,6 @@ class Therapist (
     private val therapistId: Int,
     private val name: String,
     private val familyName:String,
-    private val number: String,
     private val mail: String
     ){
 
@@ -29,11 +28,6 @@ class Therapist (
      * @return the name of the therapist
      */
     fun getFamilyName(): String = familyName
-
-    /**
-     * @return the id of the therapist
-     */
-    fun getNumber(): String = number
 
     /**
      * @return the id of the therapist
