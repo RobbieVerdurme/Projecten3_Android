@@ -31,7 +31,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:indeterminate="true"
-        android:visibility="@{challengeViewModel.isLoading ? View.VISIBLE : View.GONE}"
+        android:visibility="@{challengeViewModel.showTabs() ? View.GONE : View.VISIBLE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

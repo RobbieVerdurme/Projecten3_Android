@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -45,9 +46,14 @@ class CompleteChallengeFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.Complete_Challenge)
-        viewmodel.getCompleting().observe(viewLifecycleOwner, Observer {
-            if(it && viewmodel.getRequestError().value == null){
+        viewmodel.getCompletedOn().observe(viewLifecycleOwner, Observer {
+            if(it != null && viewmodel.getRequestError().value == null){
                 findNavController().navigateUp()
+            }
+        })
+        viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -61,19 +67,19 @@ class CompleteChallengeFragment : Fragment() {
                 ChallengeRatingScale.text = p1.toString()
                 when(p0!!.rating.toInt()){
                     1 -> {
-                        ChallengeRatingScale.text = "Heel slecht"
+                        ChallengeRatingScale.text = getString(R.string.ratingVeryBad)
                     }
                     2 -> {
-                        ChallengeRatingScale.text = "Heeft verbetering nodig"
+                        ChallengeRatingScale.text = getString(R.string.ratingBad)
                     }
                     3 -> {
-                        ChallengeRatingScale.text = "Goed"
+                        ChallengeRatingScale.text = getString(R.string.ratingGood)
                     }
                     4 ->{
-                        ChallengeRatingScale.text = "Heel goed"
+                        ChallengeRatingScale.text = getString(R.string.ratingVeryGood)
                     }
                     5 -> {
-                        ChallengeRatingScale.text = "Perfect"
+                        ChallengeRatingScale.text = getString(R.string.ratingPerfect)
                     }
                 }
             }

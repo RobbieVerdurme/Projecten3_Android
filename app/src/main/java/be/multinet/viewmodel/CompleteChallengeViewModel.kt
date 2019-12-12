@@ -28,12 +28,14 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
     private lateinit var challenge: Challenge
 
     private val completing = MutableLiveData<Boolean>(false)
+    private val completedOn = MutableLiveData<Date>(null)
 
     private val requestError = MutableLiveData<String>(null)
 
     fun getRequestError(): LiveData<String> = requestError
 
     fun getCompleting(): LiveData<Boolean> = completing
+    fun getCompletedOn(): LiveData<Date> = completedOn
 
     /**
      * complete a challenge
@@ -66,6 +68,7 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
                                 userRepo.saveApplicationUser(user)
                             }
                             setXP.await()
+                            completedOn.value = challenge.getDateCompleted()
                             completing.value = false
                         }
                         else -> {

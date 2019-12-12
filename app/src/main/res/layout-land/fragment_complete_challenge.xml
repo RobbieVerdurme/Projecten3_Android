@@ -4,84 +4,105 @@
     <data>
         <variable name="completeChallengeViewModel" type="be.multinet.viewmodel.CompleteChallengeViewModel"/>
     </data>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.fragment.CompleteChallengeFragment">
-
-    <TextView
-        android:id="@+id/challengeTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@{completeChallengeViewModel.challenge.title}"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.CompleteChallengeFragment">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/challengeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Wat vond je van de challenge?"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <RatingBar
-            android:id="@+id/challengeStar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:stepSize="1"
-            android:numStars="5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-        <TextView
-            android:id="@+id/ChallengeRatingScale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:text="@{completeChallengeViewModel.challenge.title}"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/challengeStar"
-            app:layout_constraintStart_toStartOf="@+id/challengeStar"
-            app:layout_constraintTop_toBottomOf="@+id/challengeStar" />
+            app:layout_constraintBottom_toTopOf="@+id/ChallengeFeedback"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.149" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/complete_challenge_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <RatingBar
+                android:id="@+id/challengeStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/ChallengeRatingScale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/ChallengeFeedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:gravity="top"
-            android:hint="Opmerkingen"
+            android:hint="@string/complete_challenge_remarks"
             android:inputType="textMultiLine"
-            android:lines="5"
+            android:lines="4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ChallengeRatingScale" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:id="@+id/btnSubmit"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Complete_Challenge"
-            android:textColor="@android:color/white"
-            app:backgroundTint="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ChallengeFeedback"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/Complete_Challenge"
+                android:textColor="@android:color/white"
+                android:visibility="@{completeChallengeViewModel.completing ? View.GONE : View.VISIBLE}"
+                app:backgroundTint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:indeterminate="true"
+                android:visibility="@{completeChallengeViewModel.completing ?  View.VISIBLE: View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
 </layout>

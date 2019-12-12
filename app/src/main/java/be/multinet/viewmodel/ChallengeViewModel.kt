@@ -112,6 +112,7 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                             }
                         }
                         else -> {
+                            Log.d("Statuscode",loadDataResponse.apiResponse.code().toString())
                             requestError.value = genericErrorMessage
                         }
                     }
@@ -131,6 +132,7 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                     }
                 }
                 else -> {
+                    Log.d("some error","")
                     requestError.value = genericErrorMessage
                 }
             }
