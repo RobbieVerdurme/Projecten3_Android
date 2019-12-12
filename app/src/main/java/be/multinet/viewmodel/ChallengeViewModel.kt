@@ -57,8 +57,7 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
         viewPagerDataset.clear()
         viewPagerDataset.addAll(allChallenges.filter {
             it.getCategory()!!.getName() == category.getName()
-        }.toList())
-        Log.d("dataset",viewPagerDataset.isEmpty().toString())
+        }.toList().sortedWith(nullsFirst(compareBy { it.getDateCompleted() })))
     }
 
     fun loadChallenges(userId: Int) {

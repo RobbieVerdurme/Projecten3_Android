@@ -21,6 +21,7 @@ import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayout
+import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,8 +35,7 @@ class ChallengesFragment : Fragment(),
      * Viewmodel of this fragment
      */
     val viewmodel: ChallengeViewModel by viewModel()
-
-    val completeChallengeViewModel: CompleteChallengeViewModel by viewModel()
+    val completeChallengeViewModel: CompleteChallengeViewModel by sharedViewModel()
 
     /**
      * The ChallengesAdapter for this fragment
@@ -127,10 +127,8 @@ class ChallengesFragment : Fragment(),
      * redirect to complete challenge fragment
      */
     override fun onItemClicked(item: Challenge) {
-        val navController = findNavController()
-        //this vm crashes the app somehow
         completeChallengeViewModel.setChallenge(item)
-        navController.navigate(R.id.CompleteChallengeFragment)
+        findNavController().navigate(R.id.CompleteChallengeFragment)
     }
 
     private fun initializeTabs(){
