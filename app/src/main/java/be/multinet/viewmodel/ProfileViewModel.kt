@@ -84,46 +84,50 @@ class ProfileViewModel(private val therapistRepository: ITherapistRepository, ap
                 therapistRepository.loadTherapists(user!!.getToken(),user.getUserId().toInt())
             }
             val result = loadedData.await()
-            if(result.apiResponse != null){
-                when(result.apiResponse.code()){
-                    400 -> {
-                        requestError.value = getTherapistErrorMessage
-                        loadingTherapists.value = false
-                    }
-                    200 -> {
-                        val body = result.apiResponse.body()!!
-                        val localtherapists = ArrayList<Therapist>()
-                        body.forEach {
-                            val th = Therapist(
-                                it.therapistId,
-                                it.firstname,
-                                it.lastname,
-                                "",
-                                it.email
-                            )
+            when {
+                result.apiResponse != null -> {
+                    when(result.apiResponse.code()){
+                        400 -> {
+                            requestError.value = getTherapistErrorMessage
+                            loadingTherapists.value = false
+                        }
+                        200 -> {
+                            val body = result.apiResponse.body()!!
+                            val localtherapists = ArrayList<Therapist>()
+                            body.forEach {
+                                val th = Therapist(
+                                    it.therapistId,
+                                    it.firstname,
+                                    it.lastname,
+                                    "",
+                                    it.email
+                                )
 
-                            localtherapists.add(th)
+                                localtherapists.add(th)
+                            }
+                            val saveToDb = async(Dispatchers.IO){
+                                therapistRepository.saveTherapists(localtherapists)
+                            }
+                            saveToDb.await()
+                            therapists.clear()
+                            therapists.addAll(localtherapists)
+                            loadingTherapists.value = false
                         }
-                        val saveToDb = async(Dispatchers.IO){
-                            therapistRepository.saveTherapists(localtherapists)
+                        else -> {
+                            requestError.value = genericErrorMessage
+                            loadingTherapists.value = false
                         }
-                        saveToDb.await()
-                        therapists.clear()
-                        therapists.addAll(localtherapists)
-                        loadingTherapists.value = false
-                    }
-                    else -> {
-                        requestError.value = genericErrorMessage
-                        loadingTherapists.value = false
                     }
                 }
-            }else if(result.databaseResponse != null){
-                therapists.clear()
-                therapists.addAll(result.databaseResponse)
-                loadingTherapists.value = false
-            }else{
-                requestError.value = genericErrorMessage
-                loadingTherapists.value = false
+                result.databaseResponse != null -> {
+                    therapists.clear()
+                    therapists.addAll(result.databaseResponse)
+                    loadingTherapists.value = false
+                }
+                else -> {
+                    requestError.value = genericErrorMessage
+                    loadingTherapists.value = false
+                }
             }
         }
     }

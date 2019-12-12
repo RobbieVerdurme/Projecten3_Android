@@ -5,48 +5,44 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import be.multinet.R
-import be.multinet.Utility.ShadowTransformer
 import be.multinet.adapter.ChallengeAdapter
 import be.multinet.databinding.FragmentChallengesBinding
-import be.multinet.model.Category
 import be.multinet.model.Challenge
-import be.multinet.recyclerview.CompleteChallengeClickListener
+import be.multinet.adapter.CompleteChallengeClickListener
 import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
-import kotlinx.android.synthetic.main.fragment_challenges.*
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import com.google.android.material.tabs.TabLayout
+import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * This [Fragment] represents the challenges page.
  */
-class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
+class ChallengesFragment : Fragment(),
+    CompleteChallengeClickListener {
+
     /**
      * Viewmodel of this fragment
      */
     val viewmodel: ChallengeViewModel by viewModel()
-    /**
-     * category of challenge
-     */
-    lateinit var category : Category
+    val completeChallengeViewModel: CompleteChallengeViewModel by sharedViewModel()
 
     /**
      * The ChallengesAdapter for this fragment
      */
     private lateinit var challengeAdapter: ChallengeAdapter
-
-    /**
-     * The shadow transformer for the cards
-     */
-    private lateinit var mCardShadowTransformer: ShadowTransformer
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
 
     /**
      * userviewmodel to ask for the user his challenges
@@ -58,28 +54,33 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
         val binding = FragmentChallengesBinding.inflate(inflater, container,false)
         binding.challengeViewModel = viewmodel
         binding.lifecycleOwner = this
-        retainInstance = true
+        viewPager = binding.viewPager
+        tabLayout = binding.categoryTabs
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
-        challengeAdapter = ChallengeAdapter(this)
         loadChallenges()
-        initViewPager()
     }
 
     /**
      * give data to the adapter
      */
     private fun loadChallenges() {
-        viewmodel.getChallenges(category).observe(viewLifecycleOwner,Observer<List<Challenge>>{
-            challengeAdapter.addCardItems(it)
-            challengeAdapter.notifyDataSetChanged()
+        viewmodel.getIsLoading().observe(viewLifecycleOwner, Observer {
+            if(it == false && viewmodel.getRequestError().value == null){
+                challengeAdapter.notifyDataSetChanged()
+                initializeTabs()
+            }
         })
-        //TODO: change boolean flag
-        viewmodel.loadUserChallenges(userViewModel.getUser().value!!.getUserId().toInt(),true)
+        viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewmodel.loadChallenges(userViewModel.getUser().value!!.getUserId().toInt())
     }
 
     /**
@@ -88,31 +89,53 @@ class ChallengesFragment : Fragment(), CompleteChallengeClickListener {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.challenges_title)
-    }
-
-    /**
-     * Setup ViewPager for this fragment
-     */
-    private fun initViewPager(){
-        challengesViewPager.apply {
+        challengeAdapter = ChallengeAdapter(this,viewmodel.getDataset())
+        viewPager.apply {
             adapter = challengeAdapter
             offscreenPageLimit = 3
-            mCardShadowTransformer = ShadowTransformer(challengesViewPager, challengeAdapter)
-            setPageTransformer(false, mCardShadowTransformer )
-            //TODO shadowtransformer crashes because there is no data in the adapter so it gives an indexOutOfBoundsException
-//            mCardShadowTransformer.enableScaling(true)
+            setPageTransformer { page, position ->
+                val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+                val offsetPx = resources.getDimensionPixelOffset(R.dimen.offset)
+                val viewPager = page.parent.parent as ViewPager2
+                val offset = position * -(2 * offsetPx + pageMarginPx)
+                if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
+                    if (ViewCompat.getLayoutDirection(viewPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                        page.translationX = -offset
+                    } else {
+                        page.translationX = offset
+                    }
+                } else {
+                    page.translationY = offset
+                }
+            }
         }
+        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                viewmodel.setSelectedCategory(p0!!.position)
+                challengeAdapter.notifyDataSetChanged()
+            }
+        })
     }
 
     /**
      * redirect to complete challenge fragment
      */
     override fun onItemClicked(item: Challenge) {
-        val completeChallengeViewModel: CompleteChallengeViewModel = getSharedViewModel()
-        val navController = findNavController()
-
         completeChallengeViewModel.setChallenge(item)
-        navController.navigate(R.id.action_challengesCategoryFragment_to_CompleteChallengeFragment)
+        findNavController().navigate(R.id.CompleteChallengeFragment)
+    }
+
+    private fun initializeTabs(){
+        tabLayout.removeAllTabs()
+        viewmodel.getCategories().forEach {
+            tabLayout.addTab(tabLayout.newTab().setText(it.getName()))
+        }
     }
 
 

@@ -12,12 +12,15 @@ import be.multinet.repository.Interface.ITherapistRepository
 import be.multinet.repository.Interface.IUserRepository
 import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
+import be.multinet.ui.activity.MainActivity
+import be.multinet.ui.fragment.LandingPageFragment
 import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -65,16 +68,13 @@ class MultinetApp : MultiDexApplication() {
                 ProfileViewModel(get(),get())
             }
             viewModel {
-                ChallengeViewModel(get())
+                ChallengeViewModel(get(),get())
             }
             viewModel {
-                CompleteChallengeViewModel(get(),get())
+                CompleteChallengeViewModel(get(),get(),get())
             }
             viewModel{
                 InfoViewModel(get())
-            }
-            viewModel {
-                ChallengeCategoryViewModel(get())
             }
             viewModel{
                 UpdateProfileViewModel(get())
@@ -113,8 +113,8 @@ class MultinetApp : MultiDexApplication() {
             single<IUserRepository> {
                 UserRepository(get(), get(), get(),get(),get())
             }
-            single<ChallengeRepository> {
-                ChallengeRepository(get(),get(),get(),get())
+            single<IChallengeRepository> {
+                ChallengeRepository(get(),get(),get())
             }
             single<ITherapistRepository> {
                 TherapistRepository(get(),get())

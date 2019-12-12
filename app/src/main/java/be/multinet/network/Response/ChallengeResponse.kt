@@ -9,6 +9,8 @@ class ChallengeResponse(
     val title: String,
     val description:String,
     val completedDate: Date?,
-    val category: CategoryResponse
+    val category: CategoryResponse,
+    val rating:Int,
+    val feedback:String?
 ) {
 }
