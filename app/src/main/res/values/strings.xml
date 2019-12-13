@@ -56,9 +56,10 @@
 
     <!--Network-->
     <string name="dialog_enable_wireless_title">Wifi inschakelen</string>
-    <string name="dialog_enable_wireless_continue">OK</string>
+    <string name="dialog_enable_wireless_continue">Ga naar instellingen</string>
     <string name="dialog_cancel">Annuleren</string>
     <string name="dialog_enable_wireless_description">U hebt geen verbinding. Wifi aanzetten via instelligen?</string>
+    <string name="dialog_ok">OK</string>
     <string name="offline">Offline</string>
     <string name="network_unavailable">Netwerk onbereikbaar</string>
 
@@ -75,6 +76,7 @@
     <string name="complete_challenge_title">Wat vond je van de challenge?</string>
     <string name="complete_challenge_remarks">Opmerkingen</string>
     <string name="Complete_Challenge">Uitdaging voltooien</string>
+    <string name="complete_challenge_offline_description">Kan de uitdaging niet voltooien. Er is geen verbinding.</string>
     <string name="leaderboard_title">Leaderboard</string>
     <string name="leaderboard_place_text">Plaats</string>
     <string name="leaderboard_name_text">Naam</string>

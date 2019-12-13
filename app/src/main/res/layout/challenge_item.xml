@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <import type="android.view.View"/>
         <variable
             name="challenge"
             type="be.multinet.model.Challenge" />
@@ -78,7 +77,6 @@
                 android:layout_marginBottom="20dp">
 
                 <com.google.android.material.button.MaterialButton
-                    android:visibility="@{challenge.dateCompleted == null ? View.VISIBLE : View.GONE}"
                     android:id="@+id/completeChallengeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +87,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:visibility="@{challenge.dateCompleted == null ? View.GONE : View.VISIBLE}"
                     android:tint="@color/multimed_green"
                     android:layout_width="80dp"
                     android:layout_height="80dp"

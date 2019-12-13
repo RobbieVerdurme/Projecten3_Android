@@ -12,14 +12,14 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.tabs.TabLayout
-        android:visibility="@{challengeViewModel.showTabs() ? View.VISIBLE :View.GONE}"
+        android:visibility="@{challengeViewModel.loading ? View.GONE: View.VISIBLE}"
         android:id="@+id/categoryTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:visibility="@{challengeViewModel.showTabs() ? View.VISIBLE :View.GONE}"
+        android:visibility="@{challengeViewModel.loading ? View.GONE: View.VISIBLE}"
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -31,7 +31,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:indeterminate="true"
-        android:visibility="@{challengeViewModel.showTabs() ? View.GONE : View.VISIBLE}"
+        android:visibility="@{challengeViewModel.loading ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

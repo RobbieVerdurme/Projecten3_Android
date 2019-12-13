@@ -69,10 +69,11 @@ class ChallengesFragment : Fragment(),
      * give data to the adapter
      */
     private fun loadChallenges() {
-        viewmodel.getIsLoading().observe(viewLifecycleOwner, Observer {
-            if(it == false && viewmodel.getRequestError().value == null){
+        viewmodel.getLoadingChallenges().observe(viewLifecycleOwner, Observer {
+            if(!it && viewmodel.getRequestError().value == null){
                 challengeAdapter.notifyDataSetChanged()
                 initializeTabs()
+                viewmodel.onViewPagerReady()
             }
         })
         viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {

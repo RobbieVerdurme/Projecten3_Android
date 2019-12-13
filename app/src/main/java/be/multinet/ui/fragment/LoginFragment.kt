@@ -84,7 +84,7 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-        viewModel.getRquestError().observe(viewLifecycleOwner, Observer {
+        viewModel.getRequestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
                 if(it == viewModel.offline){
                     AppDialogBuilder.buildDialog(context!!,

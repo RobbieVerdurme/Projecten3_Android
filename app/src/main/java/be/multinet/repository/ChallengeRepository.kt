@@ -3,6 +3,7 @@ package be.multinet.repository
 import be.multinet.database.Dao.CategoryDao
 import be.multinet.database.Dao.ChallengeDao
 import be.multinet.database.Dao.UserDao
+import be.multinet.database.Persist.PersistentCategory
 import be.multinet.database.Persist.PersistentChallenge
 import be.multinet.model.Category
 import be.multinet.model.Challenge
@@ -117,6 +118,14 @@ class ChallengeRepository(
             //overwrite the old ones
             challengeDao.deleteChallenges()
             categoryDao.deleteCategories()
+            val categories = challenges.map {
+                it.getCategory()
+            }.distinctBy {
+                it!!.getName()
+            }
+            categories.forEach {
+                categoryDao.insertCategory(PersistentCategory(it!!.getCategoryId().toInt(),it.getName()))
+            }
             challenges.forEach()
             {
                 challengeDao.insertChallenge(

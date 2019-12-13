@@ -1,7 +1,7 @@
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 
 /**
  * This class builds [AlertDialog]s
@@ -32,6 +32,16 @@ class AppDialogBuilder {
             builder.setMessage(message)
             builder.setPositiveButton(okBtnText,onOkPressed)
             builder.setNegativeButton(cancelBtnText,onCancelPressed)
+            return builder.create()
+        }
+
+        fun buildIsOfflineDialog(ctx: Context,title: CharSequence,@StringRes message: Int,
+                                 onOkPressed: DialogInterface.OnClickListener,
+                                 @StringRes okBtnText: Int): AlertDialog {
+            val builder = AlertDialog.Builder(ctx)
+            builder.setTitle(title)
+            builder.setMessage(message)
+            builder.setPositiveButton(okBtnText,onOkPressed)
             return builder.create()
         }
     }

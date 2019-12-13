@@ -24,18 +24,16 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
     private val viewPagerDataset = ArrayList<Challenge>()
 
     private val selectedCategory = MutableLiveData(-1)
-
+    private val loading = MutableLiveData<Boolean>(true)
     private val loadingChallenges = MutableLiveData<Boolean>(true)
 
     private val requestError = MutableLiveData<String>(null)
 
+    fun getLoading(): LiveData<Boolean> = loading
+
     fun setSelectedCategory(index: Int){
         selectedCategory.value = index
         getChallengesForCategory(allCategories[index])
-    }
-
-    fun showTabs(): Boolean {
-        return (requestError.value != null || loadingChallenges.value!!)
     }
 
     fun getRequestError(): LiveData<String> = requestError
@@ -44,20 +42,26 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
 
     fun getCategories(): List<Category> = allCategories
 
-    fun getIsLoading(): LiveData<Boolean> = loadingChallenges
-
     fun getSelectedCategory(): LiveData<Int> = selectedCategory
+
+    fun getLoadingChallenges(): LiveData<Boolean> = loadingChallenges
+
+    fun onViewPagerReady(){
+        loading.value = false
+    }
 
     private fun getChallengesForCategory(category:Category){
         viewPagerDataset.clear()
         viewPagerDataset.addAll(allChallenges.filter {
             it.getCategory()!!.getName() == category.getName()
         }.toList().sortedWith(nullsFirst(compareBy { it.getDateCompleted() })))
+        loadingChallenges.value = false
     }
 
     fun loadChallenges(userId: Int) {
+        loading.value = true
+        loadingChallenges.value = true
         viewModelScope.launch {
-            loadingChallenges.value = true
             val challengeRepositoryResponse = async {
                 challengeRepository.loadChallenges(userId)
             }
@@ -67,6 +71,9 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                     DataError.API_BAD_REQUEST -> requestError.value = getChallengesErrorMessage
                     else -> requestError.value = genericErrorMessage
                 }
+                //remove loading indicator, but do not trigger the viewpager.
+                //there is no content
+                loading.value = false
             }else{
                 allChallenges.clear()
                 allChallenges.addAll(dataOrError.data)
@@ -80,8 +87,8 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                     selectedCategory.value = 0
                     getChallengesForCategory(allCategories[selectedCategory.value!!])
                 }
+                //the viewpager notifies when its done updating its elements so we do not unset loading here
             }
-            loadingChallenges.value = false
         }
     }
 }

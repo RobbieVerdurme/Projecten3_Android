@@ -1,5 +1,7 @@
 package be.multinet.ui.fragment
 
+import AppDialogBuilder
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -53,7 +55,13 @@ class CompleteChallengeFragment : Fragment() {
         })
         viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
-                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                if(it == viewmodel.offline){
+                    AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
+                        R.string.complete_challenge_offline_description,
+                        DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok)
+                }else{
+                    Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }

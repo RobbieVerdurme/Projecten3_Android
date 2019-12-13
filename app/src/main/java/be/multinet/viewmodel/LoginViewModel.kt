@@ -36,7 +36,7 @@ class LoginViewModel(private val userRepository: IUserRepository,application: Ap
     private val requestError = MutableLiveData<String>(null)
     private val loggedInUser = MutableLiveData<User>(null)
 
-    fun getRquestError(): LiveData<String> = requestError
+    fun getRequestError(): LiveData<String> = requestError
     fun getUsernameError():LiveData<String> = usernameError
     fun getPasswordError():LiveData<String> = passwordError
     fun getLoggedInUser(): LiveData<User> = loggedInUser

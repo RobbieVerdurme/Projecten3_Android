@@ -57,6 +57,7 @@ class UpdateProfileFragment : Fragment()
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
         //TODO bind onUpdateClick()
         //TODO observe isEdited and requestError
+        //TODO when request error is DataError.OFFLINE show dialog (see CompleteChallengeFragment for example)
     }
 
     /**
