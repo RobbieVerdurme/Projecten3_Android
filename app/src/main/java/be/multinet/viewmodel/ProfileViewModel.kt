@@ -13,6 +13,7 @@ import be.multinet.model.Therapist
 import be.multinet.model.User
 import be.multinet.network.ConnectionState
 import be.multinet.network.NetworkHandler
+import be.multinet.repository.DataError
 import be.multinet.repository.Interface.ITherapistRepository
 import be.multinet.repository.TherapistRepository
 import kotlinx.coroutines.Dispatchers
@@ -79,56 +80,20 @@ class ProfileViewModel(private val therapistRepository: ITherapistRepository, ap
     fun loadTherapists(){
         val user = userProfile.value
         viewModelScope.launch {
-            requestError.value = null
-            val loadedData = async(Dispatchers.IO) {
+            val repositoryResponse = async {
                 therapistRepository.loadTherapists(user!!.getToken(),user.getUserId().toInt())
             }
-            val result = loadedData.await()
-            when {
-                result.apiResponse != null -> {
-                    when(result.apiResponse.code()){
-                        400 -> {
-                            requestError.value = getTherapistErrorMessage
-                            loadingTherapists.value = false
-                        }
-                        200 -> {
-                            val body = result.apiResponse.body()!!
-                            val localtherapists = ArrayList<Therapist>()
-                            body.forEach {
-                                val th = Therapist(
-                                    it.therapistId,
-                                    it.firstname,
-                                    it.lastname,
-                                    "",
-                                    it.email
-                                )
-
-                                localtherapists.add(th)
-                            }
-                            val saveToDb = async(Dispatchers.IO){
-                                therapistRepository.saveTherapists(localtherapists)
-                            }
-                            saveToDb.await()
-                            therapists.clear()
-                            therapists.addAll(localtherapists)
-                            loadingTherapists.value = false
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
-                            loadingTherapists.value = false
-                        }
-                    }
+            val dataOrError = repositoryResponse.await()
+            if(dataOrError.hasError()){
+                when(dataOrError.error){
+                    DataError.API_BAD_REQUEST -> requestError.value = getTherapistErrorMessage
+                    else -> requestError.value = genericErrorMessage
                 }
-                result.databaseResponse != null -> {
-                    therapists.clear()
-                    therapists.addAll(result.databaseResponse)
-                    loadingTherapists.value = false
-                }
-                else -> {
-                    requestError.value = genericErrorMessage
-                    loadingTherapists.value = false
-                }
+            }else{
+                therapists.clear()
+                therapists.addAll(dataOrError.data)
             }
+            loadingTherapists.value = false
         }
     }
 

@@ -37,9 +37,15 @@ interface ChallengeDao {
     @Query("DELETE FROM PersistentChallenge")
     suspend fun deleteChallenges()
 
-    /**
-     * update the challenge
-     */
+    @Transaction
+    suspend fun completeChallengeAndUpdateXP(userId: Int,challengeId: Int, completed: Date){
+        completeChallenge(challengeId,completed)
+        incrementXp(userId)
+    }
+
     @Query("UPDATE PersistentChallenge SET completedDate = :completed WHERE challengeId = :challengeId AND completedDate IS NULL")
     suspend fun completeChallenge(challengeId: Int, completed: Date)
+
+    @Query("UPDATE PersistentUser SET exp = exp + 1 WHERE userId = :userId")
+    suspend fun incrementXp(userId: Int)
 }

@@ -1,13 +1,11 @@
 package be.multinet.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import be.multinet.R
 import be.multinet.model.User
 import android.util.Patterns.EMAIL_ADDRESS
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 
 class UpdateProfileViewModel(application: Application): AndroidViewModel(application) {
 
@@ -41,7 +39,14 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
     val phoneError = MutableLiveData<String>()
     val emailError = MutableLiveData<String>()
 
-    val updateResult = MutableLiveData<Boolean>(false)
+    private val requestError = MutableLiveData<String>(null)
+
+    private val isUpdating = MutableLiveData<Boolean>(false)
+    private val isEdited = MutableLiveData<Boolean>(false)
+
+    fun getIsUpdating(): LiveData<Boolean> = isUpdating
+    fun getIsEdited(): LiveData<Boolean> = isEdited
+    fun getRequestError(): LiveData<String> = requestError
 
     init {
         firstName.observeForever(firstNameObserver)
@@ -118,6 +123,23 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
         validateEmail(email.value!!)
         validatePhone(phone.value!!)
         return firstNameError.value == null && lastNameError.value == null && phoneError.value == null && emailError.value == null
+    }
+
+    fun editUser(){
+        if(!isUpdating.value!! && !isEdited.value!!){
+            isUpdating.value = true
+            viewModelScope.launch {
+                //TODO ask repo for coroutine job with async {}
+                //TODO fetch result with job.await()
+                //TODO check if result has error
+                //TODO if result has error -> set requestError.value
+                //TODO else set isEdited to true
+                //TODO finally set isUpdating to false
+
+                //TODO in fragment: observe requestError -> show message if requestError is not null
+                //TODO in fragment: observe isEdited -> if true and requestError.value == null -> findNavController().navigateUp()
+            }
+        }
     }
 
     override fun onCleared() {

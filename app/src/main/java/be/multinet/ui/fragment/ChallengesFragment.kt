@@ -117,8 +117,11 @@ class ChallengesFragment : Fragment(),
             }
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
-                viewmodel.setSelectedCategory(p0!!.position)
-                challengeAdapter.notifyDataSetChanged()
+                val position = p0!!.position
+                if(position != viewmodel.getSelectedCategory().value){
+                    viewmodel.setSelectedCategory(position)
+                    challengeAdapter.notifyDataSetChanged()
+                }
             }
         })
     }

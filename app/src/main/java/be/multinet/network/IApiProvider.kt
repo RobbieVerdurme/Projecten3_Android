@@ -4,6 +4,7 @@ import be.multinet.model.Challenge
 import be.multinet.model.Therapist
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Request.UpdateUserRequestBody
 import be.multinet.network.Response.*
 import com.auth0.android.jwt.JWT
 import retrofit2.Response
@@ -43,4 +44,7 @@ interface IApiProvider {
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON
      */
     suspend fun getTherapists(token:String, userid: Int) : Response<List<TherapistResponse>>
+
+
+    suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok>
 }

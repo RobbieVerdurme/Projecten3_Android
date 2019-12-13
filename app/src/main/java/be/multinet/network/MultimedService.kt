@@ -3,6 +3,7 @@ package be.multinet.network
 import be.multinet.model.Therapist
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Request.UpdateUserRequestBody
 import be.multinet.network.Response.*
 import com.auth0.android.jwt.JWT
 import com.google.gson.GsonBuilder
@@ -124,5 +125,9 @@ class MultimedService : IApiProvider {
      */
     override suspend fun getTherapists(token:String, userid: Int): Response<List<TherapistResponse>> {
         return server.getTherapists(token,userid)
+    }
+
+    override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok> {
+        TODO()
     }
 }

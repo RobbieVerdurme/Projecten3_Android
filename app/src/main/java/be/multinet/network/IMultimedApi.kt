@@ -44,4 +44,6 @@ interface IMultimedApi {
      */
     @GET("users/therapist/{id}")
     suspend fun getTherapists(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<TherapistResponse>>
+
+    //TODO PUT request for update user
 }

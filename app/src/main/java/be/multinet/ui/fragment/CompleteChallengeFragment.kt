@@ -63,37 +63,36 @@ class CompleteChallengeFragment : Fragment() {
      */
     private fun onClickListener(){
         challengeStar.onRatingBarChangeListener =
-            RatingBar.OnRatingBarChangeListener { p0, p1, p2 ->
+            RatingBar.OnRatingBarChangeListener { p0, p1, _ ->
                 ChallengeRatingScale.text = p1.toString()
-                when(p0!!.rating.toInt()){
+                val rating = p0!!.rating.toInt()
+                when(rating){
                     1 -> {
                         ChallengeRatingScale.text = getString(R.string.ratingVeryBad)
+                        viewmodel.setRating(rating)
                     }
                     2 -> {
                         ChallengeRatingScale.text = getString(R.string.ratingBad)
+                        viewmodel.setRating(rating)
                     }
                     3 -> {
                         ChallengeRatingScale.text = getString(R.string.ratingGood)
+                        viewmodel.setRating(rating)
                     }
                     4 ->{
                         ChallengeRatingScale.text = getString(R.string.ratingVeryGood)
+                        viewmodel.setRating(rating)
                     }
                     5 -> {
                         ChallengeRatingScale.text = getString(R.string.ratingPerfect)
+                        viewmodel.setRating(rating)
                     }
                 }
             }
-        /**
-         * redirect to homepage and say that the challenge has been completed
-         */
+
         btnSubmit.setOnClickListener {
             val user = userVM.getUser().value!!
-            val challenge = viewmodel.getChallenge()
-
-            challenge.setRating(challengeStar.numStars)
-            challenge.setFeedback(ChallengeFeedback.text.toString())
-
-            viewmodel.setChallenge(challenge)
+            viewmodel.setFeedback(ChallengeFeedback.text.toString())
             viewmodel.completeChallenge(user, user.getToken())
         }
     }

@@ -99,27 +99,6 @@ class User (
     }
 
     /**
-     * sets the therapists of the user
-     */
-    fun setCategory(categoryList: List<Category>){
-        category = categoryList
-    }
-
-    /**
-     * sets the token of the logged in user
-     */
-    fun setToken(newToken: String){
-        token = newToken
-    }
-
-    /**
-     * sets the contract date to the new date
-     */
-    fun setContract(contractDate: Date){
-        contract = contractDate
-    }
-
-    /**
      * sets the contract date to the new date
      */
     fun setEXP(totalEXP: Int){

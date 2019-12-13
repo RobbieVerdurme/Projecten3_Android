@@ -1,6 +1,7 @@
 package be.multinet.repository.Interface
 
 import be.multinet.model.Challenge
+import be.multinet.model.User
 import be.multinet.network.Response.CompleteChallengeResponse
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.repository.DataOrError
@@ -16,9 +17,9 @@ interface IChallengeRepository {
 
     suspend fun loadChallengesFromServer(userId: Int): Response<List<UserChallengeResponse>>
 
-    suspend fun completeChallenge(challenge: Challenge, userId: Int, rating:Int, feedback:String, token: String): DataOrError<Nothing?>
+    suspend fun completeChallenge(challenge: Challenge, user: User, rating:Int, feedback:String, token: String): DataOrError<Nothing?>
 
-    suspend fun completeChallengeLocally(challenge: Challenge, date: String)
+    suspend fun completeChallengeLocally(challenge: Challenge, user: User, date: String)
 
     suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<CompleteChallengeResponse>
 }

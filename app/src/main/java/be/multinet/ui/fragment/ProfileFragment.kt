@@ -34,17 +34,6 @@ class ProfileFragment : Fragment() {
      * Set up the layout.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        /**
-         * Fetch the current user from [UserViewModel].
-         * Note the activity lifecycle scope.
-         * Pass it on to the [ProfileViewModel] of this fragment.
-         */
-        val currentUser: User? = userViewModel.getUser().value
-        //Only pass a user if not null
-        if(currentUser != null){
-            viewModel.setUser(currentUser)
-        }
-        //Set up the fragmentChallengesCategoryBinding
         val binding = FragmentProfileBinding.inflate(inflater,container,false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this
@@ -95,14 +84,17 @@ class ProfileFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.profile_title)
-        viewModel.loadTherapists()
+        viewModel.setUser(userViewModel.getUser().value!!)
         viewModel.getLoadingTherapists().observe(viewLifecycleOwner, Observer {
             if(!it && viewModel.getRequestError().value == null){
                 therapistAdapter.notifyDataSetChanged()
             }
         })
-        viewModel.getRequestError().observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+        viewModel.getRequestError().observe(viewLifecycleOwner, Observer<String?> {
+            if(it != null){
+                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+            }
         })
+        viewModel.loadTherapists()
     }
 }

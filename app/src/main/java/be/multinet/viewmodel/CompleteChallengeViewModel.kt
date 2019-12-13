@@ -11,6 +11,7 @@ import be.multinet.model.User
 import be.multinet.network.ConnectionState
 import be.multinet.network.NetworkHandler
 import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.DataError
 import be.multinet.repository.Interface.IChallengeRepository
 import be.multinet.repository.Interface.IUserRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +19,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository, private val userRepo: IUserRepository, application: Application): AndroidViewModel(application) {
+class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository, application: Application): AndroidViewModel(application) {
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
+    val offline = "offline"
     /**
      * challenge that you want to complete
      */
@@ -29,7 +31,8 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
 
     private val completing = MutableLiveData<Boolean>(false)
     private val completedOn = MutableLiveData<Date>(null)
-
+    private val challengeRating = MutableLiveData(0)
+    private val challengeFeedback = MutableLiveData("")
     private val requestError = MutableLiveData<String>(null)
 
     fun getRequestError(): LiveData<String> = requestError
@@ -41,42 +44,23 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
      * complete a challenge
      */
     fun completeChallenge(user: User, token:String){
-        requestError.value = null
-        if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED && !completing.value!!){
+        if(!completing.value!!){
             completing.value = true
             viewModelScope.launch {
-                val apiResult = async (Dispatchers.IO){
-                    challengeRepo.completeChallengeOnServer(challenge.getChallengeId().toInt(),user.getUserId().toInt(),challenge.getRating(), if(challenge.getFeedback() == null){""}else{challenge.getFeedback()!!},token)
+                val repositoryResponse = async {
+                    challengeRepo.completeChallenge(challenge,user,challengeRating.value!!,challengeFeedback.value!!,token)
                 }
-                val apiResponse = apiResult.await()
-                if(apiResponse == null){
-                    requestError.value = genericErrorMessage
-                    completing.value = false
-                }else{
-                    when(apiResponse.code()){
-                        400 -> {
-                            requestError.value = completeChallengeErrorMessage
-                            completing.value = false
-                        }
-                        200 -> {
-                            val completedDate = async(Dispatchers.IO){
-                                challengeRepo.completeChallengeLocally(challenge.getChallengeId().toInt())
-                            }
-                            challenge.setDateCompleted(completedDate.await())
-                            user.setEXP(user.getEXP() + 1)
-                            val setXP = async(Dispatchers.IO){
-                                userRepo.saveApplicationUser(user)
-                            }
-                            setXP.await()
-                            completedOn.value = challenge.getDateCompleted()
-                            completing.value = false
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
-                            completing.value = false
-                        }
+                val dataOrError = repositoryResponse.await()
+                if(dataOrError.hasError()){
+                    when(dataOrError.error){
+                        DataError.OFFLINE -> requestError.value = offline
+                        DataError.API_BAD_REQUEST -> requestError.value = completeChallengeErrorMessage
+                        else -> requestError.value = genericErrorMessage
                     }
+                }else{
+                    completedOn.value = challenge.getDateCompleted()
                 }
+                completing.value = false
             }
         }
     }
@@ -92,4 +76,18 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
      * get the challenge that you want to complete
      */
     fun getChallenge(): Challenge = challenge
+
+    fun setRating(rating:Int){
+        var newRating = rating
+        if(newRating < 0){
+            newRating = 0
+        }else if(newRating > 5){
+            newRating = 5
+        }
+        challengeRating.value = newRating
+    }
+
+    fun setFeedback(feedback: String){
+        challengeFeedback.value = feedback
+    }
 }

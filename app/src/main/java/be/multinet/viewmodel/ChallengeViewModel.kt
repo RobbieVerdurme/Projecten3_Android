@@ -1,22 +1,17 @@
 package be.multinet.viewmodel
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import be.multinet.R
-import be.multinet.database.Persist.PersistentChallenge
 import be.multinet.model.Category
 import be.multinet.model.Challenge
-import be.multinet.model.LoadDataResult
-import be.multinet.network.Response.UserChallengeResponse
-import be.multinet.repository.ChallengeRepository
+import be.multinet.repository.DataError
 import be.multinet.repository.Interface.IChallengeRepository
-import be.multinet.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
 
 class ChallengeViewModel constructor(private val challengeRepository: IChallengeRepository, application: Application) : AndroidViewModel(application)
 {
@@ -63,75 +58,27 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
     fun loadChallenges(userId: Int) {
         viewModelScope.launch {
             loadingChallenges.value = true
-            val loadResult = async(Dispatchers.IO){
+            val challengeRepositoryResponse = async {
                 challengeRepository.loadChallenges(userId)
             }
-            val loadDataResponse = loadResult.await()
-            when{
-                loadDataResponse.apiResponse != null -> {
-                    when(loadDataResponse.apiResponse.code()){
-                        400 -> {
-                            requestError.value = getChallengesErrorMessage
-                        }
-                        200 -> {
-                            val body = loadDataResponse.apiResponse.body()!!
-                            val localChallenges = ArrayList<Challenge>()
-
-                            body.forEach()
-                            {
-                                val challenge = Challenge(
-                                    it.challenge.challengeId.toString(),
-                                    it.challenge.ChallengeImage ?: "",
-                                    it.challenge.title,
-                                    it.challenge.description,
-                                    it.completedDate,
-                                    Category(
-                                        it.challenge.category.categoryId.toString(),
-                                        it.challenge.category.name
-                                    ),
-                                    it.rating,
-                                    it.feedback
-                                )
-                                localChallenges.add(challenge)
-                            }
-                            val saveResult = async (Dispatchers.IO){
-                                challengeRepository.saveChallenges(localChallenges)
-                            }
-                            saveResult.await()
-                            allChallenges.clear()
-                            allChallenges.addAll(localChallenges)
-                            allCategories.clear()
-                            allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
-                                it.getCategoryId()
-                            })
-                            if(allCategories.isEmpty()){
-                                selectedCategory.value = -1
-                            }else{
-                                selectedCategory.value = 0
-                                getChallengesForCategory(allCategories[selectedCategory.value!!])
-                            }
-                        }
-                        else -> {
-                            requestError.value = genericErrorMessage
-                        }
-                    }
+            val dataOrError = challengeRepositoryResponse.await()
+            if(dataOrError.hasError()){
+                when(dataOrError.error){
+                    DataError.API_BAD_REQUEST -> requestError.value = getChallengesErrorMessage
+                    else -> requestError.value = genericErrorMessage
                 }
-                loadDataResponse.databaseResponse != null -> {
-                    allChallenges.clear()
-                    allChallenges.addAll(loadDataResponse.databaseResponse)
-                    allCategories.clear()
-                    allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
-                        it.getCategoryId()
-                    })
-                    if(allCategories.isEmpty()){
-                        selectedCategory.value = -1
-                    }else{
-                        selectedCategory.value = 0
-                        getChallengesForCategory(allCategories[selectedCategory.value!!])
-                    }
-                }
-                else -> {
-                    requestError.value = genericErrorMessage
+            }else{
+                allChallenges.clear()
+                allChallenges.addAll(dataOrError.data)
+                allCategories.clear()
+                allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
+                    it.getCategoryId()
+                })
+                if(allCategories.isEmpty()){
+                    selectedCategory.value = -1
+                }else{
+                    selectedCategory.value = 0
+                    getChallengesForCategory(allCategories[selectedCategory.value!!])
                 }
             }
             loadingChallenges.value = false
