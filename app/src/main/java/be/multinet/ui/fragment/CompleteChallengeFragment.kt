@@ -17,6 +17,8 @@ import be.multinet.databinding.FragmentCompleteChallengeBinding
 import be.multinet.model.Challenge
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_complete_challenge.*
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
@@ -55,12 +57,20 @@ class CompleteChallengeFragment : Fragment() {
         })
         viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
-                if(it == viewmodel.offline){
-                    AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
-                        R.string.complete_challenge_offline_description,
-                        DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
-                }else{
-                    Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                when (it) {
+                    viewmodel.offline -> {
+                        AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
+                            R.string.complete_challenge_offline_description,
+                            DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
+                    }
+                    viewmodel.dailyChallenge -> {
+                        //Navigate up, but keep request error as daily challenge
+                        //this triggers the snackbar in challenges fragment, since completeViewModel is shared
+                        findNavController().navigateUp()
+                    }
+                    else -> {
+                        Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         })

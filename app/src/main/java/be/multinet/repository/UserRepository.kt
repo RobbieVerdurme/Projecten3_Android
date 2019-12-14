@@ -40,7 +40,8 @@ class UserRepository(private val userDao: UserDao,
                 try{
                     userResponse = getUserFromServer(user.getUserId().toInt(),user.getToken())
                 }catch (e: IOException){
-                    return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                    //return local user, without refresh
+                    return DataOrError(data = user)
                 }
                 when(userResponse.code()){
                     404 -> return DataOrError(data = user)

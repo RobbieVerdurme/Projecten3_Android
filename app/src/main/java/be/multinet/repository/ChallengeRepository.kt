@@ -38,7 +38,7 @@ class ChallengeRepository(
             try{
                 apiLoadResponse = loadChallengesFromServer(userId)
             }catch(e: IOException){
-                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = listOf())
+                return DataOrError(data = loadChallengesFromLocalStorage())
             }
             when(apiLoadResponse.code()){
                 400 -> return DataOrError(error = DataError.API_BAD_REQUEST,data = listOf())
@@ -81,6 +81,7 @@ class ChallengeRepository(
                     completeChallengeLocally(challenge,user,apiResponse.body()!!.completedDate)
                     DataOrError(data = null)
                 }
+                303 -> DataOrError(error = DataError.API_DAILY_CHALLENGE_LIMIT_REACHED,data = null)
                 else -> DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
             }
         }

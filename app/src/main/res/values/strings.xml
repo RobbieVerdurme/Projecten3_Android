@@ -86,4 +86,5 @@
     <string name="ratingGood">Goed</string>
     <string name="ratingVeryGood">Heel Goed</string>
     <string name="ratingPerfect">Perfect</string>
+    <string name="complete_challenge_daily">Dagelijkse Uitdaging Voor %1s Al Voltooid</string>
 </resources>

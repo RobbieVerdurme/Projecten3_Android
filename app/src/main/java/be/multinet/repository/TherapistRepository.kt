@@ -66,7 +66,7 @@ class TherapistRepository(
             try{
                 apiResponse = loadTherapistsFromServer(token,userId)
             }catch(e: IOException){
-                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = listOf())
+                return DataOrError(data = loadTherapistsFromLocalStorage())
             }
             when(apiResponse.code()){
                 400 -> return DataOrError(error = DataError.API_BAD_REQUEST,data = listOf())
