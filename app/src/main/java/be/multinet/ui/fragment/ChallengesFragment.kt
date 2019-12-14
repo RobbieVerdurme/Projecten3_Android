@@ -1,32 +1,32 @@
 package be.multinet.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import be.multinet.R
 import be.multinet.adapter.ChallengeAdapter
+import be.multinet.adapter.CompleteChallengeClickListener
 import be.multinet.databinding.FragmentChallengesBinding
 import be.multinet.model.Challenge
-import be.multinet.adapter.CompleteChallengeClickListener
 import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * This [Fragment] represents the challenges page.
@@ -128,9 +128,9 @@ class ChallengesFragment : Fragment(),
         completeChallengeViewModel.getRequestError().observe(viewLifecycleOwner, Observer<String?> {
             //Show daily challenge message
             if(it != null && it == completeChallengeViewModel.dailyChallenge){
-                val bottomNav = view!!.findViewById<BottomNavigationView>(R.id.landingPageBottomNavigation)
-                Snackbar.make(bottomNav,getString(R.string.complete_challenge_daily,completeChallengeViewModel.getChallenge().getCategory()!!.getName()),
-                    Snackbar.LENGTH_SHORT)
+                val snackbarView = (parentFragment as NavHostFragment).parentFragment!!.view!!.findViewById<CoordinatorLayout>(R.id.snackbarLocation)
+                Snackbar.make(snackbarView,getString(R.string.complete_challenge_daily,completeChallengeViewModel.getChallenge().getCategory()!!.getName()),
+                    Snackbar.LENGTH_SHORT).show()
             }
         })
     }
