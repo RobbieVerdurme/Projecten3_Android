@@ -58,7 +58,7 @@ class CompleteChallengeFragment : Fragment() {
                 if(it == viewmodel.offline){
                     AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
                         R.string.complete_challenge_offline_description,
-                        DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok)
+                        DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
                 }else{
                     Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
                 }
