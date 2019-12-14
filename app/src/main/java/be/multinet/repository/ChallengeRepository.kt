@@ -81,6 +81,7 @@ class ChallengeRepository(
                     completeChallengeLocally(challenge,user,apiResponse.body()!!.completedDate)
                     DataOrError(data = null)
                 }
+                303 -> DataOrError(error = DataError.API_DAILY_CHALLENGE_LIMIT_REACHED,data = null)
                 else -> DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
             }
         }

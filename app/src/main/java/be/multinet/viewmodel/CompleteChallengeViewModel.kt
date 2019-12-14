@@ -24,6 +24,7 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
     val offline = "offline"
+    val dailyChallenge = "dailyChallenge"
     /**
      * challenge that you want to complete
      */
@@ -55,6 +56,7 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
                     when(dataOrError.error){
                         DataError.OFFLINE -> requestError.value = offline
                         DataError.API_BAD_REQUEST -> requestError.value = completeChallengeErrorMessage
+                        DataError.API_DAILY_CHALLENGE_LIMIT_REACHED -> requestError.value = dailyChallenge
                         else -> requestError.value = genericErrorMessage
                     }
                 }else{

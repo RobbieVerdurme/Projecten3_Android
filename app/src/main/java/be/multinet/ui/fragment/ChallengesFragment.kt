@@ -21,6 +21,8 @@ import be.multinet.adapter.CompleteChallengeClickListener
 import be.multinet.viewmodel.ChallengeViewModel
 import be.multinet.viewmodel.CompleteChallengeViewModel
 import be.multinet.viewmodel.UserViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -121,6 +123,14 @@ class ChallengesFragment : Fragment(),
         viewmodel.getTabs().observe(viewLifecycleOwner, Observer<List<String>?> {
             if(it != null){
                 initializeTabs(it)
+            }
+        })
+        completeChallengeViewModel.getRequestError().observe(viewLifecycleOwner, Observer<String?> {
+            //Show daily challenge message
+            if(it != null && it == completeChallengeViewModel.dailyChallenge){
+                val bottomNav = view!!.findViewById<BottomNavigationView>(R.id.landingPageBottomNavigation)
+                Snackbar.make(bottomNav,getString(R.string.complete_challenge_daily,completeChallengeViewModel.getChallenge().getCategory()!!.getName()),
+                    Snackbar.LENGTH_SHORT)
             }
         })
     }
