@@ -25,8 +25,6 @@ class ChallengeAdapter(private val clickListener: CompleteChallengeClickListener
         holder.binding.completeChallengeBtn.setOnClickListener {
             clickListener.onItemClicked(challenge)
         }
-        holder.binding.challengeImage.visibility = if(challenge.getDateCompleted() == null) View.GONE else View.VISIBLE
-        holder.binding.completeChallengeBtn.visibility = if(challenge.getDateCompleted() == null) View.VISIBLE else View.GONE
         holder.binding.executePendingBindings()
     }
 

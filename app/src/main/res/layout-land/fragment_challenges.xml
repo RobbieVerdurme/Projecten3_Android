@@ -3,38 +3,50 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-<data>
-    <import type="android.view.View"/>
-    <variable name="challengeViewModel" type="be.multinet.viewmodel.ChallengeViewModel" />
-</data>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.google.android.material.tabs.TabLayout
-        android:visibility="@{challengeViewModel.loading ? View.GONE: View.VISIBLE}"
-        android:id="@+id/categoryTabs"
+    <data>
+        <import type="android.view.View"/>
+        <variable name="challengeViewModel" type="be.multinet.viewmodel.ChallengeViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:visibility="@{challengeViewModel.loading ? View.GONE: View.VISIBLE}"
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoryTabs" >
-    </androidx.viewpager2.widget.ViewPager2>
+        <com.google.android.material.tabs.TabLayout
+            android:visibility="@{challengeViewModel.showPageLoadingIndicator() ? View.GONE : View.VISIBLE}"
+            android:id="@+id/categoryTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:indeterminate="true"
-        android:visibility="@{challengeViewModel.loading ? View.VISIBLE : View.GONE}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.viewpager2.widget.ViewPager2
+            android:visibility="@{challengeViewModel.showChallengeLoadingIndicator() ? View.GONE : View.VISIBLE}"
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryTabs" >
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <ProgressBar
+            android:visibility="@{challengeViewModel.showPageLoadingIndicator() ? View.VISIBLE : View.GONE}"
+            android:id="@+id/pageLoadingIndicator"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:indeterminate="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/pageChallengeLoadingIndicator"
+            android:visibility="@{challengeViewModel.showChallengeLoadingIndicator() ? View.VISIBLE : View.GONE}"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:indeterminate="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/viewPager"
+            app:layout_constraintTop_toTopOf="@id/viewPager"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

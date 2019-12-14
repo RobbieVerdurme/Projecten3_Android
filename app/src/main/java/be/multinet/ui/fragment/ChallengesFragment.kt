@@ -1,6 +1,7 @@
 package be.multinet.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,20 @@ class ChallengesFragment : Fragment(),
      */
     val userViewModel: UserViewModel by sharedViewModel()
 
+    val tabSelectedListener = object : TabLayout.OnTabSelectedListener{
+        override fun onTabReselected(p0: TabLayout.Tab?) {}
+
+        override fun onTabUnselected(p0: TabLayout.Tab?) {}
+
+        override fun onTabSelected(p0: TabLayout.Tab?) {
+            val position = p0!!.position
+            if(position != viewmodel.getSelectedCategory().value!!){
+                viewmodel.setSelectedCategory(position)
+                tabLayout.setScrollPosition(viewmodel.getSelectedCategory().value!!,0f,true)
+            }
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentChallengesBinding.inflate(inflater, container,false)
@@ -62,26 +77,6 @@ class ChallengesFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFragment()
-        loadChallenges()
-    }
-
-    /**
-     * give data to the adapter
-     */
-    private fun loadChallenges() {
-        viewmodel.getLoadingChallenges().observe(viewLifecycleOwner, Observer {
-            if(!it && viewmodel.getRequestError().value == null){
-                challengeAdapter.notifyDataSetChanged()
-                initializeTabs()
-                viewmodel.onViewPagerReady()
-            }
-        })
-        viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
-            if(it != null){
-                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
-            }
-        })
-        viewmodel.loadChallenges(userViewModel.getUser().value!!.getUserId().toInt())
     }
 
     /**
@@ -110,19 +105,22 @@ class ChallengesFragment : Fragment(),
                 }
             }
         }
-        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-
+        viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
             }
-
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                val position = p0!!.position
-                if(position != viewmodel.getSelectedCategory().value){
-                    viewmodel.setSelectedCategory(position)
-                    challengeAdapter.notifyDataSetChanged()
-                }
+        })
+        viewmodel.getChallengesForCategory().observe(viewLifecycleOwner, Observer<List<Challenge>?> {
+            if(it != null){
+                //init dataset and setup pager
+                viewmodel.updateDataset(it)
+                challengeAdapter.notifyDataSetChanged()
+                viewmodel.onViewPagerReady()
+            }
+        })
+        viewmodel.getTabs().observe(viewLifecycleOwner, Observer<List<String>?> {
+            if(it != null){
+                initializeTabs(it)
             }
         })
     }
@@ -135,11 +133,29 @@ class ChallengesFragment : Fragment(),
         findNavController().navigate(R.id.CompleteChallengeFragment)
     }
 
-    private fun initializeTabs(){
+    private fun initializeTabs(tabs: List<String>){
         tabLayout.removeAllTabs()
-        viewmodel.getCategories().forEach {
-            tabLayout.addTab(tabLayout.newTab().setText(it.getName()))
+        val selected = viewmodel.getSelectedCategory().value!!
+        if(selected == -1){
+            tabs.forEach {
+                tabLayout.addTab(tabLayout.newTab().setText(it))
+            }
+        }else{
+            tabs.mapIndexed{i,text ->
+                tabLayout.addTab(tabLayout.newTab().setText(text),i == selected)
+            }
         }
+        tabLayout.addOnTabSelectedListener(tabSelectedListener)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewmodel.loadChallenges(userViewModel.getUser().value!!.getUserId().toInt())
+    }
+
+    override fun onPause() {
+        tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+        super.onPause()
     }
 
 

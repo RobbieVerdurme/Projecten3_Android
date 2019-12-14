@@ -1,3 +1,5 @@
 package be.multinet.network.Response
 
-class CompleteChallengeResponse (val completedDate: String)
+import java.util.*
+
+class CompleteChallengeResponse (val completedDate: Date)

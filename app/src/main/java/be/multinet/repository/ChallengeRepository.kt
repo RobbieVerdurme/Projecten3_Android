@@ -18,6 +18,9 @@ import be.multinet.repository.Interface.IChallengeRepository
 import kotlinx.coroutines.*
 import retrofit2.Response
 import java.io.IOException
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 
 /**
@@ -92,11 +95,10 @@ class ChallengeRepository(
         }
     }
 
-    override suspend fun completeChallengeLocally(challenge: Challenge,user: User, date: String){
+    override suspend fun completeChallengeLocally(challenge: Challenge,user: User, date: Date){
         withContext(Dispatchers.IO){
-            val parsedDate = Date(date)
-            challengeDao.completeChallengeAndUpdateXP(user.getUserId().toInt(),challenge.getChallengeId().toInt(),parsedDate)
-            challenge.setDateCompleted(parsedDate)
+            challengeDao.completeChallengeAndUpdateXP(user.getUserId().toInt(),challenge.getChallengeId().toInt(),date)
+            challenge.setDateCompleted(date)
             user.setEXP(user.getEXP()+1)
         }
     }

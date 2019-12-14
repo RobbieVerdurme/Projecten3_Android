@@ -6,6 +6,7 @@ import be.multinet.network.Response.CompleteChallengeResponse
 import be.multinet.network.Response.UserChallengeResponse
 import be.multinet.repository.DataOrError
 import retrofit2.Response
+import java.util.*
 
 interface IChallengeRepository {
 
@@ -19,7 +20,7 @@ interface IChallengeRepository {
 
     suspend fun completeChallenge(challenge: Challenge, user: User, rating:Int, feedback:String, token: String): DataOrError<Nothing?>
 
-    suspend fun completeChallengeLocally(challenge: Challenge, user: User, date: String)
+    suspend fun completeChallengeLocally(challenge: Challenge, user: User, date: Date)
 
     suspend fun completeChallengeOnServer(challengeId: Int, userId: Int, rating:Int, feedback:String, token: String): Response<CompleteChallengeResponse>
 }

@@ -1,6 +1,7 @@
 package be.multinet.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,71 +24,136 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
     private val allChallenges = ArrayList<Challenge>()
     private val viewPagerDataset = ArrayList<Challenge>()
 
+    private val challengesForCategory = MutableLiveData<List<Challenge>>(null)
     private val selectedCategory = MutableLiveData(-1)
-    private val loading = MutableLiveData<Boolean>(true)
-    private val loadingChallenges = MutableLiveData<Boolean>(true)
+    private val challengeTabs = MutableLiveData<List<String>>(null)
 
     private val requestError = MutableLiveData<String>(null)
+    private val showPageLoading = MutableLiveData<Boolean>(false)
+    private val showChallengesLoading = MutableLiveData<Boolean>(false)
+    private val showError = MutableLiveData<Boolean>(false)
 
-    fun getLoading(): LiveData<Boolean> = loading
+    private var isLoaded = false
 
+    fun showPageLoadingIndicator(): LiveData<Boolean> = showPageLoading
+
+    fun showChallengeLoadingIndicator(): LiveData<Boolean> = showChallengesLoading
+
+    fun showErrorMessage(): LiveData<Boolean> = showError
+
+    /**
+     * Set the selected category which is [allCategories] at [index].
+     * Used by the tab listener, when a tab is selected, and during the initial loading of challenges.
+     */
     fun setSelectedCategory(index: Int){
-        selectedCategory.value = index
-        getChallengesForCategory(allCategories[index])
+        if(index != selectedCategory.value!!){
+            selectedCategory.value = index
+            getChallengesForCategory(selectedCategory.value!!)
+        }
     }
 
+    /**
+     * Get the request error for the loading challenges request.
+     */
     fun getRequestError(): LiveData<String> = requestError
 
+    /**
+     * Get the dataset for the viewpager that shows the challenges for a selected tab.
+     */
     fun getDataset(): List<Challenge> = viewPagerDataset
 
-    fun getCategories(): List<Category> = allCategories
-
+    /**
+     * Get the selected category index.
+     */
     fun getSelectedCategory(): LiveData<Int> = selectedCategory
 
-    fun getLoadingChallenges(): LiveData<Boolean> = loadingChallenges
+    /**
+     * Get the tab titles.
+     * This list is loaded during the initial challenges loading process.
+     */
+    fun getTabs(): LiveData<List<String>> = challengeTabs
 
+    /**
+     * Get the challenges for the currently selected tab.
+     * This is effectively the up to date data for [viewPagerDataset], for the currently selected tab.
+     */
+    fun getChallengesForCategory(): LiveData<List<Challenge>> = challengesForCategory
+
+    /**
+     * This callback is fired after the viewpager that shows the challenges, has finished loading its view holders.
+     * When the callback is fired after the initial load of challenges, it unsets the page level loading indicator.
+     * This is because both the tabs and the first dataset for the viewpager are done(including inflating views in the pager).
+     * Otherwise the challenge-level loading indicator is unset. In this case the tabs were loaded before, thus only the challenges need to be shown.
+     */
     fun onViewPagerReady(){
-        loading.value = false
+        if(showPageLoading.value!!){
+            //loading tabs and challenges is finished
+            showPageLoading.value = false
+        }else{
+            //tabs were loaded and challenges were updated for new tab
+            showChallengesLoading.value = false
+        }
     }
 
-    private fun getChallengesForCategory(category:Category){
-        viewPagerDataset.clear()
-        viewPagerDataset.addAll(allChallenges.filter {
+    private fun getChallengesForCategory(index : Int){
+        if(index < 0 || allCategories.size <= index) return
+        val category = allCategories[index]
+
+        //Tabs and challenges  were loaded once before.
+        //Thus the general loading indicator is gone.
+        //Which means we have a challenges refresh for a newly selected tab.
+        if(!showPageLoading.value!!){
+            showChallengesLoading.value = true
+        }
+
+        challengesForCategory.value = allChallenges.filter {
             it.getCategory()!!.getName() == category.getName()
-        }.toList().sortedWith(nullsFirst(compareBy { it.getDateCompleted() })))
-        loadingChallenges.value = false
+        }.toList().sortedWith(nullsFirst(compareBy { it.getDateCompleted() }))
+    }
+
+    fun updateDataset(challenges: List<Challenge>){
+        if(challenges.isNotEmpty()){
+            viewPagerDataset.clear()
+            viewPagerDataset.addAll(challenges)
+        }
     }
 
     fun loadChallenges(userId: Int) {
-        loading.value = true
-        loadingChallenges.value = true
+        if(isLoaded) return
         viewModelScope.launch {
-            val challengeRepositoryResponse = async {
-                challengeRepository.loadChallenges(userId)
-            }
-            val dataOrError = challengeRepositoryResponse.await()
-            if(dataOrError.hasError()){
-                when(dataOrError.error){
-                    DataError.API_BAD_REQUEST -> requestError.value = getChallengesErrorMessage
-                    else -> requestError.value = genericErrorMessage
+            if(!showPageLoading.value!!){
+                showError.value = false
+                showPageLoading.value = true
+                val challengeRepositoryResponse = async {
+                    challengeRepository.loadChallenges(userId)
                 }
-                //remove loading indicator, but do not trigger the viewpager.
-                //there is no content
-                loading.value = false
-            }else{
-                allChallenges.clear()
-                allChallenges.addAll(dataOrError.data)
-                allCategories.clear()
-                allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
-                    it.getCategoryId()
-                })
-                if(allCategories.isEmpty()){
-                    selectedCategory.value = -1
+                val dataOrError = challengeRepositoryResponse.await()
+                if(dataOrError.hasError()){
+                    when(dataOrError.error){
+                        DataError.API_BAD_REQUEST -> requestError.value = getChallengesErrorMessage
+                        else -> requestError.value = genericErrorMessage
+                    }
+                    //remove loading indicator, but do not trigger the viewpager.
+                    //there is no content
+                    showPageLoading.value = false
+                    showError.value = true
                 }else{
-                    selectedCategory.value = 0
-                    getChallengesForCategory(allCategories[selectedCategory.value!!])
+                    allChallenges.clear()
+                    allChallenges.addAll(dataOrError.data)
+                    allCategories.clear()
+                    allCategories.addAll(allChallenges.map { challenge -> challenge.getCategory()!! }.distinctBy {
+                        it.getCategoryId()
+                    })
+                    if(allCategories.isEmpty()){
+                        selectedCategory.value = -1
+                    }else{
+                        challengeTabs.value = allCategories.map{it.getName()}
+                        selectedCategory.value = 0
+                        getChallengesForCategory(selectedCategory.value!!)
+                    }
+                    //the viewpager notifies when its done updating its elements so we do not unset loading here
                 }
-                //the viewpager notifies when its done updating its elements so we do not unset loading here
+                isLoaded = true
             }
         }
     }
