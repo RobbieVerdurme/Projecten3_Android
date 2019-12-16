@@ -1,5 +1,6 @@
 package be.multinet.ui.fragment
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -17,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import be.multinet.R
 import be.multinet.adapter.ChallengeAdapter
 import be.multinet.adapter.CompleteChallengeClickListener
+import be.multinet.adapter.ICheckDailyChallengeHandler
 import be.multinet.databinding.FragmentChallengesBinding
 import be.multinet.model.Challenge
 import be.multinet.viewmodel.ChallengeViewModel
@@ -26,13 +29,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
 /**
  * This [Fragment] represents the challenges page.
  */
 class ChallengesFragment : Fragment(),
-    CompleteChallengeClickListener {
+    CompleteChallengeClickListener, ICheckDailyChallengeHandler {
 
     /**
      * Viewmodel of this fragment
@@ -87,7 +91,7 @@ class ChallengesFragment : Fragment(),
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.challenges_title)
-        challengeAdapter = ChallengeAdapter(this,viewmodel.getDataset())
+        challengeAdapter = ChallengeAdapter(this,this,viewmodel.getDataset())
         viewPager.apply {
             adapter = challengeAdapter
             offscreenPageLimit = 3
@@ -109,7 +113,21 @@ class ChallengesFragment : Fragment(),
         }
         viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
-                Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                when(it){
+                    viewmodel.offline -> {
+                        AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
+                            R.string.complete_challenge_offline_description,
+                            DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
+                    }
+                    viewmodel.dailyChallenge -> {
+                        val snackbarView = (parentFragment as NavHostFragment).parentFragment!!.view!!.findViewById<CoordinatorLayout>(R.id.snackbarLocation)
+                        Snackbar.make(snackbarView,getString(R.string.complete_challenge_daily,completeChallengeViewModel.getChallenge().getCategory()!!.getName()),
+                            Snackbar.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
         viewmodel.getChallengesForCategory().observe(viewLifecycleOwner, Observer<List<Challenge>?> {
@@ -125,12 +143,10 @@ class ChallengesFragment : Fragment(),
                 initializeTabs(it)
             }
         })
-        completeChallengeViewModel.getRequestError().observe(viewLifecycleOwner, Observer<String?> {
-            //Show daily challenge message
-            if(it != null && it == completeChallengeViewModel.dailyChallenge){
-                val snackbarView = (parentFragment as NavHostFragment).parentFragment!!.view!!.findViewById<CoordinatorLayout>(R.id.snackbarLocation)
-                Snackbar.make(snackbarView,getString(R.string.complete_challenge_daily,completeChallengeViewModel.getChallenge().getCategory()!!.getName()),
-                    Snackbar.LENGTH_SHORT).show()
+        viewmodel.getIsDailyCompleted().observe(viewLifecycleOwner, Observer<Date?> {
+            if(it != null){
+                completeChallengeViewModel.setCompletedDate(it)
+                findNavController().navigate(R.id.CompleteChallengeFragment)
             }
         })
     }
@@ -140,7 +156,8 @@ class ChallengesFragment : Fragment(),
      */
     override fun onItemClicked(item: Challenge) {
         completeChallengeViewModel.setChallenge(item)
-        findNavController().navigate(R.id.CompleteChallengeFragment)
+        val user = userViewModel.getUser().value!!
+        viewmodel.checkDailyChallenge(user.getUserId().toInt(),item.getChallengeId().toInt(),user.getToken())
     }
 
     private fun initializeTabs(tabs: List<String>){
@@ -168,5 +185,5 @@ class ChallengesFragment : Fragment(),
         super.onPause()
     }
 
-
+    override fun getIsCheckingDailyChallenge(): LiveData<Boolean> = viewmodel.getIsCheckingDailyChallenge()
 }

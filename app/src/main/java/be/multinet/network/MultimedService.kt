@@ -1,6 +1,7 @@
 package be.multinet.network
 
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CheckDailyChallengeRequestBody
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Request.UpdateUserRequestBody
@@ -129,5 +130,9 @@ class MultimedService : IApiProvider {
 
     override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok> {
         TODO()
+    }
+
+    override suspend fun checkDailyChallenge(token:String,body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse> {
+        return server.checkDailyChallenge(token,body)
     }
 }

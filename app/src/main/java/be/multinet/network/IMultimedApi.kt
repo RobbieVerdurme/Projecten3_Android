@@ -1,6 +1,7 @@
 package be.multinet.network
 
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CheckDailyChallengeRequestBody
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.*
@@ -44,6 +45,10 @@ interface IMultimedApi {
      */
     @GET("users/therapist/{id}")
     suspend fun getTherapists(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<TherapistResponse>>
+
+
+    @POST("challenge/checkdaily")
+    suspend fun checkDailyChallenge(@Header("Authorization")token:String, @Body body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse>
 
     //TODO PUT request for update user
 }

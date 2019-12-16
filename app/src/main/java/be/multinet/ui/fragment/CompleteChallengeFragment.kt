@@ -63,11 +63,6 @@ class CompleteChallengeFragment : Fragment() {
                             R.string.complete_challenge_offline_description,
                             DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
                     }
-                    viewmodel.dailyChallenge -> {
-                        //Navigate up, but keep request error as daily challenge
-                        //this triggers the snackbar in challenges fragment, since completeViewModel is shared
-                        findNavController().navigateUp()
-                    }
                     else -> {
                         Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
                     }

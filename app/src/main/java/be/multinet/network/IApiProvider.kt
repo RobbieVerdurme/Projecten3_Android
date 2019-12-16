@@ -2,6 +2,7 @@ package be.multinet.network
 
 import be.multinet.model.Challenge
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CheckDailyChallengeRequestBody
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Request.UpdateUserRequestBody
@@ -11,7 +12,7 @@ import retrofit2.Response
 
 interface IApiProvider {
     /**
-     * Perform a login with the given [body] as payload
+     * Perform a login with the given [userbody] as payload
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON
      * @param userbody the request payload
      * @return a [Response] with [JWT] as data
@@ -19,7 +20,7 @@ interface IApiProvider {
     suspend fun loginUser(userbody: LoginRequestBody): Response<String>
 
     /**
-     * get a [User] from the database
+     * get a [UserDataResponse] from the server database
      * If the request is unsuccessful, the bytes of [errorBody][Response.errorBody] can be parsed to JSON
      * @return a [Response] with [UserDataResponse] as data
      */
@@ -47,4 +48,9 @@ interface IApiProvider {
 
 
     suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok>
+
+    /**
+     * Check if a user completed his challenge of the day for a category.
+     */
+    suspend fun checkDailyChallenge(token:String,body : CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse>
 }

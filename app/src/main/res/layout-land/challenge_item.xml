@@ -7,6 +7,9 @@
         <variable
             name="challenge"
             type="be.multinet.model.Challenge" />
+        <variable
+            name="isCheckingDailyHandler"
+            type="be.multinet.adapter.ICheckDailyChallengeHandler" />
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -50,28 +53,37 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challengeTitle">
 
+                <ProgressBar
+                    android:visibility="@{isCheckingDailyHandler.isCheckingDailyChallenge ? View.VISIBLE : View.GONE}"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:indeterminate="true"/>
+
                 <com.google.android.material.button.MaterialButton
-                    android:visibility="@{challenge.dateCompleted == null ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{!isCheckingDailyHandler.isCheckingDailyChallenge &amp;&amp; challenge.dateCompleted == null ? View.VISIBLE : View.GONE}"
                     android:id="@+id/completeChallengeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/complete_challenge"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:visibility="@{challenge.dateCompleted == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{!isCheckingDailyHandler.isCheckingDailyChallenge &amp;&amp; challenge.dateCompleted == null ? View.GONE : View.VISIBLE}"
+                    android:tint="@color/multimed_green"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:tint="@color/multimed_green"
+                    app:srcCompat="@drawable/ic_done_24px"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_done_24px" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

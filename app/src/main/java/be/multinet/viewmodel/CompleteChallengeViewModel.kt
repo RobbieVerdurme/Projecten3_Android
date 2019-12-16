@@ -24,11 +24,11 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val completeChallengeErrorMessage:String = application.getString(R.string.completeChallengeError)
     val offline = "offline"
-    val dailyChallenge = "dailyChallenge"
     /**
      * challenge that you want to complete
      */
     private lateinit var challenge: Challenge
+    private lateinit var completedDate: Date
 
     private val completing = MutableLiveData<Boolean>(false)
     private val completedOn = MutableLiveData<Date>(null)
@@ -49,14 +49,15 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
             completing.value = true
             viewModelScope.launch {
                 val repositoryResponse = async {
-                    challengeRepo.completeChallenge(challenge,user,challengeRating.value!!,challengeFeedback.value!!,token)
+                    challengeRepo.completeChallenge(challenge,user,challengeRating.value!!,challengeFeedback.value!!,completedDate,token)
                 }
                 val dataOrError = repositoryResponse.await()
                 if(dataOrError.hasError()){
                     when(dataOrError.error){
                         DataError.OFFLINE -> requestError.value = offline
-                        DataError.API_BAD_REQUEST -> requestError.value = completeChallengeErrorMessage
-                        DataError.API_DAILY_CHALLENGE_LIMIT_REACHED -> requestError.value = dailyChallenge
+                        DataError.API_BAD_REQUEST,
+                        DataError.API_DAILY_CHALLENGE_LIMIT_REACHED,
+                        DataError.API_CHALLENGE_ALREADY_COMPLETED -> requestError.value = completeChallengeErrorMessage
                         else -> requestError.value = genericErrorMessage
                     }
                 }else{
@@ -72,6 +73,10 @@ class CompleteChallengeViewModel(private val challengeRepo: IChallengeRepository
      */
     fun setChallenge(challengeItem:Challenge){
         challenge = challengeItem
+    }
+
+    fun setCompletedDate(completed: Date){
+        completedDate = completed
     }
 
     /**

@@ -13,12 +13,16 @@ import be.multinet.repository.DataError
 import be.multinet.repository.Interface.IChallengeRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChallengeViewModel constructor(private val challengeRepository: IChallengeRepository, application: Application) : AndroidViewModel(application)
 {
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     private val getChallengesErrorMessage: String = application.getString(R.string.challengeError)
+    val dailyChallenge = "dailychallenge"
+    val offline = "offline"
 
     private val allCategories = ArrayList<Category>()
     private val allChallenges = ArrayList<Challenge>()
@@ -32,6 +36,8 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
     private val showPageLoading = MutableLiveData<Boolean>(false)
     private val showChallengesLoading = MutableLiveData<Boolean>(false)
     private val showError = MutableLiveData<Boolean>(false)
+    private val isDailyCompleted = MutableLiveData<Date>(null)
+    private val isCheckingDailyChallenge = MutableLiveData<Boolean>(false)
 
     private var isLoaded = false
 
@@ -40,6 +46,12 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
     fun showChallengeLoadingIndicator(): LiveData<Boolean> = showChallengesLoading
 
     fun showErrorMessage(): LiveData<Boolean> = showError
+
+    fun getIsDailyCompleted(): LiveData<Date> = isDailyCompleted
+
+    fun getIsCheckingDailyChallenge(): LiveData<Boolean> = isCheckingDailyChallenge
+
+
 
     /**
      * Set the selected category which is [allCategories] at [index].
@@ -154,6 +166,28 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
                     //the viewpager notifies when its done updating its elements so we do not unset loading here
                 }
                 isLoaded = true
+            }
+        }
+    }
+
+    fun checkDailyChallenge(userId: Int, challengeId: Int,token: String){
+        if(!isCheckingDailyChallenge.value!!){
+            isCheckingDailyChallenge.value = true
+            viewModelScope.launch {
+                val repositoryResponse = async {
+                    challengeRepository.isDailyChallengeCompleted(userId,challengeId,token)
+                }
+                val dataOrError = repositoryResponse.await()
+                if(dataOrError.hasError()){
+                    requestError.value = when(dataOrError.error){
+                        DataError.API_DAILY_CHALLENGE_LIMIT_REACHED -> dailyChallenge
+                        DataError.OFFLINE -> offline
+                        else -> genericErrorMessage
+                    }
+                }else{
+                    isDailyCompleted.value = dataOrError.data
+                }
+                isCheckingDailyChallenge.value = false
             }
         }
     }
