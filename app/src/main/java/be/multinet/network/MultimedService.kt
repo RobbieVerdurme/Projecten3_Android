@@ -1,12 +1,11 @@
 package be.multinet.network
 
 import be.multinet.model.Therapist
+import be.multinet.network.Request.CheckDailyChallengeRequestBody
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
-import be.multinet.network.Response.Ok
-import be.multinet.network.Response.TherapistResponse
-import be.multinet.network.Response.UserChallengeResponse
-import be.multinet.network.Response.UserDataResponse
+import be.multinet.network.Request.UpdateUserRequestBody
+import be.multinet.network.Response.*
 import com.auth0.android.jwt.JWT
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -117,7 +116,7 @@ class MultimedService : IApiProvider {
     /**
      * set the challenge to completed
      */
-    override suspend fun completeChallenge(token :String,challengeRequestBody: CompleteChallengeRequestBody): Response<Ok>{
+    override suspend fun completeChallenge(token :String,challengeRequestBody: CompleteChallengeRequestBody): Response<CompleteChallengeResponse>{
         return server.completeChallenge(token ,challengeRequestBody)
     }
 
@@ -127,5 +126,13 @@ class MultimedService : IApiProvider {
      */
     override suspend fun getTherapists(token:String, userid: Int): Response<List<TherapistResponse>> {
         return server.getTherapists(token,userid)
+    }
+
+    override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok> {
+        TODO()
+    }
+
+    override suspend fun checkDailyChallenge(token:String,body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse> {
+        return server.checkDailyChallenge(token,body)
     }
 }

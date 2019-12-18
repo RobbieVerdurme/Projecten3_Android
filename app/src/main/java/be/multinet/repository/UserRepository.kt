@@ -8,11 +8,18 @@ import be.multinet.database.Persist.PersistentCategory
 import be.multinet.database.Persist.PersistentUser
 import be.multinet.model.Category
 import be.multinet.model.User
+import be.multinet.network.ConnectionState
 import be.multinet.network.IApiProvider
+import be.multinet.network.NetworkHandler
 import be.multinet.network.Request.LoginRequestBody
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.Interface.IUserRepository
+import com.auth0.android.jwt.JWT
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
+import java.io.IOException
 
 /**
  * This class is the production implementation of [IUserRepository].
@@ -23,11 +30,99 @@ class UserRepository(private val userDao: UserDao,
         private val challengeDao: ChallengeDao,
         private val multimedService: IApiProvider): IUserRepository {
 
+    override suspend fun loadApplicationUser(): DataOrError<User?> {
+        val user: User? = getUserFromLocalStorage()
+        if(user == null){
+            return DataOrError(data = null)
+        }else{
+            if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED){
+                val userResponse: Response<UserDataResponse>?
+                try{
+                    userResponse = getUserFromServer(user.getUserId().toInt(),user.getToken())
+                }catch (e: IOException){
+                    //return local user, without refresh
+                    return DataOrError(data = user)
+                }
+                when(userResponse.code()){
+                    404 -> return DataOrError(data = user)
+                    200 -> {
+                        val body = userResponse.body()!!
+                        val newUser = User(
+                            user.getUserId(),
+                            user.getToken(),
+                            body.firstName,
+                            body.familyName,
+                            body.email,
+                            body.phone,
+                            body.contract,
+                            body.categories,
+                            body.experiencePoints
+                        )
+                        saveApplicationUser(newUser)
+                        return DataOrError(data = newUser)
+                    }
+                    else -> return DataOrError(data = user)
+                }
+            }
+            //return old user
+            return DataOrError(data = user)
+        }
+    }
 
-    //region retrofit
-
-
-
+    override suspend fun login(username:String, password: String): DataOrError<User?> {
+        if(NetworkHandler.getNetworkState().value != ConnectionState.CONNECTED){
+            return DataOrError(DataError.OFFLINE,null)
+        }else{
+            val jwtResponse: Response<String>
+            try{
+                jwtResponse = withContext(Dispatchers.IO){
+                    multimedService.loginUser(LoginRequestBody(username, password))
+                }
+            }catch (e: IOException){
+                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+            }
+            when(jwtResponse.code()){
+                400 -> return DataOrError(DataError.API_BAD_REQUEST,null)
+                401 -> return DataOrError(DataError.API_UNAUTHORIZED,null)
+                200 -> {
+                    val jwt = JWT(jwtResponse.body()!!)
+                    val token: String = "Bearer " + jwtResponse.body()!!
+                    //get the user info with id userid
+                    val userid = jwt.getClaim("Id").asInt()
+                    if (userid != null){
+                        val userResponse: Response<UserDataResponse>?
+                        try{
+                            userResponse = getUserFromServer(userid,token)
+                        }catch (e: IOException){
+                            return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                        }
+                        when(userResponse.code()){
+                            404 -> return DataOrError(DataError.API_NOT_FOUND,null)
+                            200 -> {
+                                val body = userResponse.body()!!
+                                val user = User(
+                                    userid.toString(),
+                                    token,
+                                    body.firstName,
+                                    body.familyName,
+                                    body.email,
+                                    body.phone,
+                                    body.contract,
+                                    body.categories,
+                                    body.experiencePoints
+                                )
+                                saveApplicationUser(user)
+                                return DataOrError(data = user)
+                            }
+                            else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+                        }
+                    }
+                    return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+                }
+                else -> return DataOrError(DataError.API_INTERNAL_SERVER_ERROR,null)
+            }
+        }
+    }
 
     /**
      * save the user to the local db
@@ -36,78 +131,78 @@ class UserRepository(private val userDao: UserDao,
         /**
          * insert user
          */
-        userDao.insertUser(
-            PersistentUser(
-                user.getUserId().toInt(),
-                user.getToken(),
-                user.getName(),
-                user.getFamilyName(),
-                user.getMail(),
-                user.getPhone(),
-                user.getContractDate(),
-                user.getEXP()
-            )
-        )
-
-        if(user.getCategory().isNotEmpty()){
-            insertCategories(user.getCategory())
-        }
-    }
-
-    /**
-     * load the user from the local db
-     */
-    override suspend fun loadApplicationUser(): User?{
-        val persistentUser = userDao.getUser()
-        if (persistentUser == null) {
-            return null
-        }else {
-            /**
-             * get categories from user
-             */
-            val categories = categoryDao.getCategories()
-            val categoriesUser: MutableList<Category> = mutableListOf()
-
-            if(categories.isNotEmpty()){
-                for (category in categories){
-                    categoriesUser.add(Category(category!!.categoryId.toString(), category.name))
-                }
-            }
-            return User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
-        }
-    }
-
-    //region insertfunctions
-    suspend fun insertCategories(categories : List<Category>){
-        /**
-         * insert categories
-         */
-        for (category in categories){
-            categoryDao.insertCategory(
-                PersistentCategory(
-                    category.getCategoryId().toInt(),
-                    category.getName()
+        withContext(Dispatchers.IO){
+            userDao.insertUser(
+                PersistentUser(
+                    user.getUserId().toInt(),
+                    user.getToken(),
+                    user.getName(),
+                    user.getFamilyName(),
+                    user.getMail(),
+                    user.getPhone(),
+                    user.getContractDate(),
+                    user.getEXP()
                 )
             )
+            if(user.getCategory().isNotEmpty()){
+                insertCategories(user.getCategory())
+            }
         }
-    }
-    //endregion
-
-    override suspend fun login(username:String, password: String): Response<String> {
-        return multimedService.loginUser(LoginRequestBody(username, password))
-    }
-
-    override suspend fun getUserFromServer(userid:Int, token:String): Response<UserDataResponse> {
-        return multimedService.getUser(userid)
     }
 
     /**
      * clear the data from the user
      */
     override suspend fun logoutUser() {
-        userDao.deleteUser()
-        categoryDao.deleteCategories()
-        therapistDao.deleteTherapist()
-        challengeDao.deleteChallenges()
+        withContext(Dispatchers.IO){
+            userDao.deleteUser()
+            categoryDao.deleteCategories()
+            therapistDao.deleteTherapist()
+            challengeDao.deleteChallenges()
+        }
+    }
+
+    override suspend fun getUserFromServer(userid:Int, token:String): Response<UserDataResponse> {
+        return withContext(Dispatchers.IO){
+            multimedService.getUser(userid)
+        }
+    }
+
+    override suspend fun getUserFromLocalStorage(): User? {
+        return withContext(Dispatchers.IO){
+            val persistentUser = userDao.getUser()
+            if (persistentUser == null) {
+                null
+            }else {
+                /**
+                 * get categories from user
+                 */
+                val categories = categoryDao.getCategories()
+                val categoriesUser: MutableList<Category> = mutableListOf()
+
+                if(categories.isNotEmpty()){
+                    for (category in categories){
+                        categoriesUser.add(Category(category!!.categoryId.toString(), category.name))
+                    }
+                }
+                User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
+            }
+        }
+    }
+
+    private suspend fun insertCategories(categories : List<Category>){
+        /**
+         * insert categories
+         */
+        withContext(Dispatchers.IO){
+            for (category in categories){
+                categoryDao.insertCategory(
+                    PersistentCategory(
+                        category.getCategoryId().toInt(),
+                        category.getName()
+                    )
+                )
+            }
+        }
     }
 }

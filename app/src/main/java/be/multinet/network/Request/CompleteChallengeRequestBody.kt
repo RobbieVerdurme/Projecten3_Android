@@ -1,9 +1,11 @@
 package be.multinet.network.Request
 
+import java.util.*
+
 class CompleteChallengeRequestBody(
-    var challengeID:Int,
-    var userID:Int,
-    var rating:Int,
-    var feedback:String
-) {
-}
+    val challengeID:Int,
+    val userID:Int,
+    val rating:Int,
+    val feedback:String,
+    val completedOn: Date
+)

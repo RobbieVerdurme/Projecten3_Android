@@ -1,9 +1,8 @@
 package be.multinet.repository.Interface
 
-import be.multinet.model.LoadDataResult
 import be.multinet.model.Therapist
 import be.multinet.network.Response.TherapistResponse
-import kotlinx.coroutines.CoroutineScope
+import be.multinet.repository.DataOrError
 import retrofit2.Response
 
 interface ITherapistRepository {
@@ -16,5 +15,9 @@ interface ITherapistRepository {
      * Load the application therapist from local persistence.
      * @return the therapist, if present or null if not.
      */
-    suspend fun loadTherapists(token:String, userId:Int): LoadDataResult<List<TherapistResponse>,List<Therapist>>
+    suspend fun loadTherapists(token:String, userId:Int): DataOrError<List<Therapist>>
+
+    suspend fun loadTherapistsFromServer(token:String, userId:Int): Response<List<TherapistResponse>>
+
+    suspend fun loadTherapistsFromLocalStorage(): List<Therapist>
 }

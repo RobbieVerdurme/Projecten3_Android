@@ -55,6 +55,9 @@ class UpdateProfileFragment : Fragment()
      */
     private fun setupFragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
+        //TODO bind onUpdateClick()
+        //TODO observe isEdited and requestError
+        //TODO when request error is DataError.OFFLINE show dialog (see CompleteChallengeFragment for example)
     }
 
     /**
@@ -62,43 +65,7 @@ class UpdateProfileFragment : Fragment()
      */
     private fun onUpdateClick(){
         if(viewModel.validateForm()){
-            when(NetworkHandler.getNetworkState().value)
-            {
-                ConnectionState.CONNECTED -> {
-                    //TODO put update in the viewmodel
-                    /*
-                    val currentUser = userViewModel.getUser().value!!
-                    userViewModel.updateUser(
-                        User(
-                            currentUser.getUserId(),
-                            currentUser.getToken(),
-                            viewModel.firstName.value!!,
-                            viewModel.lastName.value!!,
-                            viewModel.email.value!!,
-                            viewModel.phone.value!!,
-                            currentUser.getContractDate(),
-                            currentUser.getCategory(),
-                            currentUser.getEXP()
-                            )
-                    )
-                    */
-                }
-                ConnectionState.DISCONNECTED -> {
-                    //request wifi enable
-                    AppDialogBuilder.buildDialog(context!!,
-                        getString(R.string.dialog_enable_wireless_title),
-                        R.string.dialog_enable_wireless_description,
-                        DialogInterface.OnClickListener { _, _ ->
-                            startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS),0)
-                        },R.string.dialog_enable_wireless_continue,DialogInterface.OnClickListener { _, _ ->
-                            //do nothing, the user doesn't want to enable wifi
-                            //we will prompt again next time, until the user finally enables it
-                        },R.string.dialog_cancel).show()
-                }
-                ConnectionState.UNAVAILABLE -> {
-                    //do nothing, we can't fix the network :/
-                }
-            }
+            viewModel.editUser()
         }
     }
 }

@@ -18,8 +18,5 @@ data class PersistentChallenge(
     val description:String,
     @Nullable
     val completedDate: Date?,
-    val categoryId: Int,
-    val rating: Int,
-    val feedback:String?
-) {
-}
+    val categoryId: Int
+)

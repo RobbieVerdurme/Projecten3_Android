@@ -33,7 +33,7 @@ class SplashScreenFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         setupObservers()
-        userViewModel.loadUserFromLocalDatabase()
+        userViewModel.loadUser()
     }
 
     /**

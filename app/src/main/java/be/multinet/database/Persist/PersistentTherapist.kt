@@ -10,8 +10,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class PersistentTherapist(
     @PrimaryKey val therapistId: Int,
-    val surname: String,
+    val name: String,
     val familyName: String,
-    val mail: String,
-    val phone: String
+    val mail: String
 )
