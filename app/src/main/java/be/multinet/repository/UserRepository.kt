@@ -84,7 +84,7 @@ class UserRepository(private val userDao: UserDao,
             when(jwtResponse.code()){
                 400 -> return DataOrError(DataError.API_BAD_REQUEST,null)
                 401 -> return DataOrError(DataError.API_UNAUTHORIZED,null)
-                201 -> {
+                200 -> {
                     val jwt = JWT(jwtResponse.body()!!)
                     val token: String = "Bearer " + jwtResponse.body()!!
                     //get the user info with id userid

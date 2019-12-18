@@ -191,4 +191,8 @@ class ChallengeViewModel constructor(private val challengeRepository: IChallenge
             }
         }
     }
+
+    fun resetIsDailyCompleted() {
+        isDailyCompleted.value = null
+    }
 }

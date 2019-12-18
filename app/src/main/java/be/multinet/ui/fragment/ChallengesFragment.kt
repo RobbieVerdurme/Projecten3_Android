@@ -111,6 +111,8 @@ class ChallengesFragment : Fragment(),
                 }
             }
         }
+        //reset is daily completed, so we don't loop after completing a challenge
+        viewmodel.resetIsDailyCompleted()
         viewmodel.getRequestError().observe(viewLifecycleOwner, Observer {
             if(it != null){
                 when(it){
