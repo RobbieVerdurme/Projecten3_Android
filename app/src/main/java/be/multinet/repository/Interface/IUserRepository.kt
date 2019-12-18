@@ -40,15 +40,8 @@ interface IUserRepository {
 
     suspend fun getUserFromLocalStorage(): User?
 
-    //TODO Shawn Van Ranst: uncomment and implement interface in UserRepository
-    /**
-     * Update the user.
-     * Sends a request to the server for updating [user] using [updateUserOnServer].
-     * Updates [user] in local storage with [saveApplicationUser], once the server responded with HTTP code 200.
-     * Returns a [DataOrError] with the updated user if successful.
-     * Returns a [DataOrError] with null as data and an error if unsuccessful.
-     */
-    //suspend fun updateUser(user: User): DataOrError<User?>
 
-    //suspend fun updateUserOnServer(body: UpdateUserRequestBody): Response<Ok>
+    suspend fun updateUser(user: User , token: String): DataOrError<User?>
+
+    suspend fun updateUserOnServer(userId: Int, firstName: String, lastName: String, phone: String, email: String, token: String): Response<Ok>
 }

@@ -72,6 +72,7 @@
     <string name="challengeError">Kon uw uitdagingen niet ophalen</string>
     <string name="leaderboardError">Kon uw leaderboard niet ophalen</string>
     <string name="completeChallengeError">Kon de uitdaging niet voltooien</string>
+    <string name="Error">Kon de uitdaging niet voltooien</string>
 
     <!-- Complete Challenge -->
     <string name="complete_challenge_title">Wat vond je van de challenge?</string>
