@@ -62,7 +62,7 @@ class MultinetApp : MultiDexApplication() {
                 UserViewModel(get())
             }
             viewModel {
-                HomeViewModel(get())
+                HomeViewModel(get(),get())
             }
             viewModel {
                 LoginViewModel(get(),get())

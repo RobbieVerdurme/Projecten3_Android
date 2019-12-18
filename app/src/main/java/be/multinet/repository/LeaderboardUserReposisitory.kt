@@ -49,7 +49,7 @@ class LeaderboardUserReposisitory(
                     val leaderboard = apiResponse.body()!!.map {
                         LeaderboardUser(
                             it.userId,
-                            it.firstName + " " + it.lastName,
+                            it.firstName + " " + it.familyName,
                             it.score
                         )
                     }.toList()

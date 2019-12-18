@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.multinet.R
 import be.multinet.recyclerview.LeaderboardAdapter
+import be.multinet.recyclerview.UserTherapistsAdapter
 import be.multinet.viewmodel.HomeViewModel
 import be.multinet.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -33,11 +34,19 @@ class HomeFragment : Fragment() {
 
     val userViewModel : UserViewModel by sharedViewModel()
 
+    private lateinit var leaderboardAdapter: LeaderboardAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel.updateUserData(userViewModel.getUser().value!!)
         val binding = FragmentHomeBinding.inflate(inflater,container,false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        binding.leaderboard.apply {
+            hasFixedSize()
+            layoutManager  = LinearLayoutManager(activity)
+            leaderboardAdapter = LeaderboardAdapter(viewModel.getLeaderboard())
+            adapter = leaderboardAdapter
+        }
         return binding.root
     }
 
@@ -52,12 +61,12 @@ class HomeFragment : Fragment() {
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
         toolbar.title = getString(R.string.home_title)
-        setupLeaderboard()
+        //setupLeaderboard()
 
         //viewModel.setUser(userViewModel.getUser().value!!)
-        viewModel.getLoadingTherapists().observe(viewLifecycleOwner, Observer {
+        viewModel.getLoadingLeaderboard().observe(viewLifecycleOwner, Observer {
             if(!it && viewModel.getRequestError().value == null){
-                therapistAdapter.notifyDataSetChanged()
+                leaderboardAdapter.notifyDataSetChanged()
             }
         })
         viewModel.getRequestError().observe(viewLifecycleOwner, Observer<String?> {
@@ -65,14 +74,14 @@ class HomeFragment : Fragment() {
                 Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.loadTherapists()
+        viewModel.loadLeaderboard(userViewModel.getUser().value!!)
     }
 
-    private fun setupLeaderboard() {
-        val data = viewModel.getLeaderboardData()
-        leaderboard.layoutManager = LinearLayoutManager(this.context)
-        leaderboard.adapter = LeaderboardAdapter(data);
-    }
+//    private fun setupLeaderboard() {
+//        val data = viewModel.getLeaderboardData()
+//        leaderboard.layoutManager = LinearLayoutManager(this.context)
+//        leaderboard.adapter = LeaderboardAdapter(data);
+//    }
 
 
 
