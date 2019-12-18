@@ -3,13 +3,16 @@ package be.multinet.application
 import android.app.Application
 import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
+import be.multinet.model.LeaderboardUser
 import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
 import be.multinet.repository.ChallengeRepository
 import be.multinet.repository.Interface.IChallengeRepository
+import be.multinet.repository.Interface.ILeaderboardUserRepoitory
 import be.multinet.repository.Interface.ITherapistRepository
 import be.multinet.repository.Interface.IUserRepository
+import be.multinet.repository.LeaderboardUserReposisitory
 import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
 import be.multinet.ui.activity.MainActivity
@@ -102,6 +105,9 @@ class MultinetApp : MultiDexApplication() {
             single {
                 get<ApplicationDatabase>().challengeDao()
             }
+            single {
+                get<ApplicationDatabase>().leaderboardUserDao()
+            }
         }
     }
 
@@ -118,6 +124,9 @@ class MultinetApp : MultiDexApplication() {
             }
             single<ITherapistRepository> {
                 TherapistRepository(get(),get())
+            }
+            single<ILeaderboardUserRepoitory> {
+                LeaderboardUserReposisitory(get(),get())
             }
         }
     }

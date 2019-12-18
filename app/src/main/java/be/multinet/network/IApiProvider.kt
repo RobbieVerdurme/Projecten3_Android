@@ -53,4 +53,6 @@ interface IApiProvider {
      * Check if a user completed his challenge of the day for a category.
      */
     suspend fun checkDailyChallenge(token:String,body : CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse>
+
+    suspend fun getLeaderboard(token:String, userid: Int) : Response<List<LeaderboardUserResponse>>
 }

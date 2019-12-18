@@ -135,4 +135,8 @@ class MultimedService : IApiProvider {
     override suspend fun checkDailyChallenge(token:String,body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse> {
         return server.checkDailyChallenge(token,body)
     }
+
+    override suspend fun getLeaderboard(token:String, userid: Int): Response<List<LeaderboardUserResponse>> {
+        return server.getLeaderboard(token,userid)
+    }
 }

@@ -50,5 +50,8 @@ interface IMultimedApi {
     @POST("challenge/checkdaily")
     suspend fun checkDailyChallenge(@Header("Authorization")token:String, @Body body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse>
 
+    @GET("users/leaderboard/{id}")
+    suspend fun getLeaderboard(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<LeaderboardUserResponse>>
+
     //TODO PUT request for update user
 }

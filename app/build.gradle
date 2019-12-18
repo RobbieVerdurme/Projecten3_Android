@@ -135,4 +135,5 @@ dependencies {
 
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:$viewpager_version"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.1.0'
 }
