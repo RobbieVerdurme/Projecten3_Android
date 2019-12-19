@@ -12,6 +12,8 @@ import be.multinet.network.ConnectionState
 import be.multinet.network.IApiProvider
 import be.multinet.network.NetworkHandler
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Request.UpdateUserRequestBody
+import be.multinet.network.Response.Ok
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.Interface.IUserRepository
 import com.auth0.android.jwt.JWT
@@ -20,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 /**
  * This class is the production implementation of [IUserRepository].
@@ -187,6 +190,47 @@ class UserRepository(private val userDao: UserDao,
                 }
                 User(persistentUser.userId.toString(),persistentUser.token, persistentUser.name, persistentUser.familyName,persistentUser.mail, persistentUser.phone, persistentUser.contract, categoriesUser.toList(), persistentUser.exp)
             }
+        }
+    }
+
+    override suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<User?>{
+        if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED)
+        {
+            val apiResponse: Response<Ok>
+            try {
+                apiResponse = updateUserOnServer(user.getUserId().toInt(), firstName,lastName,phone,email,token)
+            }catch (e: IOException){
+                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR, data = null)
+            }
+            return when(apiResponse.code()){
+                400 -> DataOrError(error = DataError.API_BAD_REQUEST,data = null)
+                200 -> {
+                    user.setName(firstName)
+                    user.setFamilyName(lastName)
+                    user.setMail(email)
+                    user.setPhone(phone)
+                    saveApplicationUser(user)
+                    DataOrError(data = null)
+                }
+                else -> DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR, data = null)
+            }
+        }
+        return DataOrError(error = DataError.OFFLINE, data = null)
+    }
+
+    override suspend fun updateUserOnServer(
+        userId: Int,
+        firstName: String,
+        lastName: String,
+        phone: String,
+        email: String,
+        token: String
+    ): Response<Ok> {
+        return withContext(Dispatchers.IO)
+        {
+            multimedService.editUser(token,
+                UpdateUserRequestBody(userId,firstName,lastName,phone,email)
+            )
         }
     }
 

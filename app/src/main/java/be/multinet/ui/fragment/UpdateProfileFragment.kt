@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -55,9 +56,28 @@ class UpdateProfileFragment : Fragment()
      */
     private fun setupFragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
-        //TODO bind onUpdateClick()
-        //TODO observe isEdited and requestError
-        //TODO when request error is DataError.OFFLINE show dialog (see CompleteChallengeFragment for example)
+        viewModel.getIsEdited().observe(viewLifecycleOwner, Observer {
+            if(it != null && viewModel.getRequestError().value == null){
+                findNavController().navigateUp()
+            }
+        })
+        viewModel.getRequestError().observe(viewLifecycleOwner, Observer {
+            if(it != null) {
+                when (it) {
+                    viewModel.offline -> {
+                        AppDialogBuilder.buildIsOfflineDialog(context!!,getString(R.string.offline),
+                            R.string.userError,
+                            DialogInterface.OnClickListener { _, _ ->  },R.string.dialog_ok).show()
+                    }
+                    else -> {
+                        Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
+        view!!.findViewById<Button>(R.id.confirmUpdateButton).setOnClickListener {
+            onUpdateClick()
+        }
     }
 
     /**
@@ -65,7 +85,7 @@ class UpdateProfileFragment : Fragment()
      */
     private fun onUpdateClick(){
         if(viewModel.validateForm()){
-            viewModel.editUser()
+            viewModel.editUser(userViewModel.getUser().value!!)
         }
     }
 }
