@@ -15,7 +15,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "be.multinet.runner.KoinTestRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -59,8 +59,9 @@ ext {
     koin_version = '2.0.1'
     jwtdecode_version = '1.3.0'
     cardview_version = '1.0.0'
-    mockk_version = '1.9.2'//1.9.3 has an issue with java 8 method handles
+    mockk_version = '1.9.2'
     viewpager_version= '1.0.0'
+    test_core_version = '1.3.0-alpha03'
 }
 
 dependencies {
@@ -86,6 +87,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$test_espresso_version"
     androidTestImplementation "androidx.test.ext:junit:$test_junit_ext_version"
     androidTestImplementation "androidx.test:rules:$test_rules_version"
+    androidTestImplementation "androidx.test:core:$test_core_version"
 
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"

@@ -18,6 +18,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.context.unloadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -38,102 +39,98 @@ class MultinetApp : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@MultinetApp)
-            modules(listOf(
-                    databaseModule(),
-                    apiModule(),
-                    repositoryModule(),
-                    viewModelModule()
-                    )
-            )
+            modules(listOf(databaseModule,
+                databaseDAOModule, apiModule, viewModelModule, repositoryModule))
         }
     }
 
     /**
-     * Setup the module for the viewmodels
+     * Setup the database module, which provides the Database for the DAO module.
+     * Is public since we use an in memory variant for testing.
      */
-    private fun viewModelModule(): Module {
-        return module {
-            viewModel {
-                UserViewModel(get())
-            }
-            viewModel {
-                HomeViewModel(get(),get())
-            }
-            viewModel {
-                LoginViewModel(get(),get())
-            }
-            viewModel {
-                ProfileViewModel(get(),get())
-            }
-            viewModel {
-                ChallengeViewModel(get(),get())
-            }
-            viewModel {
-                CompleteChallengeViewModel(get(),get())
-            }
-            viewModel{
-                InfoViewModel(get())
-            }
-            viewModel{
-                UpdateProfileViewModel(get())
-            }
+    private val databaseModule = module {
+        single {
+            ApplicationDatabase.getInstance(applicationContext)
         }
     }
 
     /**
-     * Setup the module for the database
+     * Setup the repository module.
+     * Is public since we mock the repositories in tests.
      */
-    private fun databaseModule(): Module {
-        return module {
-            single {
-                ApplicationDatabase.getInstance(applicationContext)
-            }
-            single {
-                get<ApplicationDatabase>().userDao()
-            }
-            single {
-                get<ApplicationDatabase>().categoryDao()
-            }
-            single {
-                get<ApplicationDatabase>().therapistDao()
-            }
-            single {
-                get<ApplicationDatabase>().challengeDao()
-            }
-            single {
-                get<ApplicationDatabase>().leaderboardUserDao()
-            }
+    private val repositoryModule = module {
+        single<IUserRepository> {
+            UserRepository(get(), get(), get(),get(),get())
+        }
+        single<IChallengeRepository> {
+            ChallengeRepository(get(),get(),get())
+        }
+        single<ITherapistRepository> {
+            TherapistRepository(get(),get())
+        }
+        single<ILeaderboardUserRepoitory> {
+            LeaderboardUserReposisitory(get(),get())
         }
     }
 
     /**
-     * Setup the module for the repositories
+     * Setup the module for the viewmodels.
+     * Is private since the viewmodels use injected dependencies.
      */
-    private fun repositoryModule(): Module {
-        return module {
-            single<IUserRepository> {
-                UserRepository(get(), get(), get(),get(),get())
-            }
-            single<IChallengeRepository> {
-                ChallengeRepository(get(),get(),get())
-            }
-            single<ITherapistRepository> {
-                TherapistRepository(get(),get())
-            }
-            single<ILeaderboardUserRepoitory> {
-                LeaderboardUserReposisitory(get(),get())
-            }
+    private val viewModelModule = module {
+        viewModel {
+            UserViewModel(get())
+        }
+        viewModel {
+            HomeViewModel(get(),get())
+        }
+        viewModel {
+            LoginViewModel(get(),get())
+        }
+        viewModel {
+            ProfileViewModel(get(),get())
+        }
+        viewModel {
+            ChallengeViewModel(get(),get())
+        }
+        viewModel {
+            CompleteChallengeViewModel(get(),get())
+        }
+        viewModel{
+            InfoViewModel(get())
+        }
+        viewModel{
+            UpdateProfileViewModel(get())
         }
     }
-
     /**
-     * Setup the module for the api
+     * Setup the module for the api.
+     * Is private since we mock the repositories for testing.
      */
-    private fun apiModule(): Module {
-        return module {
-            single<IApiProvider> {
-                MultimedService()
-            }
+    private val apiModule = module {
+        single<IApiProvider> {
+            MultimedService()
+        }
+    }
+    /**
+     * Setup the Room DAO module.
+     * Is private since we only need an in memory Room Database for testing.
+     */
+    private val databaseDAOModule = module {
+        single {
+            get<ApplicationDatabase>().userDao()
+        }
+        single {
+            get<ApplicationDatabase>().categoryDao()
+        }
+        single {
+            get<ApplicationDatabase>().therapistDao()
+        }
+        single {
+            get<ApplicationDatabase>().challengeDao()
+        }
+        single {
+            get<ApplicationDatabase>().leaderboardUserDao()
         }
     }
 
