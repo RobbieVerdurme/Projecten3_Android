@@ -249,4 +249,131 @@ class LoginAPITest : KoinTest {
         }
     }
 
+    @Test
+    fun loginHttp401HandlesError(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+
+        val username = "username"
+        val password = "password"
+        val contract = Date()
+        val token = "token"
+        val user = User("1",token,"name","familyName","mail","phone",contract, listOf(),0)
+
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                LoginViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+        }
+
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = null) }
+            coEvery {userRepoMock.login(eq(username),eq(password))} coAnswers { DataOrError(error = DataError.API_UNAUTHORIZED,data = null) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(token),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+
+                val usernameInput = onView(withId(R.id.usernameInput))
+                usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
+                val passwordInput = onView(withId(R.id.passwordInput))
+                passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
+                onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.profile_contract_date_expired)).inRoot(isSystemAlertWindow()).check(matches(isDisplayed()))
+            }
+        }
+    }
+
+    @Test
+    fun loginHttp404HandlesError(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+
+        val username = "username"
+        val password = "password"
+        val contract = Date()
+        val token = "token"
+        val user = User("1",token,"name","familyName","mail","phone",contract, listOf(),0)
+
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                LoginViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+        }
+
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = null) }
+            coEvery {userRepoMock.login(eq(username),eq(password))} coAnswers { DataOrError(error = DataError.API_NOT_FOUND,data = null) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(token),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+
+                val usernameInput = onView(withId(R.id.usernameInput))
+                usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
+                val passwordInput = onView(withId(R.id.passwordInput))
+                passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
+                onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.userError)).inRoot(isSystemAlertWindow()).check(matches(isDisplayed()))
+            }
+        }
+    }
+
+    fun loginHttp200SavesUserAndNavigatesToHomePage(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+
+        val username = "username"
+        val password = "password"
+        val contract = Date()
+        val token = "token"
+        val user = User("1",token,"name","familyName","mail","phone",contract, listOf(),0)
+
+        //TODO
+    }
+
+    fun alreadyLoggedInUserSkipsLoginPage(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+        //TODO
+    }
+
+    //TODO login 200 -> logs in and navigates
+
+    //TODO already logged in -> navigates
+
+
+
 }
