@@ -22,6 +22,7 @@ class LoginViewModel(private val userRepository: IUserRepository,application: Ap
     private val usernameRequired: String = application.getString(R.string.login_username_required)
     private val passwordRequired: String = application.getString(R.string.login_password_required)
     val offline = "offline"//just a string for observing
+    private val serverUnreachable = application.getString(R.string.login_io_exception)
 
     private val genericError = application.getString(R.string.generic_error)
     private val loginInvalid = application.getString(R.string.login_invalid)
@@ -104,6 +105,7 @@ class LoginViewModel(private val userRepository: IUserRepository,application: Ap
                         DataError.API_BAD_REQUEST -> loginInvalid
                         DataError.API_UNAUTHORIZED -> contractExpired
                         DataError.API_NOT_FOUND -> getUserError
+                        DataError.API_SERVER_UNREACHABLE -> serverUnreachable
                         else -> genericError
                     }
                     busy.value = false

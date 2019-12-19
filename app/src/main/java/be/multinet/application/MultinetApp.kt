@@ -3,8 +3,6 @@ package be.multinet.application
 import android.app.Application
 import androidx.multidex.MultiDexApplication
 import be.multinet.database.ApplicationDatabase
-import be.multinet.model.LeaderboardUser
-import be.multinet.model.Therapist
 import be.multinet.network.IApiProvider
 import be.multinet.network.MultimedService
 import be.multinet.repository.ChallengeRepository
@@ -15,15 +13,12 @@ import be.multinet.repository.Interface.IUserRepository
 import be.multinet.repository.LeaderboardUserReposisitory
 import be.multinet.repository.TherapistRepository
 import be.multinet.repository.UserRepository
-import be.multinet.ui.activity.MainActivity
-import be.multinet.ui.fragment.LandingPageFragment
 import be.multinet.viewmodel.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**

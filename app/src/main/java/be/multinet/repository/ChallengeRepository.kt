@@ -75,7 +75,7 @@ class ChallengeRepository(
             try{
                 apiResponse = completeChallengeOnServer(challenge.getChallengeId().toInt(),user.getUserId().toInt(),rating,feedback,completedDate,token)
             }catch (e: IOException){
-                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                return DataOrError(error = DataError.API_SERVER_UNREACHABLE,data = null)
             }
             return when(apiResponse.code()){
                 400 -> DataOrError(error = DataError.API_BAD_REQUEST,data = null)
@@ -97,7 +97,7 @@ class ChallengeRepository(
             try{
                 apiResponse = checkDailyChallenge(userId,challengeId,token)
             }catch (e: IOException){
-                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                return DataOrError(error = DataError.API_SERVER_UNREACHABLE,data = null)
             }
             return when(apiResponse.code()){
                 400 -> DataOrError(error = DataError.API_BAD_REQUEST,data = null)

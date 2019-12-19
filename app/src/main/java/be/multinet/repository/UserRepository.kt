@@ -79,7 +79,7 @@ class UserRepository(private val userDao: UserDao,
                     multimedService.loginUser(LoginRequestBody(username, password))
                 }
             }catch (e: IOException){
-                return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null)
+                return DataOrError(error = DataError.API_SERVER_UNREACHABLE,data = null)
             }
             when(jwtResponse.code()){
                 400 -> return DataOrError(DataError.API_BAD_REQUEST,null)
