@@ -6,6 +6,7 @@
         <variable
             name="updateProfileViewModel"
             type="be.multinet.viewmodel.UpdateProfileViewModel" />
+        <import type="android.view.View"/>
     </data>
     <LinearLayout
         android:orientation="vertical"

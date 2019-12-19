@@ -5,10 +5,16 @@ import be.multinet.R
 import be.multinet.model.User
 import android.util.Patterns.EMAIL_ADDRESS
 import androidx.lifecycle.*
+import be.multinet.repository.DataError
+import be.multinet.repository.Interface.IUserRepository
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class UpdateProfileViewModel(application: Application): AndroidViewModel(application) {
+class UpdateProfileViewModel(private val userRepo: IUserRepository, application: Application): AndroidViewModel(application) {
 
+    private val genericErrorMessage: String = application.getString(R.string.generic_error)
+    val offline = "offline"
+    private val editUSerErrorMessage:String = application.getString(R.string.userError)
     private val firstNameMinLength = 2
     private val lastNameMinLength = 2
     private val phoneMinLength = 8//See ISO phone number spec
@@ -125,19 +131,26 @@ class UpdateProfileViewModel(application: Application): AndroidViewModel(applica
         return firstNameError.value == null && lastNameError.value == null && phoneError.value == null && emailError.value == null
     }
 
-    fun editUser(){
+    fun editUser(user: User){
         if(!isUpdating.value!! && !isEdited.value!!){
             isUpdating.value = true
             viewModelScope.launch {
-                //TODO ask repo for coroutine job with async {}
-                //TODO fetch result with job.await()
-                //TODO check if result has error
-                //TODO if result has error -> set requestError.value
-                //TODO else set isEdited to true
-                //TODO finally set isUpdating to false
-
-                //TODO in fragment: observe requestError -> show message if requestError is not null
-                //TODO in fragment: observe isEdited -> if true and requestError.value == null -> findNavController().navigateUp()
+                val repositoryResponse = async {
+                    userRepo.updateUser(
+                        user,firstName.value.toString(),lastName.value.toString(),
+                        email.value.toString(), phone.value.toString(),user.getToken())
+                }
+                val dataOrError = repositoryResponse.await()
+                if(dataOrError.hasError()) {
+                    when (dataOrError.error) {
+                        DataError.OFFLINE -> requestError.value = offline
+                        DataError.API_BAD_REQUEST -> requestError.value = editUSerErrorMessage
+                        else -> requestError.value = genericErrorMessage
+                    }
+                }else{
+                    isEdited.value = true
+                }
+                isUpdating.value = false
             }
         }
     }

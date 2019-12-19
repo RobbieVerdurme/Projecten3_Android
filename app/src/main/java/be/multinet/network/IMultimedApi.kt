@@ -4,6 +4,7 @@ import be.multinet.model.Therapist
 import be.multinet.network.Request.CheckDailyChallengeRequestBody
 import be.multinet.network.Request.CompleteChallengeRequestBody
 import be.multinet.network.Request.LoginRequestBody
+import be.multinet.network.Request.UpdateUserRequestBody
 import be.multinet.network.Response.*
 import com.auth0.android.jwt.JWT
 import retrofit2.Response
@@ -54,4 +55,6 @@ interface IMultimedApi {
     suspend fun getLeaderboard(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<LeaderboardUserResponse>>
 
     //TODO PUT request for update user
+    @PUT("users/edit")
+    suspend fun updateUser(@Header("Authorization")token:String, @Body body: UpdateUserRequestBody) : Response<Ok>
 }
