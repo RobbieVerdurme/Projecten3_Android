@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 /**
  * This class is the production implementation of [IUserRepository].
@@ -191,18 +192,23 @@ class UserRepository(private val userDao: UserDao,
             }
         }
     }
-    override  suspend fun updateUser(user: User , token: String) : DataOrError<User?> {
+
+    override suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<User?>{
         if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED)
         {
             val apiResponse: Response<Ok>
             try {
-                apiResponse = updateUserOnServer(user.getUserId().toInt(), user.getName(),user.getFamilyName(),user.getPhone(),user.getMail(),token)
+                apiResponse = updateUserOnServer(user.getUserId().toInt(), firstName,lastName,phone,email,token)
             }catch (e: IOException){
                 return DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR, data = null)
             }
             return when(apiResponse.code()){
                 400 -> DataOrError(error = DataError.API_BAD_REQUEST,data = null)
                 200 -> {
+                    user.setName(firstName)
+                    user.setFamilyName(lastName)
+                    user.setMail(email)
+                    user.setPhone(phone)
                     saveApplicationUser(user)
                     DataOrError(data = null)
                 }
@@ -225,7 +231,7 @@ class UserRepository(private val userDao: UserDao,
             multimedService.editUser(token,
                 UpdateUserRequestBody(userId,firstName,lastName,phone,email)
             )
-    }
+        }
     }
 
     private suspend fun insertCategories(categories : List<Category>){

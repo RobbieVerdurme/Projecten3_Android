@@ -1,11 +1,13 @@
 package be.multinet.repository.Interface
 
+import be.multinet.model.Category
 import be.multinet.model.User
 import be.multinet.network.Request.UpdateUserRequestBody
 import be.multinet.network.Response.Ok
 import be.multinet.network.Response.UserDataResponse
 import be.multinet.repository.DataOrError
 import retrofit2.Response
+import java.util.*
 
 /**
  * This interface defines a contract to manage the application user.
@@ -41,7 +43,7 @@ interface IUserRepository {
     suspend fun getUserFromLocalStorage(): User?
 
 
-    suspend fun updateUser(user: User , token: String): DataOrError<User?>
+    suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<User?>
 
     suspend fun updateUserOnServer(userId: Int, firstName: String, lastName: String, phone: String, email: String, token: String): Response<Ok>
 }

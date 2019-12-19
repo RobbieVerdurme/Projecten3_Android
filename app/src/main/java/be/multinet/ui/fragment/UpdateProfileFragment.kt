@@ -56,7 +56,6 @@ class UpdateProfileFragment : Fragment()
      */
     private fun setupFragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
-        //TODO bind onUpdateClick()
         viewModel.getIsEdited().observe(viewLifecycleOwner, Observer {
             if(it != null && viewModel.getRequestError().value == null){
                 findNavController().navigateUp()
@@ -73,18 +72,20 @@ class UpdateProfileFragment : Fragment()
                     else -> {
                         Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
                     }
-            }
+                }
             }
         })
+        view!!.findViewById<Button>(R.id.confirmUpdateButton).setOnClickListener {
+            onUpdateClick()
+        }
     }
 
     /**
      * Process to update profile
      */
     private fun onUpdateClick(){
-        val user = userViewModel.getUser().value!!
         if(viewModel.validateForm()){
-            viewModel.editUser(user.getToken(), user)
+            viewModel.editUser(userViewModel.getUser().value!!)
         }
     }
 }

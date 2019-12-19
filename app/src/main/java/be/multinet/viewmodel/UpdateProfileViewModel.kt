@@ -131,14 +131,14 @@ class UpdateProfileViewModel(private val userRepo: IUserRepository, application:
         return firstNameError.value == null && lastNameError.value == null && phoneError.value == null && emailError.value == null
     }
 
-    fun editUser(token : String, user: User){
+    fun editUser(user: User){
         if(!isUpdating.value!! && !isEdited.value!!){
             isUpdating.value = true
             viewModelScope.launch {
                 val repositoryResponse = async {
-                    userRepo.updateUser(User(user.getUserId(),token,firstName.value.toString(),lastName.value.toString(),
-                        email.value.toString(), phone.value.toString(),
-                        user.getContractDate(),user.getCategory(), user.getEXP()), token)
+                    userRepo.updateUser(
+                        user,firstName.value.toString(),lastName.value.toString(),
+                        email.value.toString(), phone.value.toString(),user.getToken())
                 }
                 val dataOrError = repositoryResponse.await()
                 if(dataOrError.hasError()) {
