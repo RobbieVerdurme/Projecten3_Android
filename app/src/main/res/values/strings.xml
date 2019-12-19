@@ -62,6 +62,7 @@
     <string name="dialog_ok">OK</string>
     <string name="offline">Offline</string>
     <string name="network_unavailable">Netwerk onbereikbaar</string>
+    <string name="login_io_exception">Login mislukt, probeer later nog eens</string>
 
     <!--Retrofit Error-->
     <string name="generic_error">Er liep iets fout</string>
