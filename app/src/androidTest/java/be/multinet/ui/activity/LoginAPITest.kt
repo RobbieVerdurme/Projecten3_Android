@@ -5,9 +5,11 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.RootMatchers.isSystemAlertWindow
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import be.multinet.R
 import be.multinet.model.User
@@ -30,6 +32,7 @@ import org.koin.test.KoinTest
 import java.util.*
 
 
+@MediumTest
 @RunWith(AndroidJUnit4::class)
 class LoginAPITest : KoinTest {
     val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MultinetTestApp
@@ -139,9 +142,111 @@ class LoginAPITest : KoinTest {
                 val passwordInput = onView(withId(R.id.passwordInput))
                 passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
                 onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.login_io_exception)).inRoot(isSystemAlertWindow()).check(matches(isDisplayed()))
             }
         }
     }
 
+    @Test
+    fun loginHttp500HandlesError(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+
+        val username = "username"
+        val password = "password"
+        val contract = Date()
+        val token = "token"
+        val user = User("1",token,"name","familyName","mail","phone",contract, listOf(),0)
+
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                LoginViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+        }
+
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = null) }
+            coEvery {userRepoMock.login(eq(username),eq(password))} coAnswers { DataOrError(error = DataError.API_INTERNAL_SERVER_ERROR,data = null) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(token),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+
+                val usernameInput = onView(withId(R.id.usernameInput))
+                usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
+                val passwordInput = onView(withId(R.id.passwordInput))
+                passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
+                onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.generic_error)).inRoot(isSystemAlertWindow()).check(matches(isDisplayed()))
+            }
+        }
+    }
+
+    @Test
+    fun loginHttp400HandlesError(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+
+        val username = "username"
+        val password = "password"
+        val contract = Date()
+        val token = "token"
+        val user = User("1",token,"name","familyName","mail","phone",contract, listOf(),0)
+
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                LoginViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+        }
+
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = null) }
+            coEvery {userRepoMock.login(eq(username),eq(password))} coAnswers { DataOrError(error = DataError.API_BAD_REQUEST,data = null) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(token),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+
+                val usernameInput = onView(withId(R.id.usernameInput))
+                usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
+                val passwordInput = onView(withId(R.id.passwordInput))
+                passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
+                onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.login_invalid)).inRoot(isSystemAlertWindow()).check(matches(isDisplayed()))
+            }
+        }
+    }
 
 }

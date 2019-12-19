@@ -18,3 +18,12 @@ Indien u eenmaal bent ingelogd kan u het volgende:
 * Uw score en niveau raadplegen op het algemeen overzicht. Hier kan u ook uw positie binnen de ranking zien.
 * Uw profielpagina raadplegen. Hier kan u de contactgegevens van uw therapeuten raadplegen, alsook uw eigen gegevens bewerken.
 * Uw uitdagingen raadplegen op het uidagingen scherm. Hier kan u ook uitdagingen voltooien.
+
+
+### Testing
+
+Om de UI testen te draaien is het aangeraden om deze op een fysiek toestel te runnen.
+De Android Emulator kan zich soms vergalloperen in het aantal testen dat er moeten worden opgestart.
+
+De testen zijn uitgevoerd op de volgende devices:
+* Motorola One (Navaron)
