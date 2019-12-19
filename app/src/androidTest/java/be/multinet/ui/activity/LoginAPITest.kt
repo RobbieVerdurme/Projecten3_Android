@@ -90,22 +90,22 @@ class LoginAPITest : KoinTest {
             coEvery {leaderboardRepoMock.loadLeaderboard(eq(token),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
 
             //launch
-            ActivityScenario.launch(MainActivity::class.java)
-            //test code
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkUnavailable()
 
-            NetworkHandler.onNetworkUnavailable()
+                val usernameInput = onView(withId(R.id.usernameInput))
+                usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
+                val passwordInput = onView(withId(R.id.passwordInput))
+                passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
+                onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
 
-            val usernameInput = onView(withId(R.id.usernameInput))
-            usernameInput.perform(typeText("username")).perform(closeSoftKeyboard())
-            val passwordInput = onView(withId(R.id.passwordInput))
-            passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
-            onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
+                onView(withText(R.string.dialog_enable_wireless_title))
+                    .inRoot(RootMatchers.isDialog())
+                    .check(matches(isDisplayed()))
 
-            onView(withText(R.string.dialog_enable_wireless_title))
-                .inRoot(RootMatchers.isDialog())
-                .check(matches(isDisplayed()))
-
-            onView(withText(R.string.dialog_cancel)).perform(click())
+                onView(withText(R.string.dialog_cancel)).perform(click())
+            }
         }
     }
 
