@@ -147,9 +147,6 @@ class UserRepository(private val userDao: UserDao,
                     user.getEXP()
                 )
             )
-            if(user.getCategory().isNotEmpty()){
-                insertCategories(user.getCategory())
-            }
         }
     }
 
@@ -159,7 +156,6 @@ class UserRepository(private val userDao: UserDao,
     override suspend fun logoutUser() {
         withContext(Dispatchers.IO){
             userDao.deleteUser()
-            categoryDao.deleteCategories()
             therapistDao.deleteTherapist()
             challengeDao.deleteChallenges()
         }
@@ -230,22 +226,6 @@ class UserRepository(private val userDao: UserDao,
         return withContext(Dispatchers.IO)
         {
             multimedService.editUser(token,body)
-        }
-    }
-
-    private suspend fun insertCategories(categories : List<Category>){
-        /**
-         * insert categories
-         */
-        withContext(Dispatchers.IO){
-            for (category in categories){
-                categoryDao.insertCategory(
-                    PersistentCategory(
-                        category.getCategoryId().toInt(),
-                        category.getName()
-                    )
-                )
-            }
         }
     }
 }

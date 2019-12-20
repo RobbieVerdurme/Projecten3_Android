@@ -13,23 +13,11 @@ import be.multinet.model.Category
 interface CategoryDao {
 
     /**
-     * Insert [category] into the database, replacing any existing value.
-     */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCategory(category: PersistentCategory)
-
-    /**
      * Get the category list of the current user [PersistentCategory].
      * @return the list of [PersistentCategory], if present. If not present this returns null.
      */
     @Query("SELECT * FROM PersistentCategory")
     suspend fun getCategories(): List<PersistentCategory?>
-
-    /**
-     * Delete the list of [PersistentCategory] of the user.
-     */
-    @Query("DELETE FROM PersistentCategory")
-    suspend fun deleteCategories()
 
     /**
      * gets a [category] from the user
