@@ -129,7 +129,7 @@ class MultimedService : IApiProvider {
     }
 
     override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok> {
-        TODO()
+        return server.updateUser(token,editUserRequestBody)
     }
 
     override suspend fun checkDailyChallenge(token:String,body: CheckDailyChallengeRequestBody): Response<CheckDailyChallengeResponse> {

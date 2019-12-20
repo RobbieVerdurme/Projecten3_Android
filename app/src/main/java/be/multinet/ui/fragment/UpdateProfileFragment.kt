@@ -57,7 +57,7 @@ class UpdateProfileFragment : Fragment()
     private fun setupFragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_profile_title)
         viewModel.getIsEdited().observe(viewLifecycleOwner, Observer {
-            if(it != null && viewModel.getRequestError().value == null){
+            if(it != null && it  && viewModel.getRequestError().value == null){
                 findNavController().navigateUp()
             }
         })
