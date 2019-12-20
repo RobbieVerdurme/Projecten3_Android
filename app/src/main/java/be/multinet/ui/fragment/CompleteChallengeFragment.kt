@@ -49,7 +49,7 @@ class CompleteChallengeFragment : Fragment() {
      */
     private fun setupFragment() {
         val toolbar = (activity as AppCompatActivity).supportActionBar!!
-        toolbar.title = getString(R.string.Complete_Challenge)
+        toolbar.title = getString(R.string.complete_challenge)
         viewmodel.getCompletedOn().observe(viewLifecycleOwner, Observer {
             if(it != null && viewmodel.getRequestError().value == null){
                 findNavController().navigateUp()

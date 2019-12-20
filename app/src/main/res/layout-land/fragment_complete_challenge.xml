@@ -71,6 +71,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/completeButtonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/Complete_Challenge"
+                android:text="@string/complete_challenge"
                 android:textColor="@android:color/white"
                 android:visibility="@{completeChallengeViewModel.completing ? View.GONE : View.VISIBLE}"
                 app:backgroundTint="@color/colorPrimary"
