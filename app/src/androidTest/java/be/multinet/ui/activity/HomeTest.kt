@@ -102,7 +102,65 @@ class HomeTest : KoinTest {
                 //check if we find items
                 onView(withText(leaderboardItems[0].getName())).check(matches(isDisplayed()))
 
+                coVerify { userRepoMock.loadApplicationUser() }
+                coVerify { leaderboardRepoMock.loadLeaderboard(user.getToken(),user.getUserId().toInt()) }
+            }
+        }
+    }
 
+    @Test
+    fun homeShowsUserLevel(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+        val user = User("1","token","name","familyName","mail","phone",Date(), listOf(),0)
+        val leaderboardItems = listOf(
+            LeaderboardUser(1,"Navaron Bracke",5),
+            LeaderboardUser(1,"Robbie Verdurme",7),
+            LeaderboardUser(1,"Jarni Naudts",20),
+            LeaderboardUser(1,"Ruben Grillaert",15),
+            LeaderboardUser(1,"Arno Boel",36),
+            LeaderboardUser(1,"Shawn Van Ranst",8)
+        )
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                HomeViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+            single {
+                Room.inMemoryDatabaseBuilder(get(),ApplicationDatabase::class.java).build()
+            }
+            single {
+                get<ApplicationDatabase>().userDao()
+            }
+            single {
+                get<ApplicationDatabase>().leaderboardUserDao()
+            }
+        }
+
+        app.loadModules(module){
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = user) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(user.getToken()),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = leaderboardItems) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
+                onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
+                //check the user level
+                onView(withId(R.id.userLevelLabel)).check(matches(isDisplayed()))
+
+                coVerify { userRepoMock.loadApplicationUser() }
                 coVerify { leaderboardRepoMock.loadLeaderboard(user.getToken(),user.getUserId().toInt()) }
             }
         }
