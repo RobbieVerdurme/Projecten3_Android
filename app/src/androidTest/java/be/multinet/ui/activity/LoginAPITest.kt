@@ -425,7 +425,7 @@ class LoginAPITest : KoinTest {
                 val passwordInput = onView(withId(R.id.passwordInput))
                 passwordInput.perform(typeText("password")).perform(closeSoftKeyboard())
                 onView(allOf(withId(R.id.login), withText(R.string.login_title))).perform(click())
-                //check if we are on the new page, just fetching the title
+                //check if we are on the new page
                 onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
                 coVerify { userRepoMock.saveApplicationUser(eq(user)) }
             }
