@@ -128,9 +128,7 @@ class ChallengeRepository(
 
     override suspend fun completeChallengeLocally(challenge: Challenge,user: User, date: Date){
         withContext(Dispatchers.IO){
-            challengeDao.completeChallengeAndUpdateXP(user.getUserId().toInt(),challenge.getChallengeId().toInt(),date)
-            challenge.setDateCompleted(date)
-            user.setEXP(user.getEXP()+1)
+            challengeDao.completeChallengeAndUpdateXP(user,challenge,date)
         }
     }
 
@@ -148,30 +146,7 @@ class ChallengeRepository(
      */
     override suspend fun saveChallenges(challenges: List<Challenge>) {
         withContext(Dispatchers.IO){
-            //overwrite the old ones
-            challengeDao.deleteChallenges()
-            categoryDao.deleteCategories()
-            val categories = challenges.map {
-                it.getCategory()
-            }.distinctBy {
-                it!!.getName()
-            }
-            categories.forEach {
-                categoryDao.insertCategory(PersistentCategory(it!!.getCategoryId().toInt(),it.getName()))
-            }
-            challenges.forEach()
-            {
-                challengeDao.insertChallenge(
-                    PersistentChallenge(
-                        it.getChallengeId().toInt(),
-                        it.getImage(),
-                        it.getTitle(),
-                        it.getDescription(),
-                        it.getDateCompleted(),
-                        it.getCategory()?.getCategoryId()!!.toInt()
-                    )
-                )
-            }
+            challengeDao.saveChallenges(challenges)
         }
     }
 
