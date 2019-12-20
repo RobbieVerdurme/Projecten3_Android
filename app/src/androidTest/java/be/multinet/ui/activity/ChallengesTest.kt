@@ -46,6 +46,7 @@ import java.util.*
 class ChallengesTest : KoinTest {
     val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MultinetTestApp
 
+
     @Test
     fun loadChallengesHttp200LoadsChallenges(){
         val userRepoMock: IUserRepository = mockk()
@@ -109,17 +110,23 @@ class ChallengesTest : KoinTest {
             val scenario = ActivityScenario.launch(MainActivity::class.java)
             scenario.use {
                 NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
                 onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
 
+                //click on challenges
                 onView(withContentDescription(R.string.landing_page_nav_menu_challenges)).perform(
                     click())
 
+                //wait until the challenges title is in the toolbar
                 onView(allOf(withParent(withId(R.id.mainActivityToolbar)), withText(R.string.challenges_title))).check(
                     matches(isDisplayed()))
 
+                //wait until the viewpager loaded the challenges
                 onView(withId(R.id.viewPager)).check(
                     matches(isDisplayed()))
 
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
                 onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed()))
 
                 coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
@@ -190,21 +197,27 @@ class ChallengesTest : KoinTest {
             val scenario = ActivityScenario.launch(MainActivity::class.java)
             scenario.use {
                 NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
                 onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
-
+                //click on challenges
                 onView(withContentDescription(R.string.landing_page_nav_menu_challenges)).perform(
                     click())
-
+                //wait until the challenges title is in the toolbar
                 onView(allOf(withParent(withId(R.id.mainActivityToolbar)), withText(R.string.challenges_title))).check(
                     matches(isDisplayed()))
-
+                //wait until the viewpager loaded the challenges
                 onView(withId(R.id.viewPager)).check(
                     matches(isDisplayed()))
 
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
                 onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed()))
+                //Tinder swipe
                 onView(withId(R.id.viewPager)).perform(swipeLeft())
+                //check if the first challenge is not completely displayed
                 onView(withText("challenge1")).check(
                     matches(not(isCompletelyDisplayed())))
+                //check if the second challenge is completely displayed
                 onView(withText("challenge2")).check(
                     matches(isCompletelyDisplayed()))
 
@@ -214,9 +227,265 @@ class ChallengesTest : KoinTest {
         }
     }
 
-    //swipe in viewpager
 
-    //select category
+    @Test
+    fun userCanSelectCategoryAndSeeCategoryChallenges(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+        val challengesRepoMock: IChallengeRepository = mockk()
+        val completedDate = Date()
+        val challenges = listOf(
+            Challenge("1","","challenge1","description1",completedDate, Category("1","Ondergewicht")),
+            Challenge("2","","challenge2","description2",completedDate, Category("2","Sport"))
+        )
+
+        val user = User("1","token","name","familyName","mail","phone",Date(), listOf(),0)
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                HomeViewModel(get(),get())
+            }
+            viewModel {
+                ChallengeViewModel(get(),get())
+            }
+            viewModel {
+                CompleteChallengeViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+            single {
+                challengesRepoMock
+            }
+            single {
+                Room.inMemoryDatabaseBuilder(get(),ApplicationDatabase::class.java).build()
+            }
+            single {
+                get<ApplicationDatabase>().challengeDao()
+            }
+            single {
+                get<ApplicationDatabase>().categoryDao()
+            }
+        }
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = user) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(user.getToken()),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+            coEvery { challengesRepoMock.saveChallenges(eq(challenges)) } coAnswers {
+                get<ChallengeDao>().saveChallenges(challenges)
+            }
+            coEvery { challengesRepoMock.loadChallenges(eq(user.getUserId().toInt())) } coAnswers {
+                challengesRepoMock.saveChallenges(challenges)
+                DataOrError(data = challenges) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
+                onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
+                //click on challenges
+                onView(withContentDescription(R.string.landing_page_nav_menu_challenges)).perform(
+                    click())
+                //wait until the challenges title is in the toolbar
+                onView(allOf(withParent(withId(R.id.mainActivityToolbar)), withText(R.string.challenges_title))).check(
+                    matches(isDisplayed()))
+                //wait until the viewpager loaded the challenges
+                onView(withId(R.id.viewPager)).check(
+                    matches(isDisplayed()))
+
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
+                onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed(), withText("challenge1")))
+
+                onView(allOf(withText("Sport"))).perform(click())
+
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
+                onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed(), withText("challenge2")))
+
+                coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
+            }
+        }
+    }
+
+    @Test
+    fun completedChallengeHasNoCompleteButton(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+        val challengesRepoMock: IChallengeRepository = mockk()
+        val completedDate = Date()
+        val challenges = listOf(
+            Challenge("1","","challenge1","description1",completedDate, Category("1","Ondergewicht"))
+        )
+
+        val user = User("1","token","name","familyName","mail","phone",Date(), listOf(),0)
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                HomeViewModel(get(),get())
+            }
+            viewModel {
+                ChallengeViewModel(get(),get())
+            }
+            viewModel {
+                CompleteChallengeViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+            single {
+                challengesRepoMock
+            }
+            single {
+                Room.inMemoryDatabaseBuilder(get(),ApplicationDatabase::class.java).build()
+            }
+            single {
+                get<ApplicationDatabase>().challengeDao()
+            }
+            single {
+                get<ApplicationDatabase>().categoryDao()
+            }
+        }
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = user) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(user.getToken()),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+            coEvery { challengesRepoMock.saveChallenges(eq(challenges)) } coAnswers {
+                get<ChallengeDao>().saveChallenges(challenges)
+            }
+            coEvery { challengesRepoMock.loadChallenges(eq(user.getUserId().toInt())) } coAnswers {
+                challengesRepoMock.saveChallenges(challenges)
+                DataOrError(data = challenges) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
+                onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
+                //click on challenges
+                onView(withContentDescription(R.string.landing_page_nav_menu_challenges)).perform(
+                    click())
+                //wait until the challenges title is in the toolbar
+                onView(allOf(withParent(withId(R.id.mainActivityToolbar)), withText(R.string.challenges_title))).check(
+                    matches(isDisplayed()))
+                //wait until the viewpager loaded the challenges
+                onView(withId(R.id.viewPager)).check(
+                    matches(isDisplayed()))
+
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
+                onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed(), withText("challenge1")))
+                //check if the complete button is gone
+                onView(withText(R.string.complete_challenge)).check(matches(not(isDisplayed())))
+
+                coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
+            }
+        }
+    }
+
+    @Test
+    fun notCompletedChallengeHasCompleteButton(){
+        val userRepoMock: IUserRepository = mockk()
+        val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
+        val challengesRepoMock: IChallengeRepository = mockk()
+        val challenges = listOf(
+            Challenge("1","","challenge1","description1",null, Category("1","Ondergewicht"))
+        )
+
+        val user = User("1","token","name","familyName","mail","phone",Date(), listOf(),0)
+
+        //declare module
+        val module = module {
+            viewModel {
+                UserViewModel(get())
+            }
+            viewModel {
+                HomeViewModel(get(),get())
+            }
+            viewModel {
+                ChallengeViewModel(get(),get())
+            }
+            viewModel {
+                CompleteChallengeViewModel(get(),get())
+            }
+            single {
+                userRepoMock
+            }
+            single {
+                leaderboardRepoMock
+            }
+            single {
+                challengesRepoMock
+            }
+            single {
+                Room.inMemoryDatabaseBuilder(get(),ApplicationDatabase::class.java).build()
+            }
+            single {
+                get<ApplicationDatabase>().challengeDao()
+            }
+            single {
+                get<ApplicationDatabase>().categoryDao()
+            }
+        }
+
+        //load module
+        app.loadModules(module){
+            //train mock
+            coEvery { userRepoMock.loadApplicationUser() } coAnswers { DataOrError(data = user) }
+            coEvery {leaderboardRepoMock.loadLeaderboard(eq(user.getToken()),eq(user.getUserId().toInt()))} coAnswers { DataOrError(data = listOf()) }
+            coEvery { challengesRepoMock.saveChallenges(eq(challenges)) } coAnswers {
+                get<ChallengeDao>().saveChallenges(challenges)
+            }
+            coEvery { challengesRepoMock.loadChallenges(eq(user.getUserId().toInt())) } coAnswers {
+                challengesRepoMock.saveChallenges(challenges)
+                DataOrError(data = challenges) }
+
+            //launch
+            val scenario = ActivityScenario.launch(MainActivity::class.java)
+            scenario.use {
+                NetworkHandler.onNetworkAvailable()
+                //wait until the landing page is displayed
+                onView(withId(R.id.landingPageBottomNavigation)).check(matches(isDisplayed()))
+                //click on challenges
+                onView(withContentDescription(R.string.landing_page_nav_menu_challenges)).perform(
+                    click())
+                //wait until the challenges title is in the toolbar
+                onView(allOf(withParent(withId(R.id.mainActivityToolbar)), withText(R.string.challenges_title))).check(
+                    matches(isDisplayed()))
+                //wait until the viewpager loaded the challenges
+                onView(withId(R.id.viewPager)).check(
+                    matches(isDisplayed()))
+
+                //check if there is a challenge in the viewpager, by checking if there is a view that is completely displayed
+                // (this applies to the center challenge and excludes its neighbours)
+                onView(allOf(withId(R.id.challengeImage), isCompletelyDisplayed(), withText("challenge1")))
+                //check if the complete button is gone
+                onView(withText(R.string.complete_challenge)).check(matches(isDisplayed()))
+
+                coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
+            }
+        }
+    }
 
     //goto complete challenge
 
