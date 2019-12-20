@@ -100,7 +100,7 @@ class MultinetApp : MultiDexApplication() {
             InfoViewModel(get())
         }
         viewModel{
-            UpdateProfileViewModel(get())
+            UpdateProfileViewModel(get(),get())
         }
     }
     /**
