@@ -35,6 +35,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -863,7 +864,7 @@ class ChallengesTest : KoinTest {
     }
 
     @Test
-    fun completeChallengeCompletesChallenge(){
+    fun completeChallengeCompletesChallengeAndUpdatesXP(){
         val userRepoMock: IUserRepository = mockk()
         val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
         val challengesRepoMock: IChallengeRepository = mockk()
@@ -921,7 +922,7 @@ class ChallengesTest : KoinTest {
                 DataOrError(data = challenges) }
             coEvery { challengesRepoMock.isDailyChallengeCompleted(eq(user.getUserId().toInt()),eq(challenges[0].getChallengeId().toInt()),eq(user.getToken())) } coAnswers { DataOrError(data = completedDate) }
             coEvery { challengesRepoMock.completeChallenge(eq(challenges[0]),eq(user),any(),any(),eq(completedDate),eq(user.getToken())) } coAnswers {
-                challenges[0].setDateCompleted(completedDate)
+                get<ChallengeDao>().completeChallengeAndUpdateXP(user,challenges[0],completedDate)
                 DataOrError(data = null) }
 
             //launch
@@ -968,9 +969,8 @@ class ChallengesTest : KoinTest {
                 coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
                 coVerify { challengesRepoMock.isDailyChallengeCompleted(user.getUserId().toInt(),challenges[0].getChallengeId().toInt(),user.getToken()) }
                 coVerify { challengesRepoMock.completeChallenge(challenges[0],user,any(),any(),completedDate,user.getToken()) }
+                assertEquals(1,user.getEXP())
             }
         }
     }
-
-    //complete challenge of category 1 -> complete challenge of category 2 -> check if both completed
 }
