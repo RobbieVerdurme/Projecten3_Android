@@ -193,7 +193,7 @@ class UserRepository(private val userDao: UserDao,
         }
     }
 
-    override suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<User?>{
+    override suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<Nothing?>{
         if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED)
         {
             val apiResponse: Response<Ok>
@@ -226,11 +226,10 @@ class UserRepository(private val userDao: UserDao,
         email: String,
         token: String
     ): Response<Ok> {
+        val body = UpdateUserRequestBody(userId,firstName,lastName,phone,email)
         return withContext(Dispatchers.IO)
         {
-            multimedService.editUser(token,
-                UpdateUserRequestBody(userId,firstName,lastName,phone,email)
-            )
+            multimedService.editUser(token,body)
         }
     }
 

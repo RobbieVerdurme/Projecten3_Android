@@ -46,6 +46,7 @@
     <string name="update_profile_phone_maxlength">Telefoon is maximum %1d cijfers lang</string>
     <string name="update_profile_email_required">Email is verplicht</string>
     <string name="update_profile_email_invalid">Ongeldige email</string>
+    <string name="updateProfileError">Kon uw gegevens niet bewerken</string>
 
 
     <string name="confirm_updated_profile_button">Bevestig</string>

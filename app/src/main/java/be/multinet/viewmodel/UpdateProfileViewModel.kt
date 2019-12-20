@@ -14,7 +14,7 @@ class UpdateProfileViewModel(private val userRepo: IUserRepository, application:
 
     private val genericErrorMessage: String = application.getString(R.string.generic_error)
     val offline = "offline"
-    private val editUSerErrorMessage:String = application.getString(R.string.userError)
+    private val editUSerErrorMessage:String = application.getString(R.string.updateProfileError)
     private val firstNameMinLength = 2
     private val lastNameMinLength = 2
     private val phoneMinLength = 8//See ISO phone number spec
