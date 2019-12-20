@@ -3,33 +3,30 @@ package be.multinet.ui.activity
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.ViewPagerActions
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.RootMatchers.isSystemAlertWindow
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.viewpager2.widget.ViewPager2
 import be.multinet.R
 import be.multinet.database.ApplicationDatabase
 import be.multinet.database.Dao.ChallengeDao
-import be.multinet.database.Dao.UserDao
-import be.multinet.database.Persist.PersistentUser
 import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.model.User
 import be.multinet.network.NetworkHandler
-import be.multinet.network.Response.CheckDailyChallengeResponse
 import be.multinet.repository.DataError
 import be.multinet.repository.DataOrError
 import be.multinet.repository.Interface.IChallengeRepository
 import be.multinet.repository.Interface.ILeaderboardUserRepoitory
 import be.multinet.repository.Interface.IUserRepository
 import be.multinet.runner.MultinetTestApp
-import be.multinet.viewmodel.*
+import be.multinet.viewmodel.ChallengeViewModel
+import be.multinet.viewmodel.CompleteChallengeViewModel
+import be.multinet.viewmodel.HomeViewModel
+import be.multinet.viewmodel.UserViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -42,7 +39,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
-import retrofit2.Response
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
