@@ -3,45 +3,42 @@ package be.multinet.ui.activity
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.ViewPagerActions
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.RootMatchers.isSystemAlertWindow
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.viewpager2.widget.ViewPager2
 import be.multinet.R
 import be.multinet.database.ApplicationDatabase
 import be.multinet.database.Dao.ChallengeDao
-import be.multinet.database.Dao.UserDao
-import be.multinet.database.Persist.PersistentUser
 import be.multinet.model.Category
 import be.multinet.model.Challenge
 import be.multinet.model.User
 import be.multinet.network.NetworkHandler
-import be.multinet.network.Response.CheckDailyChallengeResponse
 import be.multinet.repository.DataError
 import be.multinet.repository.DataOrError
 import be.multinet.repository.Interface.IChallengeRepository
 import be.multinet.repository.Interface.ILeaderboardUserRepoitory
 import be.multinet.repository.Interface.IUserRepository
 import be.multinet.runner.MultinetTestApp
-import be.multinet.viewmodel.*
+import be.multinet.viewmodel.ChallengeViewModel
+import be.multinet.viewmodel.CompleteChallengeViewModel
+import be.multinet.viewmodel.HomeViewModel
+import be.multinet.viewmodel.UserViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
-import retrofit2.Response
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
@@ -863,7 +860,7 @@ class ChallengesTest : KoinTest {
     }
 
     @Test
-    fun completeChallengeCompletesChallenge(){
+    fun completeChallengeCompletesChallengeAndUpdatesXP(){
         val userRepoMock: IUserRepository = mockk()
         val leaderboardRepoMock : ILeaderboardUserRepoitory = mockk()
         val challengesRepoMock: IChallengeRepository = mockk()
@@ -921,7 +918,7 @@ class ChallengesTest : KoinTest {
                 DataOrError(data = challenges) }
             coEvery { challengesRepoMock.isDailyChallengeCompleted(eq(user.getUserId().toInt()),eq(challenges[0].getChallengeId().toInt()),eq(user.getToken())) } coAnswers { DataOrError(data = completedDate) }
             coEvery { challengesRepoMock.completeChallenge(eq(challenges[0]),eq(user),any(),any(),eq(completedDate),eq(user.getToken())) } coAnswers {
-                challenges[0].setDateCompleted(completedDate)
+                get<ChallengeDao>().completeChallengeAndUpdateXP(user,challenges[0],completedDate)
                 DataOrError(data = null) }
 
             //launch
@@ -968,9 +965,8 @@ class ChallengesTest : KoinTest {
                 coVerify { challengesRepoMock.loadChallenges(user.getUserId().toInt()) }
                 coVerify { challengesRepoMock.isDailyChallengeCompleted(user.getUserId().toInt(),challenges[0].getChallengeId().toInt(),user.getToken()) }
                 coVerify { challengesRepoMock.completeChallenge(challenges[0],user,any(),any(),completedDate,user.getToken()) }
+                assertEquals(1,user.getEXP())
             }
         }
     }
-
-    //complete challenge of category 1 -> complete challenge of category 2 -> check if both completed
 }
