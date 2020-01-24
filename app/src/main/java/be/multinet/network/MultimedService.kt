@@ -128,7 +128,7 @@ class MultimedService : IApiProvider {
         return server.getTherapists(token,userid)
     }
 
-    override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok> {
+    override suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Void> {
         return server.updateUser(token,editUserRequestBody)
     }
 

@@ -44,5 +44,5 @@ interface IUserRepository {
 
     suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<Nothing?>
 
-    suspend fun updateUserOnServer(userId: Int, firstName: String, lastName: String, phone: String, email: String, token: String): Response<Ok>
+    suspend fun updateUserOnServer(userId: Int, firstName: String, lastName: String, phone: String, email: String, token: String): Response<Void>
 }

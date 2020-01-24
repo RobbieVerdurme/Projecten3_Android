@@ -192,7 +192,7 @@ class UserRepository(private val userDao: UserDao,
     override suspend fun updateUser(user: User, firstName: String, lastName: String, email: String, phone: String, token: String) : DataOrError<Nothing?>{
         if(NetworkHandler.getNetworkState().value == ConnectionState.CONNECTED)
         {
-            val apiResponse: Response<Ok>
+            val apiResponse: Response<Void>
             try {
                 apiResponse = updateUserOnServer(user.getUserId().toInt(), firstName,lastName,phone,email,token)
             }catch (e: IOException){
@@ -221,7 +221,7 @@ class UserRepository(private val userDao: UserDao,
         phone: String,
         email: String,
         token: String
-    ): Response<Ok> {
+    ): Response<Void> {
         val body = UpdateUserRequestBody(userId,firstName,lastName,phone,email)
         return withContext(Dispatchers.IO)
         {

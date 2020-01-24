@@ -55,5 +55,5 @@ interface IMultimedApi {
     suspend fun getLeaderboard(@Header("Authorization")token:String, @Path("id") userid: Int) : Response<List<LeaderboardUserResponse>>
 
     @PUT("users/app/edit")
-    suspend fun updateUser(@Header("Authorization")token:String, @Body body: UpdateUserRequestBody) : Response<Ok>
+    suspend fun updateUser(@Header("Authorization")token:String, @Body body: UpdateUserRequestBody) : Response<Void>
 }

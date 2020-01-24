@@ -47,7 +47,7 @@ interface IApiProvider {
     suspend fun getTherapists(token:String, userid: Int) : Response<List<TherapistResponse>>
 
 
-    suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Ok>
+    suspend fun editUser(token: String, editUserRequestBody: UpdateUserRequestBody): Response<Void>
 
     /**
      * Check if a user completed his challenge of the day for a category.
