@@ -52,7 +52,7 @@ class LeaderboardUserReposisitory(
                             it.firstName + " " + it.familyName,
                             it.score
                         )
-                    }.toList()
+                    }.toList().sortedByDescending { it.getScore() }
                     saveLeaderboard(leaderboard)
                     return DataOrError(data = leaderboard)
                 }
@@ -77,7 +77,7 @@ class LeaderboardUserReposisitory(
                     it.name,
                     it.score
                 )
-            }.toList()
+            }.toList().sortedByDescending { it.getScore() }
         }
     }
 

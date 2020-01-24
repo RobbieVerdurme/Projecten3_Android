@@ -83,7 +83,7 @@ class MultimedService : IApiProvider {
             .baseUrl(baseUrl)
             .addConverterFactory(
                 GsonConverterFactory.create(
-                    GsonBuilder().setLenient().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.S").create()
+                    GsonBuilder().setLenient().setDateFormat("yyyy-MM-dd'T'hh:mm:ss").create()
                 )
             )
             .client(getUnsafeOkHttpClient())
