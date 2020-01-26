@@ -8,7 +8,7 @@ Dit is de repository voor Multimed Groep 2, in het kader van Projecten 3 - Andro
 
 Gebruikersnaam | Wachtwoord
 -------------- | ----------
-rubengrillaert@gmail.com | Multimed@RubenGrillaert0475316489
+rubengrillaert@hotmail.com | Multimed@RubenGrillaert0475316489
 
 ### Handleiding
 
