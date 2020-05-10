@@ -3,16 +3,7 @@
 Dit is de repository voor Multimed Groep 2, in het kader van Projecten 3 - Android.
 
 ## Applicatie
-
-### Gebruikers
-
-Gebruikersnaam | Wachtwoord
--------------- | ----------
-rubengrillaert@hotmail.com | Multimed@RubenGrillaert0475316489
-
 ### Handleiding
-
-U kan met een gebruikersnaam en wachtwoord uit de bovenstaande lijst inloggen in de app.
 Indien u eenmaal bent ingelogd kan u het volgende:
 
 * Uw score en niveau raadplegen op het algemeen overzicht. Hier kan u ook uw positie binnen de ranking zien.
